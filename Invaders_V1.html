@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>AFH Invaders 2.0</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        html {
+            height: 100%;
+            background-color: black;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        var config = {
+            type: Phaser.AUTO,
+            width: 960,
+            height: 720,
+
+            // Add physics: arcade
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: {
+                        y: 0
+                    },
+                    debug: false
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        // Object.assign(sprite, Phaser.Physics.Arcade.Components.Enable, Phaser.Physics.Arcade.Components.Velocity);
+
+        var sprite;
+        var cursors;
+
+        // Enemy object compnents
+        const enemyImg = [];
+        const enemyX = [];
+        const enemyY = [];
+        const enemyX_change = [];
+        const enemyY_change = [];
+        var num_of_enemies = 6;
+
+
+        var game = new Phaser.Game(config);
+
+        function preload() {
+            this.load.image('background', 'assets/background.png');
+            // this.load.image('ground', 'assets/platform.png');
+            // this.load.image('star', 'assets/star.png');
+            this.load.image('canvas', 'assets/canvas.png');
+            this.load.image('spraycan', 'assets/spraycan.png');
+        }
+
+        function create() {
+
+            // Add images and sprites to Scene
+            this.add.image(480, 360, 'background');
+            // this.add, image(0, 0, 'background').setOrigin(0, 0)
+
+            // spraycan = this.pyhsics.add.group();
+            sprite = this.physics.add.sprite(480, 600, 'spraycan');
+            // sprite.setIgnoreGravity(true);
+
+            sprite.setCollideWorldBounds(true);
+
+            var test = this.physics.add.sprite(0, 0, 'canvas');
+            var test2 = [test]
+            console.log(test2)
+            console.log(test)
+            test.setVelocityX(150);
+
+
+            // Initialize keyboard manager
+            cursors = this.input.keyboard.createCursorKeys();
+
+            //  Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
+            for (let i = 0; i < num_of_enemies; i++) {
+                enemyImg[i] = this.add.sprite(randomnum(50, 900), randomnum(50, 300), 'canvas');
+                enemyX[i] = randomnum(50, 900);
+                enemyY[i] = randomnum(50, 300);
+                enemyX_change[i] = 1;
+                enemyY_change[i] = 60;
+            }
+
+            // enemies = this.physics.add.group({
+            //     key: 'canvas',
+            //     repeat: 5,
+            //     setXY: {
+            //         x: randomnum(50, 900),
+            //         y: randomnum(50, 300),
+            //         stepX: 70
+            //     }
+            // });
+        }
+
+        function update() {
+            // Assign arrow keys for movement mechanics
+            if (cursors.left.isDown) {
+                sprite.x -= 10;
+            } else if (cursors.right.isDown) {
+                sprite.x += 10;
+            } else if (cursors.up.isDown) {
+                sprite.y -= 10;
+            } else if (cursors.down.isDown) {
+                sprite.y += 10;
+            } else {
+                // sprite.setVelocityX(0);
+            }
+
+            // Enemy Movement
+            for (let i = 0; i < num_of_enemies; i++) {
+                // game.physics.enable(enemyImg[i], Phaser.Physics.ARCADE)
+                enemyX[i] += enemyX_change[i]
+                // console.log(enemyX_change)
+                if (enemyX[i] <= 0) {
+                    enemyX_change[i] = 1
+                    enemyY[i] += enemyY_change[i]
+                } else if (enemyX[i] >= 896) {
+                    enemyX_change[i] = -1
+                    enemyY[i] += enemyY_change[i]
+                }
+                // enemyImg.clear();
+                enemyImg[i] = this.add.image(enemyX_change, enemyY_change, 'canvas');
+                // enemyImg[i].setVelocityX(150);
+
+            }
+
+        }
+
+        function randomnum(x, y) {
+            num = Phaser.Math.Between(x, y);
+            // console.log(num);
+            return num;
+        }
+
+        // function enemy(x, y, i) {
+        //     enemy[i] = this.add.image(randomnum(50, 900), randomnum(50, 300), 'canvas');
+        // }
+
+    </script>
+
+</body>
+
+</html>
