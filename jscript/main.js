@@ -141,12 +141,12 @@ function update() {
     else if (cursors.right.isDown) {
         player.x += 10;
     } 
-    else if (cursors.up.isDown) {
-        player.y -= 10;
-    }
-    else if (cursors.down.isDown) {
-        player.y += 10;
-    }
+    // else if (cursors.up.isDown) {
+    //     player.y -= 10;
+    // }
+    // else if (cursors.down.isDown) {
+    //     player.y += 10;
+    // }
     else if (cursors.space.isDown) {
         if (paintballState == 'ready') {
             fireBall();
