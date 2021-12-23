@@ -117,7 +117,6 @@ function create() {
     homeScreen = this.add.image(config.width / 2, config.height / 2, 'background');
 
     playButton = this.add.text(435, 250, 'Play!', {
-        fontFamily: 'Yuji Hentaigana Akari',
         fontSize: '32px',
         fill: '#007fff',
     })
