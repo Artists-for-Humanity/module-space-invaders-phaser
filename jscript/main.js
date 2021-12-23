@@ -27,34 +27,31 @@ const config = {
 };
 
 // Misc game object declaration
-let sprite;
+let player;
 let cursors;
 let score = 0;
 let gameOver = false;
-let music;
-let splat;
-let shoot;
+let musicSound;
+let splatSound;
+let shootSound;
 let homeScreen;
 let playButton;
 
 // Game Text declaration
 let scoreText;
 let gameOverText;
-let clickCountText;
 
 // Enemy object declaration
 let enemies;
-let enemySpeed = 100;
-const num_of_enemies = 6;
+let enemySpeed = 150;
+const numEnemies = 6;
 
 // Paintball object declaration
 let paintballImg;
-let paintballX = 0;
-let paintballY = 600;
-let paintballstate = 'ready';
+let paintballState = 'ready';
 
 // Initialize game instance
-const game = new Phaser.Game(config);
+new Phaser.Game(config);
 
 // Preload game assets
 function preload() {
@@ -71,47 +68,53 @@ function preload() {
 // Serves as a main function to build game components
 function create() {
     // Add images and sprites to Scene
-    this.add.image(480, 360, 'background');
-    sprite = this.physics.add.sprite(480, 600, 'spraycan');
-    sprite.setCollideWorldBounds(true);
+    this.add.image(config.width / 2, config.height / 2, 'background');
 
     // Initialize keyboard manager
     cursors = this.input.keyboard.createCursorKeys();
 
-    //  Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
+    player = this.physics.add.sprite(config.width / 2, 600, 'spraycan');
+    player.setCollideWorldBounds(true);
+
+    // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
     enemies = this.physics.add.group();
-    addBaddies();
+    enemies.setVelocityX(enemySpeed * -1);
+    resetEnemies();
 
     // Paintball
-    paintballImg = this.physics.add.sprite(0, 0, 'ball');
+    paintballImg = this.physics.add.sprite(
+        config.height * -2,
+        config.width * -2,
+        'ball'
+    );
     paintballImg.visible = false;
 
     //  The Score & Game Over text
-    scoreText = this.add.text(16, 16, 'score: 0', {
+    scoreText = this.add.text(16, 16, 'Score: 0', {
         fontSize: '32px',
         fill: '#000',
     });
-    gameOverText = this.add.text(480, 400, 'Game Over', {
+    gameOverText = this.add.text(config.width / 2, 400, 'Game Over', {
         fontSize: '64px',
         fill: '#000',
     });
     gameOverText.visible = false;
 
-    //  Checks to see if the player collides with any of the enemies, if he does call the hitCanvas function
-    this.physics.add.collider(sprite, enemies, hitCanvas, null, this);
+    //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
+    this.physics.add.collider(player, enemies, onPlayerHitEnemy, null, this);
 
-    //  Checks to see if the painball overlaps with any of the enemies, if so call the updateScore function
-    this.physics.add.overlap(paintballImg, enemies, updateScore, null, this);
+    //  Checks to see if the painball overlaps with any of the enemies, if so call the onBallHitEnemy function
+    this.physics.add.overlap(paintballImg, enemies, onBallHitEnemy, null, this);
 
     // Audio
-    splat = this.sound.add('wet_impact');
-    shoot = this.sound.add('spraycan');
-
-    music = this.sound.add('background', {
+    splatSound = this.sound.add('wet_impact');
+    shootSound = this.sound.add('spraycan');
+    musicSound = this.sound.add('background', {
         loop: true,
     });
+    
     this.physics.pause();
-    homeScreen = this.add.image(480, 360, 'background');
+    homeScreen = this.add.image(config.width / 2, config.height / 2, 'background');
 
     playButton = this.add.text(435, 250, 'Play!', {
         fontSize: '32px',
@@ -121,7 +124,7 @@ function create() {
         .on('pointerdown', () => {
             homeScreen.visible = false;
             playButton.visible = false;
-            music.play();
+            musicSound.play();
             this.physics.resume();
         });
 }
@@ -131,85 +134,83 @@ function update() {
         return;
     }
 
-    // Paintball coordinates based on player(x,y)
-    paintballX = sprite.x;
-    paintballY = sprite.y;
-
     // Assign arrow keys for movement mechanics
     if (cursors.left.isDown) {
-        sprite.x -= 10;
-    } else if (cursors.right.isDown) {
-        sprite.x += 10;
+        player.x -= 10;
+    }
+    else if (cursors.right.isDown) {
+        player.x += 10;
     } 
     // else if (cursors.up.isDown) {
-    //     sprite.y -= 10;
+    //     player.y -= 10;
     // }
-    //  else if (cursors.down.isDown) {
-    //     sprite.y += 10;
+    // else if (cursors.down.isDown) {
+    //     player.y += 10;
     // }
     else if (cursors.space.isDown) {
-        if (paintballstate == 'ready') {
-            fire_ball(paintballX, paintballY);
+        if (paintballState == 'ready') {
+            fireBall();
         }
     }
 
     // On border collision change enemy direction and move down by 60px
     enemies.children.iterate((child) => {
-        if (child.x <= 20) {
+        const edgeOffset = child.width / 2;
+        const yIncrement = child.height;
+
+        if (child.x <= edgeOffset) {
             child.setVelocityX(enemySpeed);
-            child.y += 60;
-        } else if (child.x >= 915) {
+            child.y += yIncrement;
+        } else if (child.x >= config.width - edgeOffset) {
             child.setVelocityX(enemySpeed * -1);
-            child.y += 60;
+            child.y += yIncrement;
         }
     });
 
     // Paintball out of bounds
-    if (paintballImg.y <= -10) {
-        setBall();
+    if (paintballImg.y <= -paintballImg.height / 2) {
+        resetBall();
     }
 }
 
 // Genrate Random number between two ints and return value
-function randomnum(x, y) {
-    num = Phaser.Math.Between(x, y);
-    return num;
+function randomNum(x, y) {
+    return Phaser.Math.Between(x, y);
 }
 
 //  Game Over
-function game_over_text() {
+function showGameOverText() {
     gameOverText.setOrigin(0.5);
     gameOverText.visible = true;
     enemies.children.iterate((child) => {
-        child.y = 2000;
+        child.y = config.height * 2;
     });
 }
 
 // Fire the ball
-function fire_ball(x, y) {
-    paintballstate = 'fire';
+function fireBall() {
+    paintballState = 'fire';
     paintballImg.visible = true;
     paintballImg.body.enable = true;
-    paintballImg.x = x - 8;
-    paintballImg.y = y - 25;
+    paintballImg.x = player.x - 8;
+    paintballImg.y = player.y - Math.abs((player.height / 2) - (paintballImg.height / 2));
     paintballImg.setVelocityY(-250);
-    shoot.play();
+    shootSound.play();
 }
 
 // Player & Canvas collision
-function hitCanvas(sprite, canvas) {
+function onPlayerHitEnemy(player) {
     this.physics.pause();
-    sprite.setTint(0xff0000);
+    player.setTint(0xff0000);
     gameOver = true;
-    game_over_text();
+    showGameOverText();
 }
 
-// Ball & Canvas Collision
-function updateScore(paintballImg, enemy) {
+function onBallHitEnemy(paintballImg, enemy) {
     enemy.disableBody(true, true);
     paintballImg.body.enable = false;
-    splat.play();
-    setBall();
+    splatSound.play();
+    resetBall();
 
     // Add and update the score
     score += 1;
@@ -217,28 +218,38 @@ function updateScore(paintballImg, enemy) {
 
     // A new batch of enemies to defeat
     if (enemies.countActive(true) === 0) {
-        addBaddies();
+        speedUpEnemies();
+        resetEnemies();
     }
 }
 
-// Reset Paintball
-function setBall() {
-    paintballstate = 'ready';
+function resetBall() {
+    if (paintballState === 'ready') {
+        return;
+    }
+    paintballState = 'ready';
     paintballImg.setVelocityY(0);
-    paintballImg.y = paintballY;
     paintballImg.visible = false;
 }
 
-// Reset Enemies
-function addBaddies() {
-    for (let i = 0; i < 6; i++) {
-        enemies.create(randomnum(50, 900), randomnum(50, 300), 'canvas');
+function resetEnemies() {
+    // TODO: Make this read from the image?
+    const imageSize = {
+        width: 64,
+        height: 64
+    };
+
+    for (let i = 0; i < numEnemies; i++) {
+        enemies.create(
+            randomNum(imageSize.width, config.width - imageSize.width),
+            randomNum(imageSize.height, (config.height / 2) - imageSize.height),
+            'canvas'
+        );
     }
-    enemySpeed += 50;
-    // console.log('ES: ', enemySpeed)
     enemies.setVelocityX(enemySpeed * -1);
 }
 
-function actionOnClick() {
-    homeScreen.visible = !background.visible;
+function speedUpEnemies() {
+    enemySpeed += 50;
+    enemies.setVelocityX(enemySpeed * -1);
 }
