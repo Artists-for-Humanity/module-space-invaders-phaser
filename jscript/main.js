@@ -44,12 +44,10 @@ let gameOverText;
 // Enemy object declaration
 let enemies;
 let enemySpeed = 150;
-const numEnemies = 1;
+const numEnemies = 6;
 
 // Paintball object declaration
 let paintballImg;
-let paintballX = 0;
-let paintballY = 600;
 let paintballState = 'ready';
 
 // Initialize game instance
@@ -70,12 +68,12 @@ function preload() {
 // Serves as a main function to build game components
 function create() {
     // Add images and sprites to Scene
-    this.add.image(480, 360, 'background');
+    this.add.image(config.width / 2, config.height / 2, 'background');
 
     // Initialize keyboard manager
     cursors = this.input.keyboard.createCursorKeys();
 
-    player = this.physics.add.sprite(480, 600, 'spraycan');
+    player = this.physics.add.sprite(config.width / 2, 600, 'spraycan');
     player.setCollideWorldBounds(true);
 
     // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
@@ -84,15 +82,19 @@ function create() {
     resetEnemies();
 
     // Paintball
-    paintballImg = this.physics.add.sprite(0, 0, 'ball');
+    paintballImg = this.physics.add.sprite(
+        config.height * -2,
+        config.width * -2,
+        'ball'
+    );
     paintballImg.visible = false;
 
     //  The Score & Game Over text
-    scoreText = this.add.text(16, 16, 'score: 0', {
+    scoreText = this.add.text(16, 16, 'Score: 0', {
         fontSize: '32px',
         fill: '#000',
     });
-    gameOverText = this.add.text(480, 400, 'Game Over', {
+    gameOverText = this.add.text(config.width / 2, 400, 'Game Over', {
         fontSize: '64px',
         fill: '#000',
     });
@@ -112,9 +114,10 @@ function create() {
     });
     
     this.physics.pause();
-    homeScreen = this.add.image(480, 360, 'background');
+    homeScreen = this.add.image(config.width / 2, config.height / 2, 'background');
 
     playButton = this.add.text(435, 250, 'Play!', {
+        fontFamily: 'Yuji Hentaigana Akari',
         fontSize: '32px',
         fill: '#007fff',
     })
@@ -132,10 +135,6 @@ function update() {
         return;
     }
 
-    // Paintball coordinates based on player(x,y)
-    paintballX = player.x;
-    paintballY = player.y;
-
     // Assign arrow keys for movement mechanics
     if (cursors.left.isDown) {
         player.x -= 10;
@@ -143,32 +142,34 @@ function update() {
     else if (cursors.right.isDown) {
         player.x += 10;
     } 
-    // else if (cursors.up.isDown) {
-    //     player.y -= 10;
-    // }
-    // else if (cursors.down.isDown) {
-    //     player.y += 10;
-    // }
+    else if (cursors.up.isDown) {
+        player.y -= 10;
+    }
+    else if (cursors.down.isDown) {
+        player.y += 10;
+    }
     else if (cursors.space.isDown) {
         if (paintballState == 'ready') {
-            fireBall(paintballX, paintballY);
+            fireBall();
         }
     }
 
     // On border collision change enemy direction and move down by 60px
     enemies.children.iterate((child) => {
-        // make these checks dynamic
-        if (child.x <= 20) {
+        const edgeOffset = child.width / 2;
+        const yIncrement = child.height;
+
+        if (child.x <= edgeOffset) {
             child.setVelocityX(enemySpeed);
-            child.y += 60;
-        } else if (child.x >= 915) {
+            child.y += yIncrement;
+        } else if (child.x >= config.width - edgeOffset) {
             child.setVelocityX(enemySpeed * -1);
-            child.y += 60;
+            child.y += yIncrement;
         }
     });
 
     // Paintball out of bounds
-    if (paintballImg.y <= -10) {
+    if (paintballImg.y <= -paintballImg.height / 2) {
         resetBall();
     }
 }
@@ -183,17 +184,17 @@ function showGameOverText() {
     gameOverText.setOrigin(0.5);
     gameOverText.visible = true;
     enemies.children.iterate((child) => {
-        child.y = 2000;
+        child.y = config.height * 2;
     });
 }
 
 // Fire the ball
-function fireBall(x, y) {
+function fireBall() {
     paintballState = 'fire';
     paintballImg.visible = true;
     paintballImg.body.enable = true;
-    paintballImg.x = x - 8;
-    paintballImg.y = y - 25;
+    paintballImg.x = player.x - 8;
+    paintballImg.y = player.y - Math.abs((player.height / 2) - (paintballImg.height / 2));
     paintballImg.setVelocityY(-250);
     shootSound.play();
 }
@@ -224,15 +225,27 @@ function onBallHitEnemy(paintballImg, enemy) {
 }
 
 function resetBall() {
+    if (paintballState === 'ready') {
+        return;
+    }
     paintballState = 'ready';
     paintballImg.setVelocityY(0);
-    paintballImg.y = paintballY;
     paintballImg.visible = false;
 }
 
 function resetEnemies() {
+    // TODO: Make this read from the image?
+    const imageSize = {
+        width: 64,
+        height: 64
+    };
+
     for (let i = 0; i < numEnemies; i++) {
-        enemies.create(randomNum(50, 900), randomNum(50, 300), 'canvas');
+        enemies.create(
+            randomNum(imageSize.width, config.width - imageSize.width),
+            randomNum(imageSize.height, (config.height / 2) - imageSize.height),
+            'canvas'
+        );
     }
     enemies.setVelocityX(enemySpeed * -1);
 }
