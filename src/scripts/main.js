@@ -1,4 +1,4 @@
-/*global Phaser*/
+import Phaser from 'phaser';
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -34,14 +34,14 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'assets/background.png');
-        this.load.image('ball', 'assets/ball.png');
-        this.load.image('canvas', 'assets/canvas.png');
-        this.load.image('spraycan', 'assets/spraycan.png');
+        this.load.image('background', new URL('../assets/background.png', import.meta.url).href);
+        this.load.image('ball', new URL('../assets/ball.png', import.meta.url).href);
+        this.load.image('canvas', new URL('../assets/canvas.png', import.meta.url).href);
+        this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);
 
-        this.load.audio('background', 'assets/background.wav');
-        this.load.audio('spraycan', 'assets/spraycan.wav');
-        this.load.audio('wet_impact', 'assets/wet_impact.wav');
+        this.load.audio('background', new URL('../assets/background.wav', import.meta.url).href);
+        this.load.audio('spraycan', new URL('../assets/spraycan.wav', import.meta.url).href);
+        this.load.audio('wet_impact', new URL('../assets/wet_impact.wav', import.meta.url).href);
     }
 
     create() {
