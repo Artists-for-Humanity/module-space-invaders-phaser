@@ -13,5 +13,7 @@ node_modules/
 # Build
 /npm-debug.log
 
+# parcel
 .parcel-cache
+.cache
 /dist
