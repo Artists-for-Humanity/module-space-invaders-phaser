@@ -98,7 +98,7 @@ Let's go back to our web browser and look in our console. You should see somethi
 
 ![Class debugging console](images/class-debug-console.png)
 
-We can see the order in which the functions we put inside our class are running. First the constructor function gets run, followed by preload and create. Lastly the update function is run but you'll notice it's run many times. The update function is meant to run constantly (you should see a number next to it increasing) and is where a majority of our game code will live. Everytime the function runs the number next to it in our console increases.
+We can see the order in which the functions we put inside our class are running. First the constructor function gets run, followed by preload and create. Lastly the update function is run but you'll notice it's run many times. The update function is meant to run constantly (you should see a number next to it increasing) and is where a majority of our game code will live. Everytime the function runs the number next to it in our console increases. Lastly, Don't worry about the yellow warning message in the console for the 'AudioContext', we will take care of that in the next step.
 
 ---
 

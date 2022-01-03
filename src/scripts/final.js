@@ -134,7 +134,7 @@ class GameScene extends Phaser.Scene {
         // On border collision change enemy direction and move down by 60px
         this.enemies.children.iterate((child) => {
             const edgeOffset = child.width / 2;
-            const yIncrement = child.height;
+            const yIncrement = child.height / 2;
     
             if (child.x <= edgeOffset) {
                 child.setVelocityX(this.enemySpeed);

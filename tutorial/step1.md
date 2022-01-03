@@ -14,7 +14,7 @@ In this tutorial we will not focus on the content of this file. It has some simp
 
 ### [scripts/final.js](../src/scripts/final.js)
 
-This is the complete Javascript file for our game. Currently when we load [localhost:1234](http://localhost:1234) it is running this code. As I mentioned above, our [index.html](../src/index.html) is what gets loaded in the browser. If you open [index.html](../src/index.html) and [go to line 28](../src/index.html#L27) you should see:
+This is the complete Javascript file for our game. Currently when we load [localhost:1234](http://localhost:1234) it is running this code. As I mentioned above, our [index.html](../src/index.html) is what gets loaded in the browser. If you open [index.html](../src/index.html) and [go to line 27](../src/index.html#L27) you should see:
 
 ```html
 <script type="module" src="scripts/final.js"></script>

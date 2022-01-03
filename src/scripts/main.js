@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from 'phaser'; 
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -36,6 +36,9 @@ const config = {
         },
     },
     scene: GameScene,
+    audio: {
+        disableWebAudio: true,
+    },
 };
 
 // Initialize game instance
