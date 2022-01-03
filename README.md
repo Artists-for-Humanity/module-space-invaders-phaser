@@ -34,7 +34,9 @@ Next type:
 
 You should see a message saying `Server running at http://localhost:1234`. If so, go to [http://localhost:1234](localhost:1234) in your web browser.
 
-If everything worked as intended we should see a game load in our browser.
+If everything worked as intended we should see a game load in our browser like so:
+
+![Running the Game](tutorial/images/running-the-game.png)
 
 ## A Few More Notes
 
