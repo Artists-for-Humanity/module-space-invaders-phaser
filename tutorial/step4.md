@@ -10,7 +10,7 @@ Navigating back to our web browser you should still see something like this:
 ## How and Why do we get rid of the warning? 
 
 ### Why?
-First let's make clear that this warning is not affecting the code in any of your files, we could leave it in there and things would compile and run fine from the start of this tutorial to the end. For example, if you take a look at the console all of the `console.log` messages should still be appearing perfectly fine. However, the warning message is a little distracting and makes the console look a bit cluttered. It's nice to have a clean working environment so it makes sense that we would want to get rid of the warning message to make deugging and testing easier later in the tutorial.
+First let's make clear that this warning is not affecting the code in any of our files, we could leave it in there and things would compile and run fine from the start of this tutorial to the end. For example, if you take a look at the console all of the `console.log` messages should still be appearing perfectly fine. However, the warning message is a little distracting and makes the console look a bit cluttered. It's nice to have a clean workspace so it makes sense that we would want to get rid of the warning message to make deugging and testing easier later in the tutorial.
 
 ### How?
 
@@ -32,5 +32,11 @@ Make sure to save then navigate back to the console on the web browser. You shou
 
 ## Review
 
+```js
+disableWebAudio: true,
+```
+
+This line of  code disables the use of all web audio and uses HTML5 audio instead. This serves as a nice work-around for our audio input which we will cover in another section of the tutorial.
 
 # Next Step
+Now there should be no errors/warnings in the console. If so we can move onto the [next step](step5.md)!
