@@ -135,12 +135,16 @@ class GameScene extends Phaser.Scene {
         this.enemies.children.iterate((child) => {
             const edgeOffset = child.width / 2;
             const yIncrement = child.height / 2;
-    
+            // If edgeOffsetFix is less than 2 then multiple animation updates will occure.
+            const edgeOffsetFix = 2;
+            
             if (child.x <= edgeOffset) {
                 child.setVelocityX(this.enemySpeed);
+                child.x = edgeOffset + edgeOffsetFix;
                 child.y += yIncrement;
             } else if (child.x >= config.width - edgeOffset) {
                 child.setVelocityX(this.enemySpeed * -1);
+                child.x = config.width - edgeOffset - edgeOffsetFix;
                 child.y += yIncrement;
             }
         });
