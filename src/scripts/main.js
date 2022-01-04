@@ -43,3 +43,5 @@ const config = {
 
 // Initialize game instance
 new Phaser.Game(config);
+
+console.log("Does this work");
