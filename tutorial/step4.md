@@ -36,7 +36,7 @@ Make sure to save then navigate back to the console on the web browser. You shou
 disableWebAudio: true,
 ```
 
-This line of  code disables the use of all web audio and uses HTML5 audio instead. This serves as a nice work-around for our audio input which we will cover in another section of the tutorial.
+This line of code disables the use of all web audio and uses HTML5 audio instead. This serves as a nice work-around for our audio input which we will cover in another section of the tutorial.
 
 # Next Step
 Now there should be no errors/warnings in the console. If so we can move onto the [next step](step5.md)!
