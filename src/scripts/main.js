@@ -54,6 +54,19 @@ class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(config.width / 2, 600, 'player');
         this.player.setCollideWorldBounds(true);
 
+        // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
+        this.enemies = this.physics.add.group();
+        this.enemies.setVelocityX(this.enemySpeed * -1);
+        this.resetEnemies();
+
+
+        // Projectile
+        this.projectileImg = this.physics.add.sprite(
+            config.height * -2,
+            config.width * -2,
+            'projectile'
+        );
+        this.projectileImg.visible = false;
     }
 
     update() {
