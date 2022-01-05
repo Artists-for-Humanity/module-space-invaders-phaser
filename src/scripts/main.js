@@ -4,6 +4,30 @@ class GameScene extends Phaser.Scene {
     constructor() {
         super();
         console.log("constructor");
+
+        // Misc game object declaration
+        this.player;
+        this.cursors;
+        this.score = 0;
+        this.gameOver = false;
+        this.musicSound;
+        this.splatSound;
+        this.shootSound;
+        this.homeScreen;
+        this.playButton;
+
+        // Game Text declaration
+        this.scoreText;
+        this.gameOverText;
+
+        // Enemy object declaration
+        this.enemies;
+        this.enemySpeed = 150;
+        this.numEnemies = 6;
+
+        // Projectile object declaration
+        this.projectileImg;
+        this.projectileState = 'ready';
     }
 
     preload() {
