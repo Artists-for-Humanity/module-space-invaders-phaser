@@ -112,6 +112,7 @@ class GameScene extends Phaser.Scene {
     }
 
     
+    // Fire the ball
     fireBall() {
         this.projectileState = 'projectile';
         this.projectileImg.visible = true;
