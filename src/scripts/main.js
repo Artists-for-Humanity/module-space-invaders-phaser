@@ -40,7 +40,7 @@ class GameScene extends Phaser.Scene {
             import.meta.url).href);
         this.load.image('player', new URL('../assets/myAssets/myPlayer.png',
             import.meta.url).href);
-        console.log("preload END")
+        console.log("preload END");
     }
 
     create() {
