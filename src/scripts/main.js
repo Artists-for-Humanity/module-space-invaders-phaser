@@ -94,6 +94,24 @@ class GameScene extends Phaser.Scene {
 
     }
 
+    resetEnemies() {
+        // TODO: Make this read from the image?
+        const imageSize = {
+            width: 64,
+            height: 64
+        };
+
+        for (let i = 0; i < this.numEnemies; i++) {
+            this.enemies.create(
+                this.randomNum(imageSize.width, config.width - imageSize.width),
+                this.randomNum(imageSize.height, (config.height / 2) - imageSize.height),
+                'enemy'
+            );
+        }
+        this.enemies.setVelocityX(this.enemySpeed * -1);
+    }
+
+    
     }
 }
 
