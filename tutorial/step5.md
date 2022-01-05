@@ -45,6 +45,6 @@ We're going to need an enemy for the player to interact with so let's choose one
 ### The Projectile
 The final image we will need for our game is an image that represents the projectile that our player is using firing at the enemy. Don't get too tied up on making the projectile fit the theme, if you can that would be ideal but if you want to use lasers that is also fine. Use the flaticon site for this image as well, this time, however, set the pixel size to `32 x 32` save the image as `myProjectile.png` in `gameAssets`.
 
-## Loading game assets
+# Next Step
 
-Now that we have all our image files where we want them let's sart loading them into our scene so that we can display them. This will take place inside of our preload() function, you can read more about this function as well as create() and update() [here](https://workshops.nuevofoundation.org/phaser-space-invaders-game/preload-create-update/).
+Now that we have all our image files where we want them we can start loading them into our scene in the [next step](step6.md)!
