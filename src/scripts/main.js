@@ -72,13 +72,28 @@ class GameScene extends Phaser.Scene {
     update() {
         console.log("update");
 
-    // Assign arrow keys for movement mechanics
+        // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
             this.player.x -= 10;
-        }
-        else if (this.cursors.right.isDown) {
+        } else if (this.cursors.right.isDown) {
             this.player.x += 10;
-        } 
+        }
+        //lets you move up and down
+        // else if (cursors.up.isDown) {
+        //     player.y -= 10;
+        // }
+        // else if (cursors.down.isDown) {
+        //     player.y += 10;
+        // }
+
+        else if (this.cursors.space.isDown) {
+            if (this.projectileState == 'ready') {
+                this.fireBall();
+            }
+        }
+
+    }
+
     }
 }
 
