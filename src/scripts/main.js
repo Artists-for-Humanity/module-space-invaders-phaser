@@ -112,8 +112,30 @@ class GameScene extends Phaser.Scene {
     }
 
     
+    fireBall() {
+        this.projectileState = 'projectile';
+        this.projectileImg.visible = true;
+        this.projectileImg.body.enable = true;
+        this.projectileImg.x = this.player.x - 8;
+        this.projectileImg.y = this.player.y - Math.abs((this.player.height / 2) - (this.projectileImg.height / 2));
+        this.projectileImg.setVelocityY(-250);
+        // this.shootSound.play();
+    }
+
+    // Genrate Random number between two ints and return value
+    randomNum(x, y) {
+        return Phaser.Math.Between(x, y);
+    }
+
+    
+
+    speedUpEnemies() {
+        this.enemySpeed += 50;
+        this.enemies.setVelocityX(this.enemySpeed * -1);
     }
 }
+
+
 
 // Set configuration for phaser game instance
 const config = {
