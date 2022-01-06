@@ -8,7 +8,7 @@ Inside of our empty `main.js` file add this code:
 import Phaser from 'phaser';
 ```
 
-This code will import the Phaser.js library into our file and allow us to use it. The way this works is through `npm` (short for Node Package Manager). I briefly discussed how this works in the **Project Files Overview** section in the [Readme](../README.md#project-files-overview) under `package.json`.
+This code will import the Phaser.js [library](https://en.wikipedia.org/wiki/Library_(computing)#:~:text=Library%20code%20is%20organized%20in,only%20within%20that%20one%20program.) into our file and allow us to use it. The way this works is through `npm` (short for Node Package Manager). I briefly discussed how this works in the **Project Files Overview** section in the [Readme](../README.md#project-files-overview) under `package.json`.
 
 Basically, npm will take the text we have inside the quotes, in this case `'phaser'`, and it will check if we've installed this using our `package.json` file. You can see an entry in [package.json](../package.json#L20) for `'phaser'`.
 

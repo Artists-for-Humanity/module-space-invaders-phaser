@@ -1,6 +1,6 @@
 # Before we begin
 
-As we mentioned in the [README](../README.md) all of the files we use and code we write will be inside of the `src` folder. For simplicity I will not put `src` whenever referencing files. So, when I say open `scripts/final.js` I am referring to the file in `src/scripts/final.js`.
+As we mentioned in the [README](../README.md) all of the files we use and code we write will be inside of the `src` folder. For simplicity we will not put `src` whenever referencing files. So, when I say open `scripts/final.js` I am referring to the file in `src/scripts/final.js`.
 
 ## Overview of the Existing Files
 
@@ -8,9 +8,9 @@ Before we go and write our own code we will review the existing files already th
 
 ### [index.html](../src/index.html)
 
-This is the HTML file for our game. When you go to [localhost:1234](http://localhost:1234) in your browser this is the file it is loading. Every single thing we do on the web will always start with an HTML file.
+This is the HTML file for our game. When you go to [localhost:1234](http://localhost:1234) in your browser this is the file it is loading.
 
-In this tutorial we will not focus on the content of this file. It has some simple code in it to get us started.
+From here on we will focus on Javascript.
 
 ### [scripts/final.js](../src/scripts/final.js)
 
