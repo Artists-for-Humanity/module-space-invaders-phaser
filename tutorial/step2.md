@@ -4,7 +4,7 @@ Inside the `scripts` folder create a new file named `main.js`. This is going to 
 
 INSERT A VIDEO ON HOW TO CREATE A NEW FILE
 
-Then inside our ç find the line that says:
+Then inside our [index.html](../src/index.html) find the line that says:
 
 ```html
 <script type="module" src="scripts/final.js"></script>
@@ -24,11 +24,7 @@ Inside `main.js` file put:
 console.log("Does this work");
 ```
 
-In your web browser [open the web inspector](https://developer.chrome.com/docs/devtools/open/) and click the "Console" tab. Then reload the web page. You should see the message "Does this work" without quotes in the console. The webpage should be totally black.
-
----
-The console tab is crutial. This tab is where we can see any errors in our code. Errors are a natural part of coding. Even the best developers in the world use errors as a way to figure out what is next to do.
----
+In your web browser [open the web inspector](https://developer.chrome.com/docs/devtools/open/) and click the "Console" tab. Then reload the web page. You should see the message "Does this work" without quotes in the console. The webpage should be totally black. You can read more about the console tab below.
 
 ## Review
 
@@ -36,7 +32,7 @@ What we did was created a blank Javascript file named `main.js`. We then connect
 
 ### What is console.log?
 
-When you are writing Javascript code you will use the code `console.log()` very frequently. What this code does is it shows us stuff inside of the console tab in our web browser. Debugging is a term for seeing what's going on inside of the code. Debugging code is purely for us the developer to see how code is running. **It does not do anything in our end result.**
+When you are writing Javascript code you will use the code `console.log()` very frequently. What this code does is it shows us information inside of the console tab in our web browser. Debugging is a term for seeing what's going on inside of the code. Debugging code is purely for us the developer to see how code is running. **It does not do anything in our end result.**
 
 The reason we added `console.log("Does this work");` inside of our `main.js` file was to check if our `main.js` file was being loaded correctly. If it was not loaded correctly we would not see the message in our console.
 
