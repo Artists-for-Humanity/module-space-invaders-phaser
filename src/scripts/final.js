@@ -8,7 +8,7 @@ class GameScene extends Phaser.Scene {
             key: 'Game',
         });
 
-        // Misc game object declaration
+        // Misc game object declarations
         this.player;
         this.cursors;
         this.score = 0;
@@ -45,14 +45,15 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // Add images and sprites to Scene
+        // Add images to Scene
         this.add.image(config.width / 2, config.height / 2, 'background');
+        this.player = this.physics.add.sprite(config.width / 2, 600, 'spraycan');
+
+        // Set world bounds for player
+        this.player.setCollideWorldBounds(true);
 
         // Initialize keyboard manager
         this.cursors = this.input.keyboard.createCursorKeys();
-
-        this.player = this.physics.add.sprite(config.width / 2, 600, 'spraycan');
-        this.player.setCollideWorldBounds(true);
 
         // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
         this.enemies = this.physics.add.group();
@@ -116,7 +117,7 @@ class GameScene extends Phaser.Scene {
         if (this.cursors.left.isDown) {
             this.player.x -= 10;
         }
-        else if (this.cursors.right.isDown) {
+        if (this.cursors.right.isDown) {
             this.player.x += 10;
         } 
         // else if (cursors.up.isDown) {
