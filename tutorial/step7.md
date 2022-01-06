@@ -24,14 +24,14 @@ this.add.image(480, 360, 'background');
 
 ## Placing a Character
 
-Next, let's add our player character to the screen. In order to do this, we must first define a variable that will point to our player object. Navigate to the top of `main.js` inside the `constructor()` and add the following code underneath the `console.log()` on line 6:
+Next, let's add our player character to the screen. To do this, we must first define a variable that will reference our player object. Navigate to the top of `main.js` inside the `constructor()` and add the following code below the `console.log()` on line 6:
 
 ```js
 // Misc game object declarations
 this.player;
 ```
 
-Back inside `create()` underneath the line where we added the background add the following:
+Back inside `create()` below the line where we added the background add the following:
 
 ```js
 this.player = this.physics.add.sprite(480, 600, 'player');
@@ -50,4 +50,4 @@ For reference, coordinate `(0,0)` is located in the top left corner, and `(960, 
 The purpose of the variable `this.player` is to serve as a reference to our player object which we will need to access later in our code when we're adding movement and other mechanics. The background image does not need to be referenced by a variable because we only interact with it once when we place it inside the scene.
 
 # Next Step
-Now that the images have been successffully added to the scene, we can begin adding some mechanics [next step](step8.md)!
+Now that the images have been successfully added to the scene, we can begin adding some mechanics in the [next step](step8.md)!
