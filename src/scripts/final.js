@@ -8,7 +8,7 @@ class GameScene extends Phaser.Scene {
             key: 'Game',
         });
 
-        // Misc game object declaration
+        // Misc game object declarations
         this.player;
         this.cursors;
         this.score = 0;
@@ -117,7 +117,7 @@ class GameScene extends Phaser.Scene {
         if (this.cursors.left.isDown) {
             this.player.x -= 10;
         }
-        else if (this.cursors.right.isDown) {
+        if (this.cursors.right.isDown) {
             this.player.x += 10;
         } 
         // else if (cursors.up.isDown) {
