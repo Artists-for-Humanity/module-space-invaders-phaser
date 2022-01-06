@@ -24,7 +24,7 @@ this.add.image(480, 360, 'background');
 
 ## Placing a Character
 
-Next, let's add our player character to the screen. In order to do this we must first define variable that will point to our player object. Navigate to the the top of `main.js` inside the `constructor()` and add the following code underneath the `console.log()` on line 6:
+Next, let's add our player character to the screen. In order to do this, we must first define a variable that will point to our player object. Navigate to the top of `main.js` inside the `constructor()` and add the following code underneath the `console.log()` on line 6:
 
 ```js
 // Misc game object declarations
@@ -43,11 +43,11 @@ Save the file then load [localhost:1234](http://localhost:1234), we should see o
 
 # Review
 
-> The coordinate `(480, 360)` refers to the location where we are placing the center pixel of our image. This means that `(480, 360)` will be the center of the image. We are placing the image here so that it covers the whole screen like a background should.
+> The coordinate `(480, 360)` refers to the location where we are placing the center pixel of our image. This means that `(480, 360)` will be the center of the game. We are placing the image here so that it covers the whole screen as a background should.
 
-For reference, coordinate `(0,0)` is located in the top left corner and `(960, 720)` is located in the bottom right corner of our scene. This is why when we place our background image of with the same dimension it fits perfectly into the scene.
+For reference, coordinate `(0,0)` is located in the top left corner, and `(960, 720)` is located in the bottom right corner of our scene. This is why when we place our background image with the same dimension it fits perfectly into the scene.
 
 The purpose of the variable `this.player` is to serve as a reference to our player object which we will need to access later in our code when we're adding movement and other mechanics. The background image does not need to be referenced by a variable because we only interact with it once when we place it inside the scene.
 
 # Next Step
-Now that the images have been succseffully added to the scene, we can begin adding some mechanics [next step](step8.md)!
+Now that the images have been successffully added to the scene, we can begin adding some mechanics [next step](step8.md)!
