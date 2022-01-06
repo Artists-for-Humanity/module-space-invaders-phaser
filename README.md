@@ -1,6 +1,6 @@
 # "Anything but Space Invaders"
 
-This project is meant to introduce you to Javascript. In this project we will use a library called [Phaser.js](https://phaser.io/) to create our own version of [Space Invaders](https://www.youtube.com/watch?v=MU4psw3ccUI). Phaser is a Javascript game framework. A framework is a set of code that contains commonly used tools. The reason we use a framework is so that we can focus on writing the unique code for our game and not reinventing the wheel for generic aspects of our game.
+This project is meant to introduce you to Javascript. In this project we will use a library called [Phaser.js](https://phaser.io/) to create our own version of [Space Invaders](https://www.youtube.com/watch?v=MU4psw3ccUI). Phaser.js is a Javascript (js) game framework. A framework is a set of code that contains commonly used tools. The reason we use a framework is so that we can focus on writing the unique code for our game and not reinventing the wheel for generic aspects of our game.
 
 ## Getting Started
 
