@@ -134,19 +134,21 @@ class GameScene extends Phaser.Scene {
     
         // On border collision change enemy direction and move down by 60px
         this.enemies.children.iterate((child) => {
+            const body = child.body;
             const edgeOffset = child.width / 2;
             const yIncrement = child.height / 2;
             // If edgeOffsetFix is less than 2 then multiple animation updates will occure.
             const edgeOffsetFix = 2;
             
-            if (child.x <= edgeOffset) {
-                child.setVelocityX(this.enemySpeed);
-                child.x = edgeOffset + edgeOffsetFix;
-                child.y += yIncrement;
-            } else if (child.x >= config.width - edgeOffset) {
-                child.setVelocityX(this.enemySpeed * -1);
-                child.x = config.width - edgeOffset - edgeOffsetFix;
-                child.y += yIncrement;
+            if (body.x <= edgeOffset) {
+                console.log("FIRE");
+                body.setVelocityX(this.enemySpeed);
+                body.x = edgeOffset + edgeOffsetFix;
+                body.y += yIncrement;
+            } else if (body.x >= config.width - edgeOffset) {
+                body.setVelocityX(this.enemySpeed * -1);
+                body.x = config.width - edgeOffset - edgeOffsetFix;
+                body.y += yIncrement;
             }
         });
     
