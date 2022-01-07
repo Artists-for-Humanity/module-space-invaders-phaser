@@ -48,6 +48,24 @@ this.player.setCollideWorldBounds(true);
 
 Now, when we load [localhost:1234](http://localhost:1234), our player should not be able to travel beyond the borders of the visible window in our game scene.
 
+# Review
+
+The function below populates the cursors object with some properties:
+
+```js
+this.cursors = this.input.keyboard.createCursorKeys();
+```
+
+Inside our `update()` loop we programmed two properties of the cursors object that will detect when the left or right arrow keys are being pressed:
+
+```js
+if (this.cursors.left.isDown)
+```
+
+The if keyword indicates that we are evaluating a conditional that will either be true or false. In other words, the 
+
+
+
 # Next Step
 
 Now that our player can move, we will be adding our projectile to the game and a firing mechanic that will allow our player to fire the projectile in the [next step](step9.md)!
