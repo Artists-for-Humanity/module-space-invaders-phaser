@@ -1,6 +1,7 @@
-import Phaser from 'phaser';
+import GlobalScene from "./GlobalScene";
+import { IMAGES } from "./assets";
 
-export default class GameScene extends Phaser.Scene {
+export default class GameScene extends GlobalScene {
     constructor() {
         super({
             key: 'GameScene',
@@ -30,7 +31,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', new URL('../assets/background.png', import.meta.url).href);
+        this.loadImage(IMAGES.BACKGROUND);
         this.load.image('ball', new URL('../assets/ball.png', import.meta.url).href);
         this.load.image('canvas', new URL('../assets/canvas.png', import.meta.url).href);
         this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);

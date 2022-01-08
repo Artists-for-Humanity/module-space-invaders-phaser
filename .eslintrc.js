@@ -10,6 +10,7 @@ module.exports = {
     },
     rules: {
         semi: 2,
-        indent: ["error", 4]
+        indent: ["error", 4],
+        "object-curly-spacing": ["error", "always"]
     }
 };
