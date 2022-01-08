@@ -135,19 +135,15 @@ class GameScene extends Phaser.Scene {
         // On border collision change enemy direction and move down by 60px
         this.enemies.children.iterate((child) => {
             const body = child.body;
-            const edgeOffset = child.width / 2;
-            const yIncrement = child.height / 2;
-            // If edgeOffsetFix is less than 2 then multiple animation updates will occure.
-            const edgeOffsetFix = 2;
+            const yIncrement = child.height;
             
-            if (body.x <= edgeOffset) {
-                console.log("FIRE");
+            if (body.x < 0) {
                 body.setVelocityX(this.enemySpeed);
-                body.x = edgeOffset + edgeOffsetFix;
+                body.x = 0;
                 body.y += yIncrement;
-            } else if (body.x >= config.width - edgeOffset) {
+            } else if (body.x > config.width - child.width) {
                 body.setVelocityX(this.enemySpeed * -1);
-                body.x = config.width - edgeOffset - edgeOffsetFix;
+                body.x = config.width - child.width;
                 body.y += yIncrement;
             }
         });
@@ -156,11 +152,6 @@ class GameScene extends Phaser.Scene {
         if (this.paintballImg.y <= -this.paintballImg.height / 2) {
             this.resetBall();
         }
-    }
-
-    // Genrate Random number between two ints and return value
-    randomNum(x, y) {
-        return Phaser.Math.Between(x, y);
     }
 
     //  Game Over
@@ -218,7 +209,7 @@ class GameScene extends Phaser.Scene {
     }
 
     resetEnemies() {
-    // TODO: Make this read from the image?
+        // TODO: Make this read from the image?
         const imageSize = {
             width: 64,
             height: 64
@@ -226,8 +217,8 @@ class GameScene extends Phaser.Scene {
 
         for (let i = 0; i < this.numEnemies; i++) {
             this.enemies.create(
-                this.randomNum(imageSize.width, config.width - imageSize.width),
-                this.randomNum(imageSize.height, (config.height / 2) - imageSize.height),
+                Phaser.Math.Between(imageSize.width, config.width - imageSize.width),
+                Phaser.Math.Between(imageSize.height, (config.height / 2) - imageSize.height),
                 'canvas'
             );
         }
