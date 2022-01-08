@@ -70,6 +70,8 @@ export default class GameScene extends Phaser.Scene {
       fill: colors.white,
       align: 'center',
     });
+
+    this.globalState.resetScore();
     this.setScoreText();
 
     //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
