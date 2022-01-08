@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import WebFont from 'webfontloader';
 import range from 'inclusive-range';
 import { colors } from './constants';
 import { IMAGES } from './assets';
@@ -11,7 +12,6 @@ export default class GameScene extends Phaser.Scene {
   preload() {
     this.load.image(IMAGES.MENUBACKGROUND['KEY'], IMAGES.MENUBACKGROUND['FILE']);
     this.load.image(IMAGES.ENEMY['KEY'], IMAGES.ENEMY['FILE']);
-    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
   create() {
@@ -19,14 +19,26 @@ export default class GameScene extends Phaser.Scene {
 
     this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'menu-background');
 
-    this.add
-      .text(this.game.config.width / 2, this.game.config.height * (2 / 3), 'PRESS SPACE TO START', {
-        fontFamily: 'Yuji Hentaigana Akari',
-        fontSize: '32px',
-        fontStyle: 'bold',
-        fill: '#007fff',
-      })
-      .setOrigin(0.5);
+    WebFont.load({
+      custom: {
+        families: ['Space Mono'],
+      },
+      active: () => {
+        this.add
+          .text(
+            this.game.config.width / 2,
+            this.game.config.height * (2 / 3),
+            'PRESS SPACE TO START',
+            {
+              fontFamily: 'Space Mono',
+              fontSize: '32px',
+              fontStyle: 'bold',
+              fill: colors.white,
+            }
+          )
+          .setOrigin(0.5);
+      },
+    });
 
     this.input.keyboard.on('keydown-SPACE', () => {
       this.scene.start('GameScene');

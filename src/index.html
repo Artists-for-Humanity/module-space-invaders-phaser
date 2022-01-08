@@ -8,13 +8,18 @@
     <meta charset="UTF-8" />
     <title>AFH Invaders</title>
     <style type="text/css">
+        @font-face {
+            font-family: 'Space Mono';
+            src: url('./assets/fonts/space-mono-v6-latin-regular.woff2') format('woff2');
+        }
+
         html {
             height: 100%;
             background-color: black;
+            color: white;
         }
 
         body {
-            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -23,6 +28,10 @@
 
         canvas {
             border: 1px solid red;
+        }
+
+        h1 {
+            font-family: 'Space Mono', cursive;
         }
     </style>
 </head>

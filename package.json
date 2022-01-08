@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "inclusive-range": "^0.0.1",
-    "phaser": "^3.55.2"
+    "phaser": "^3.55.2",
+    "webfontloader": "^1.6.28"
   }
 }
