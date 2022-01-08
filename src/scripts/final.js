@@ -1,28 +1,28 @@
 import Phaser from 'phaser';
-import MenuScene from "./MenuScene";
-import GameScene from "./GameScene";
-import GameOverScene from "./GameOverScene";
+import MenuScene from './MenuScene';
+import GameScene from './GameScene';
+import GameOverScene from './GameOverScene';
 
 // Set configuration for phaser game instance
 const config = {
-    type: Phaser.AUTO,
-    width: 960,
-    height: 720,
-    
-    // Add physics, arcade, scene, and audio
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: {
-                y: 0,
-            },
-            debug: true,
-        },
+  type: Phaser.AUTO,
+  width: 960,
+  height: 720,
+
+  // Add physics, arcade, scene, and audio
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {
+        y: 0,
+      },
+      debug: true,
     },
-    scene: [MenuScene, GameScene, GameOverScene],
-    audio: {
-        disableWebAudio: true,
-    },
+  },
+  scene: [MenuScene, GameScene, GameOverScene],
+  audio: {
+    disableWebAudio: true,
+  },
 };
 
 // Initialize game instance
