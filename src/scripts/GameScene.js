@@ -32,8 +32,8 @@ export default class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.image(IMAGES.BACKGROUND['KEY'], IMAGES.BACKGROUND['FILE']);
+    this.load.image(IMAGES.ENEMY['KEY'], IMAGES.ENEMY['FILE']);
     this.load.image('ball', new URL('../assets/ball.png', import.meta.url).href);
-    this.load.image('canvas', new URL('../assets/canvas.png', import.meta.url).href);
     this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);
 
     this.load.audio('background', new URL('../assets/background.wav', import.meta.url).href);
@@ -197,11 +197,13 @@ export default class GameScene extends Phaser.Scene {
     };
 
     for (let i = 0; i < this.numEnemies; i++) {
-      const enemyyyy = this.enemies.create(
-        this.randomNum(imageSize.width, this.game.config.width - imageSize.width),
-        this.randomNum(imageSize.height, this.game.config.height / 2 - imageSize.height),
-        'canvas'
-      );
+      this.enemies
+        .create(
+          this.randomNum(imageSize.width, this.game.config.width - imageSize.width),
+          this.randomNum(imageSize.height, this.game.config.height / 2 - imageSize.height),
+          'enemy'
+        )
+        .setTint(colors.redNumber);
     }
     this.enemies.setVelocityX(this.enemySpeed * -1);
   }

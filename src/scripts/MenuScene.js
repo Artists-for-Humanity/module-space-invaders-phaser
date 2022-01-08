@@ -83,7 +83,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createEnemy(x, y) {
-    const enemy = this.enemies.create(x, y, 'enemy');
-    enemy.tint = colors.redNumber;
+    this.enemies.create(x, y, 'enemy').setTint(colors.redNumber);
   }
 }
