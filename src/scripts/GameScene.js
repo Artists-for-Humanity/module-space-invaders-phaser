@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { IMAGES } from './assets';
+import { colors } from './constants';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -42,7 +43,6 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // Add images to Scene
-    this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
     this.player = this.physics.add.sprite(this.game.config.width / 2, 600, 'spraycan');
 
     // Set world bounds for player
@@ -64,14 +64,14 @@ export default class GameScene extends Phaser.Scene {
     );
     this.paintballImg.visible = false;
 
-    //  The Score & Game Over text
     this.scoreText = this.add.text(16, 16, '', {
-      fontFamily: 'Avenir Next',
+      fontFamily: 'Space Mono',
       fontSize: '24px',
       fontStyle: 'bold',
-      fill: '#007fff',
+      fill: colors.white,
       align: 'center',
     });
+    this.setScoreText();
 
     //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
     this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
@@ -133,6 +133,10 @@ export default class GameScene extends Phaser.Scene {
   // Genrate Random number between two ints and return value
   randomNum(x, y) {
     return Phaser.Math.Between(x, y);
+  }
+
+  setScoreText() {
+    this.scoreText.setText(`SCORE: ${this.globalState.score}`);
   }
 
   //  Game Over
