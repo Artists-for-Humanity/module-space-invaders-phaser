@@ -53,8 +53,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
     this.enemies = this.physics.add.group();
-    this.enemies.setVelocityX(this.enemySpeed * -1);
-    this.resetEnemies();
+    this.generateEnemies();
 
     // Paintball
     this.paintballImg = this.physics.add.sprite(
@@ -130,11 +129,6 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  // Genrate Random number between two ints and return value
-  randomNum(x, y) {
-    return Phaser.Math.Between(x, y);
-  }
-
   setScoreText() {
     this.scoreText.setText(`SCORE: ${this.globalState.score}`);
   }
@@ -164,19 +158,18 @@ export default class GameScene extends Phaser.Scene {
   }
 
   onBallHitEnemy(paintballImg, enemy) {
-    enemy.disableBody(true, true);
+    enemy.destroy();
     paintballImg.body.enable = false;
     this.splatSound.play();
     this.resetBall();
 
-    // Add and update the score
     this.globalState.incrementScore();
     this.setScoreText();
 
     // A new batch of enemies to defeat
     if (this.enemies.countActive(true) === 0) {
       this.speedUpEnemies();
-      this.resetEnemies();
+      this.generateEnemies();
     }
   }
 
@@ -189,18 +182,17 @@ export default class GameScene extends Phaser.Scene {
     this.paintballImg.visible = false;
   }
 
-  resetEnemies() {
-    // TODO: Make this read from the image?
+  generateEnemies() {
     const imageSize = {
-      width: 64,
-      height: 64,
+      width: this.game.textures.list['enemy'].source[0].width,
+      height: this.game.textures.list['enemy'].source[0].height,
     };
 
     for (let i = 0; i < this.numEnemies; i++) {
       this.enemies
         .create(
-          this.randomNum(imageSize.width, this.game.config.width - imageSize.width),
-          this.randomNum(imageSize.height, this.game.config.height / 2 - imageSize.height),
+          Phaser.Math.Between(imageSize.width, this.game.config.width - imageSize.width),
+          Phaser.Math.Between(imageSize.height, this.game.config.height / 2 - imageSize.height),
           'enemy'
         )
         .setTint(colors.redNumber);
