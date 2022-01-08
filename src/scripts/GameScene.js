@@ -65,7 +65,7 @@ export default class GameScene extends Phaser.Scene {
     this.paintballImg.visible = false;
 
     //  The Score & Game Over text
-    this.scoreText = this.add.text(16, 16, 'SCORE: 0', {
+    this.scoreText = this.add.text(16, 16, '', {
       fontFamily: 'Avenir Next',
       fontSize: '24px',
       fontStyle: 'bold',
@@ -167,7 +167,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Add and update the score
     this.globalState.incrementScore();
-    this.scoreText.setText(`SCORE: ${this.globalState.score}`);
+    this.setScoreText();
 
     // A new batch of enemies to defeat
     if (this.enemies.countActive(true) === 0) {
@@ -193,7 +193,7 @@ export default class GameScene extends Phaser.Scene {
     };
 
     for (let i = 0; i < this.numEnemies; i++) {
-      this.enemies.create(
+      const enemyyyy = this.enemies.create(
         this.randomNum(imageSize.width, this.game.config.width - imageSize.width),
         this.randomNum(imageSize.height, this.game.config.height / 2 - imageSize.height),
         'canvas'

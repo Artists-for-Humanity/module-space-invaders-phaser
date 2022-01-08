@@ -9,6 +9,10 @@ class GlobalState extends Phaser.Plugins.BasePlugin {
   incrementScore() {
     this.score++;
   }
+
+  resetScore() {
+    this.score = 0;
+  }
 }
 
 export default GlobalState;
