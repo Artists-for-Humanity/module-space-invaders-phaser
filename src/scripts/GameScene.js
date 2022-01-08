@@ -13,7 +13,7 @@ export default class GameScene extends Phaser.Scene {
     this.cursors;
     this.musicSound;
     this.splatSound;
-    this.shootSound;
+    this.bulletSound;
     this.homeScreen;
     this.playButton;
 
@@ -26,8 +26,8 @@ export default class GameScene extends Phaser.Scene {
     this.numEnemies = 6;
 
     // Paintball object declaration
-    this.paintballImg;
-    this.paintballState = 'ready';
+    this.bullet;
+    this.bulletState = 'ready';
   }
 
   preload() {
@@ -42,26 +42,23 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Add images to Scene
     this.player = this.physics.add.sprite(this.game.config.width / 2, 600, 'spraycan');
 
-    // Set world bounds for player
+    // Keep the player in the window
     this.player.setCollideWorldBounds(true);
 
     // Initialize keyboard manager
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
     this.enemies = this.physics.add.group();
     this.generateEnemies();
 
-    // Paintball
-    this.paintballImg = this.physics.add.sprite(
+    this.bullet = this.physics.add.sprite(
       this.game.config.height * -2,
       this.game.config.width * -2,
       'ball'
     );
-    this.paintballImg.visible = false;
+    this.bullet.visible = false;
 
     this.scoreText = this.add.text(16, this.game.config.height - 38, '', {
       fontFamily: 'Space Mono',
@@ -78,11 +75,11 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
 
     //  Checks to see if the painball overlaps with any of the enemies, if so call the onBallHitEnemy function
-    this.physics.add.overlap(this.paintballImg, this.enemies, this.onBallHitEnemy, null, this);
+    this.physics.add.overlap(this.bullet, this.enemies, this.onBallHitEnemy, null, this);
 
     // Audio
     this.splatSound = this.sound.add('wet_impact');
-    this.shootSound = this.sound.add('spraycan');
+    this.bulletSound = this.sound.add('spraycan');
     this.musicSound = this.sound.add('background', {
       loop: true,
     });
@@ -103,7 +100,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.y += 10;
     }
     if (this.cursors.space.isDown) {
-      if (this.paintballState == 'ready') {
+      if (this.bulletState == 'ready') {
         this.fireBall();
       }
     }
@@ -126,8 +123,8 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // Paintball out of bounds
-    if (this.paintballImg.y <= -this.paintballImg.height / 2) {
-      this.resetBall();
+    if (this.bullet.y <= -this.bullet.height / 2) {
+      this.resetBullet();
     }
   }
 
@@ -142,14 +139,13 @@ export default class GameScene extends Phaser.Scene {
 
   // Fire the ball
   fireBall() {
-    this.paintballState = 'fire';
-    this.paintballImg.visible = true;
-    this.paintballImg.body.enable = true;
-    this.paintballImg.x = this.player.x - 8;
-    this.paintballImg.y =
-      this.player.y - Math.abs(this.player.height / 2 - this.paintballImg.height / 2);
-    this.paintballImg.setVelocityY(-250);
-    this.shootSound.play();
+    this.bulletState = 'fire';
+    this.bullet.visible = true;
+    this.bullet.body.enable = true;
+    this.bullet.x = this.player.x - 8;
+    this.bullet.y = this.player.y - Math.abs(this.player.height / 2 - this.bullet.height / 2);
+    this.bullet.setVelocityY(-250);
+    this.bulletSound.play();
   }
 
   // Player & Canvas collision
@@ -159,11 +155,11 @@ export default class GameScene extends Phaser.Scene {
     this.showGameOverText();
   }
 
-  onBallHitEnemy(paintballImg, enemy) {
+  onBallHitEnemy(bullet, enemy) {
     enemy.destroy();
-    paintballImg.body.enable = false;
+    bullet.body.enable = false;
     this.splatSound.play();
-    this.resetBall();
+    this.resetBullet();
 
     this.globalState.incrementScore();
     this.setScoreText();
@@ -175,13 +171,13 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  resetBall() {
-    if (this.paintballState === 'ready') {
+  resetBullet() {
+    if (this.bulletState === 'ready') {
       return;
     }
-    this.paintballState = 'ready';
-    this.paintballImg.setVelocityY(0);
-    this.paintballImg.visible = false;
+    this.bulletState = 'ready';
+    this.bullet.setVelocityY(0);
+    this.bullet.visible = false;
   }
 
   generateEnemies() {
