@@ -25,7 +25,8 @@ export default class GameScene extends Phaser.Scene {
     this.enemySpeed = 150;
     this.numEnemies = 6;
 
-    // Paintball object declaration
+    // Bullet object declaration
+    this.bullets;
     this.bullet;
     this.bulletState = 'ready';
   }
@@ -33,7 +34,7 @@ export default class GameScene extends Phaser.Scene {
   preload() {
     this.load.image(IMAGES.BACKGROUND['KEY'], IMAGES.BACKGROUND['FILE']);
     this.load.image(IMAGES.ENEMY['KEY'], IMAGES.ENEMY['FILE']);
-    this.load.image('ball', new URL('../assets/ball.png', import.meta.url).href);
+    this.load.image('bullet', new URL('../assets/ball.png', import.meta.url).href);
     this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);
 
     this.load.audio('background', new URL('../assets/background.wav', import.meta.url).href);
@@ -53,12 +54,7 @@ export default class GameScene extends Phaser.Scene {
     this.enemies = this.physics.add.group();
     this.generateEnemies();
 
-    this.bullet = this.physics.add.sprite(
-      this.game.config.height * -2,
-      this.game.config.width * -2,
-      'ball'
-    );
-    this.bullet.visible = false;
+    this.bullets = this.physics.add.group();
 
     this.scoreText = this.add.text(16, this.game.config.height - 38, '', {
       fontFamily: 'Space Mono',
@@ -74,8 +70,8 @@ export default class GameScene extends Phaser.Scene {
     //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
     this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
 
-    //  Checks to see if the painball overlaps with any of the enemies, if so call the onBallHitEnemy function
-    this.physics.add.overlap(this.bullet, this.enemies, this.onBallHitEnemy, null, this);
+    //  Checks to see if the bullet overlaps with any of the enemies, if so call the onBallHitEnemy function
+    this.physics.add.overlap(this.bullets, this.enemies, this.onBallHitEnemy, null, this);
 
     // Audio
     this.splatSound = this.sound.add('wet_impact');
@@ -100,9 +96,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.y += 10;
     }
     if (this.cursors.space.isDown) {
-      if (this.bulletState == 'ready') {
-        this.fireBall();
-      }
+      this.fireBullet();
     }
 
     // On border collision change enemy direction and move down by 60px
@@ -122,29 +116,33 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    // Paintball out of bounds
-    if (this.bullet.y <= -this.bullet.height / 2) {
-      this.resetBullet();
-    }
+    this.bullets.children.iterate((child) => {
+      const body = child.body;
+      if (body.y <= -body.height / 2) {
+        // console.log('iter', child);
+        // console.log('OUT OF BOUNDS', child);
+        // child.destroy();
+      }
+    });
   }
 
   setScoreText() {
     this.scoreText.setText(`SCORE: ${this.globalState.score}`);
   }
 
-  //  Game Over
   showGameOverText() {
     this.scene.start('GameOverScene');
   }
 
-  // Fire the ball
-  fireBall() {
-    this.bulletState = 'fire';
-    this.bullet.visible = true;
-    this.bullet.body.enable = true;
-    this.bullet.x = this.player.x - 8;
-    this.bullet.y = this.player.y - Math.abs(this.player.height / 2 - this.bullet.height / 2);
-    this.bullet.setVelocityY(-250);
+  fireBullet() {
+    const bulletHeight = this.game.textures.list['bullet'].source[0].height;
+    this.bullets
+      .create(
+        this.player.x - 8,
+        this.player.y - Math.abs(this.player.height / 2 - bulletHeight / 2),
+        'bullet'
+      )
+      .setVelocityY(-250);
     this.bulletSound.play();
   }
 
@@ -156,11 +154,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   onBallHitEnemy(bullet, enemy) {
-    enemy.destroy();
-    bullet.body.enable = false;
     this.splatSound.play();
-    this.resetBullet();
+    console.log('bullet', bullet);
+    enemy.destroy();
+    bullet.destroy();
 
+    // update the score
     this.globalState.incrementScore();
     this.setScoreText();
 
@@ -169,15 +168,6 @@ export default class GameScene extends Phaser.Scene {
       this.speedUpEnemies();
       this.generateEnemies();
     }
-  }
-
-  resetBullet() {
-    if (this.bulletState === 'ready') {
-      return;
-    }
-    this.bulletState = 'ready';
-    this.bullet.setVelocityY(0);
-    this.bullet.visible = false;
   }
 
   generateEnemies() {
