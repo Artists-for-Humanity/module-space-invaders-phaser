@@ -3,6 +3,10 @@ const IMAGES = {
     KEY: 'menu-background',
     FILE: new URL('../assets/menu-background.png', import.meta.url).href,
   },
+  GAMEOVERBACKGROUND: {
+    KEY: 'game-over-background',
+    FILE: new URL('../assets/game-over-background.png', import.meta.url).href,
+  },
   BACKGROUND: {
     KEY: 'background',
     FILE: new URL('../assets/background.png', import.meta.url).href,

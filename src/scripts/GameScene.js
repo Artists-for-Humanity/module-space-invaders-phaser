@@ -64,7 +64,7 @@ export default class GameScene extends Phaser.Scene {
     );
     this.paintballImg.visible = false;
 
-    this.scoreText = this.add.text(16, 16, '', {
+    this.scoreText = this.add.text(16, this.game.config.height - 38, '', {
       fontFamily: 'Space Mono',
       fontSize: '24px',
       fontStyle: 'bold',

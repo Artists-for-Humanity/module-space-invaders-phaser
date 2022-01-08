@@ -34,6 +34,7 @@ export default class GameScene extends Phaser.Scene {
               fontSize: '32px',
               fontStyle: 'bold',
               fill: colors.white,
+              align: 'center',
             }
           )
           .setOrigin(0.5);
