@@ -1,7 +1,7 @@
-import GlobalScene from './GlobalScene';
+import Phaser from 'phaser';
 import { IMAGES } from './assets';
 
-export default class GameScene extends GlobalScene {
+export default class GameScene extends Phaser.Scene {
   constructor() {
     super({
       key: 'GameScene',
@@ -10,7 +10,6 @@ export default class GameScene extends GlobalScene {
     // Misc game object declarations
     this.player;
     this.cursors;
-    this.score = 0;
     this.musicSound;
     this.splatSound;
     this.shootSound;
@@ -31,7 +30,7 @@ export default class GameScene extends GlobalScene {
   }
 
   preload() {
-    this.loadImage(IMAGES.BACKGROUND);
+    this.load.image(IMAGES.BACKGROUND['KEY'], IMAGES.BACKGROUND['FILE']);
     this.load.image('ball', new URL('../assets/ball.png', import.meta.url).href);
     this.load.image('canvas', new URL('../assets/canvas.png', import.meta.url).href);
     this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);
@@ -42,8 +41,6 @@ export default class GameScene extends GlobalScene {
   }
 
   create() {
-    this.registry.set('score', this.score);
-
     // Add images to Scene
     this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'background');
     this.player = this.physics.add.sprite(this.game.config.width / 2, 600, 'spraycan');
@@ -169,9 +166,8 @@ export default class GameScene extends GlobalScene {
     this.resetBall();
 
     // Add and update the score
-    this.score += 1;
-    this.scoreText.setText(`SCORE: ${this.score}`);
-    this.registry.set('score', this.score);
+    this.globalState.incrementScore();
+    this.scoreText.setText(`SCORE: ${this.globalState.score}`);
 
     // A new batch of enemies to defeat
     if (this.enemies.countActive(true) === 0) {

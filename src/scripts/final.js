@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GlobalState from './GlobalState';
 import MenuScene from './MenuScene';
 import GameScene from './GameScene';
 import GameOverScene from './GameOverScene';
@@ -20,6 +21,9 @@ const config = {
     },
   },
   scene: [MenuScene, GameScene, GameOverScene],
+  plugins: {
+    global: [{ key: 'GlobalState', plugin: GlobalState, start: false, mapping: 'globalState' }],
+  },
   audio: {
     disableWebAudio: true,
   },

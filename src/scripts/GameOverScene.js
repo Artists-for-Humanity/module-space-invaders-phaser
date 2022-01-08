@@ -1,13 +1,14 @@
-import GlobalScene from './GlobalScene';
+import Phaser from 'phaser';
+import GlobalState from './GlobalState';
 import { IMAGES } from './assets';
 
-export default class GameScene extends GlobalScene {
+export default class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameOverScene' });
   }
 
   preload() {
-    this.loadImage(IMAGES.BACKGROUND);
+    this.load.image(IMAGES.BACKGROUND['KEY'], IMAGES.BACKGROUND['FILE']);
   }
 
   create() {
@@ -25,7 +26,7 @@ export default class GameScene extends GlobalScene {
       .text(
         this.game.config.width / 2,
         this.game.config.height * (2 / 3),
-        `YOUR SCORE WAS ${this.registry.get('score')}\n\nPRESS SPACE TO PLAY AGAIN`,
+        `YOUR SCORE WAS ${this.globalState.score}\n\nPRESS SPACE TO PLAY AGAIN`,
         {
           fontFamily: 'Avenir Next',
           fontSize: '32px',

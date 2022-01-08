@@ -1,13 +1,14 @@
-import GlobalScene from './GlobalScene';
+import Phaser from 'phaser';
+// import GlobalState from './GlobalState';
 import { IMAGES } from './assets';
 
-export default class GameScene extends GlobalScene {
+export default class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'MenuScene' });
   }
 
   preload() {
-    this.loadImage(IMAGES.BACKGROUND);
+    this.load.image(IMAGES.BACKGROUND['KEY'], IMAGES.BACKGROUND['FILE']);
   }
 
   create() {
