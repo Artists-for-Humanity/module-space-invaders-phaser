@@ -27,8 +27,8 @@ export default class GameScene extends Phaser.Scene {
 
     // Bullet object declaration
     this.bullets;
-    this.bullet;
-    this.bulletState = 'ready';
+    this.canFire = true;
+    this.fireInterval = 1000;
   }
 
   preload() {
@@ -117,11 +117,11 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.bullets.children.iterate((child) => {
-      const body = child.body;
-      if (body.y <= -body.height / 2) {
-        // console.log('iter', child);
-        // console.log('OUT OF BOUNDS', child);
-        // child.destroy();
+      if (child) {
+        const body = child.body;
+        if (child.y <= -child.height / 2) {
+          child.destroy();
+        }
       }
     });
   }
@@ -135,6 +135,13 @@ export default class GameScene extends Phaser.Scene {
   }
 
   fireBullet() {
+    if (this.canFire === false) {
+      return;
+    }
+    this.canFire = false;
+    setTimeout(() => {
+      this.canFire = true;
+    }, this.fireInterval);
     const bulletHeight = this.game.textures.list['bullet'].source[0].height;
     this.bullets
       .create(
@@ -155,8 +162,8 @@ export default class GameScene extends Phaser.Scene {
 
   onBallHitEnemy(bullet, enemy) {
     this.splatSound.play();
-    console.log('bullet', bullet);
     enemy.destroy();
+
     bullet.destroy();
 
     // update the score
