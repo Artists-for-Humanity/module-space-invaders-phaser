@@ -39,9 +39,9 @@ class GameScene extends Phaser.Scene {
         this.load.image('canvas', new URL('../assets/final/canvas.png', import.meta.url).href);
         this.load.image('spraycan', new URL('../assets/final/spraycan.png', import.meta.url).href);
 
-        this.load.audio('background', new URL('../assets/background.wav', import.meta.url).href);
-        this.load.audio('spraycan', new URL('../assets/spraycan.wav', import.meta.url).href);
-        this.load.audio('wet_impact', new URL('../assets/wet_impact.wav', import.meta.url).href);
+        this.load.audio('background', new URL('../assets/final/background.wav', import.meta.url).href);
+        this.load.audio('spraycan', new URL('../assets/final/spraycan.wav', import.meta.url).href);
+        this.load.audio('wet_impact', new URL('../assets/final/wet_impact.wav', import.meta.url).href);
     }
 
     create() {
