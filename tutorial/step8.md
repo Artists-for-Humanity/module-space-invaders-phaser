@@ -46,7 +46,30 @@ If you go in either direction long enough you will notice that the player can tr
 this.player.setCollideWorldBounds(true);
 ```
 
-Now, when we load [localhost:1234](http://localhost:1234), our player should not be able to travel beyond the borders of the visible window in our game scene.
+Now, when we load [localhost:1234](http://localhost:1234), our player cannot travel beyond the borders of the visible window in our game scene.
+
+# Review
+
+The function below populates the cursors object with some properties:
+
+```js
+this.cursors = this.input.keyboard.createCursorKeys();
+```
+
+Inside our `update()` loop we programmed two properties of the cursors object that will detect when the left or right arrow keys are being pressed:
+
+```js
+if (this.cursors.left.isDown)
+```
+
+The `if` keyword indicates that we are evaluating a conditional. Conditionals are expressions that will evaluate to either `true` or `false`. You can watch [this video](https://www.youtube.com/watch?v=o_iO9WuoWaM) to learn more about conditional expressions.
+
+In our code one of the conditionals is checking to see if the left key is being pressed: `this.cursors.left.isDown`. If this is true then the code within the curly brackets is executed: 
+```js
+this.player.x -= 10
+```
+
+The line above is telling our program to update the `x` position of the player by 10 pixels to the left. The direction is indicated by the 'minus' symbol before the equals sign. The case for moving to the right is handled by the `this.cursors.right.isDown` conditional.
 
 # Next Step
 

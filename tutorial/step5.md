@@ -10,7 +10,7 @@ Before we start adding things into the scene we need to pick a theme for our inv
 
 Let's make this a bit easier by starting with a background for our game to take place. Visualize the world or environment the players and enemies will be moving within, then use google images to find a nice visual representation that captures that feeling. Use the [freepik website](https://www.freepik.com/) to browse through different background options if you can't think of any.
 
-Let's create a folder that will hold all our assets for the game like this background image. In vscode inside of the tutorial folder create a new folder and name it `gameAssets`. Now download your selected background image and save it inside this folder as `myBackground.png`. 
+Let's create a folder that will hold all our assets for the game like this background image. In vscode navigate to the `src` folder then inside the `assets` folder create a new folder and name it `myAssets`. Now download your selected background image and save it inside this folder as `myBackground.png`. 
 
 Before we move on to the next image for our game we have to make sure the background is the proper size so that when we display it in the scene we don't have any issues. On a mac, you can check the attributes of the image in the finder window by navigating to that file selecting it but don't open it. Take a look at the dimensions attribute and make sure it is set to `960 x 720` like so: 
 

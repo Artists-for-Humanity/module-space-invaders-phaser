@@ -24,7 +24,7 @@ Inside `main.js` file put:
 console.log("Does this work");
 ```
 
-In your web browser [open the web inspector](https://developer.chrome.com/docs/devtools/open/) and click the "Console" tab. Then reload the web page. You should see the message "Does this work" without quotes in the console. The webpage should be totally black. You can read more about the console tab below.
+Make sure to save the file, then in your web browser [open the web inspector](https://developer.chrome.com/docs/devtools/open/) and click the "Console" tab. Then reload the web page. You should see the message "Does this work" without quotes in the console. The webpage should be totally black. You can read more about the console tab below.
 
 ## Review
 
@@ -41,7 +41,7 @@ The reason we added `console.log("Does this work");` inside of our `main.js` fil
 Go ahead and change:
 
 ```html
-<script type="module" src="scripts/final.js"></script>
+<script type="module" src="scripts/main.js"></script>
 ```
 
 to be:
@@ -55,7 +55,7 @@ Now reload the browser and look in the console. Do you see `Does this work`? The
 Undo what we did and make sure your [index.html](../src/index.html) file says:
 
 ```html
-<script type="module" src="scripts/final.js"></script>
+<script type="module" src="scripts/main.js"></script>
 ```
 
 # Next Step
