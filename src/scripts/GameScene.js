@@ -1,34 +1,35 @@
 import Phaser from 'phaser';
 import { IMAGES } from './assets';
 import { colors } from './constants';
+import Enemy from './Enemy';
 
 export default class GameScene extends Phaser.Scene {
+  // Misc game object declarations
+  player;
+  cursors;
+  musicSound;
+  splatSound;
+  bulletSound;
+  homeScreen;
+  playButton;
+
+  // Game Text declaration
+  scoreText;
+
+  // Enemy object declaration
+  enemies;
+  enemySpeed = 150;
+  numEnemies = 6;
+
+  // Bullet object declaration
+  bullets;
+  canFire = true;
+  fireInterval = 1000;
+
   constructor() {
     super({
       key: 'GameScene',
     });
-
-    // Misc game object declarations
-    this.player;
-    this.cursors;
-    this.musicSound;
-    this.splatSound;
-    this.bulletSound;
-    this.homeScreen;
-    this.playButton;
-
-    // Game Text declaration
-    this.scoreText;
-
-    // Enemy object declaration
-    this.enemies;
-    this.enemySpeed = 150;
-    this.numEnemies = 6;
-
-    // Bullet object declaration
-    this.bullets;
-    this.canFire = true;
-    this.fireInterval = 1000;
   }
 
   preload() {
@@ -51,7 +52,7 @@ export default class GameScene extends Phaser.Scene {
     // Initialize keyboard manager
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    this.enemies = this.physics.add.group();
+    this.enemies = this.add.group();
     this.generateEnemies();
 
     this.bullets = this.physics.add.group();
@@ -99,21 +100,8 @@ export default class GameScene extends Phaser.Scene {
       this.fireBullet();
     }
 
-    // On border collision change enemy direction and move down by 60px
     this.enemies.children.iterate((child) => {
-      const body = child.body;
-      const edgeOffset = child.width / 2;
-      const yIncrement = child.height / 2;
-
-      if (body.x <= edgeOffset) {
-        body.setVelocityX(this.enemySpeed);
-        body.x = edgeOffset + 1;
-        body.y += yIncrement;
-      } else if (body.x >= this.game.config.width - edgeOffset) {
-        body.setVelocityX(this.enemySpeed * -1);
-        body.x = this.game.config.width - edgeOffset - 1;
-        body.y += yIncrement;
-      }
+      child.update();
     });
 
     this.bullets.children.iterate((child) => {
@@ -184,19 +172,18 @@ export default class GameScene extends Phaser.Scene {
     };
 
     for (let i = 0; i < this.numEnemies; i++) {
-      this.enemies
-        .create(
+      this.enemies.add(
+        new Enemy(
+          this,
           Phaser.Math.Between(imageSize.width, this.game.config.width - imageSize.width),
           Phaser.Math.Between(imageSize.height, this.game.config.height / 2 - imageSize.height),
-          'enemy'
+          this.enemySpeed
         )
-        .setTint(colors.redNumber);
+      );
     }
-    this.enemies.setVelocityX(this.enemySpeed * -1);
   }
 
   speedUpEnemies() {
     this.enemySpeed += 50;
-    this.enemies.setVelocityX(this.enemySpeed * -1);
   }
 }
