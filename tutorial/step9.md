@@ -95,4 +95,4 @@ The last thing we did was create a `resetBall()` function which updates the stat
 
 # Next Step
 
-Now that our player can fire projectiles, we will be adding some enemies to the game for our player to attack [next step](step10.md)!
+Now that our player can fire projectiles, we will be adding some enemies to the game for our player to attack in the [next step](step10.md)!
