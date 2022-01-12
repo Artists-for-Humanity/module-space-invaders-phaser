@@ -45,12 +45,13 @@ class GameScene extends Phaser.Scene {
 
     create() {
         console.log("create");
-        // Add images and sprites to Scene
+        // Add images and sprites to scene
         this.add.image(config.width / 2, config.height / 2, 'background');
 
         // Initialize keyboard manager
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        //Add player to scene
         this.player = this.physics.add.sprite(config.width / 2, 600, 'player');
         this.player.setCollideWorldBounds(true);
 
@@ -59,14 +60,26 @@ class GameScene extends Phaser.Scene {
         this.enemies.setVelocityX(this.enemySpeed * -1);
         this.resetEnemies();
 
-
         // Projectile
         this.projectileImg = this.physics.add.sprite(
             config.height * -2,
             config.width * -2,
             'projectile'
         );
+
+        // Projectile
+        // this.projectileImg = this.physics.add.sprite(
+        //     -1440, 
+        //     -1920, 
+        //     'projectile'
+        // );
+
         this.projectileImg.visible = false;
+
+        // Projectile out of bounds
+        if (this.projectileImg.y <= -this.projectileImg.height / 2) {
+            this.resetBall();
+        }
     }
 
     update() {
@@ -75,23 +88,18 @@ class GameScene extends Phaser.Scene {
         // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
             this.player.x -= 10;
-        } else if (this.cursors.right.isDown) {
+        } if (this.cursors.right.isDown) {
             this.player.x += 10;
-        }
-        //lets you move up and down
-        // else if (cursors.up.isDown) {
-        //     player.y -= 10;
-        // }
-        // else if (cursors.down.isDown) {
-        //     player.y += 10;
-        // }
-
+        } if (this.cursors.up.isDown) {
+            this.player.y -= 10;
+        } if (this.cursors.down.isDown) {
+            this.player.y += 10;
+        } 
         else if (this.cursors.space.isDown) {
             if (this.projectileState == 'ready') {
                 this.fireBall();
             }
         }
-
     }
 
     resetEnemies() {
@@ -123,12 +131,20 @@ class GameScene extends Phaser.Scene {
         // this.shootSound.play();
     }
 
+    // Reset the ball
+    resetBall() {
+        if (this.projectileState === 'ready') {
+            return;
+        }
+        this.projectileState = 'ready';
+        this.projectileImg.setVelocityY(0);
+        this.projectileImg.visible = false;
+    }
+
     // Genrate Random number between two ints and return value
     randomNum(x, y) {
         return Phaser.Math.Between(x, y);
     }
-
-    
 
     speedUpEnemies() {
         this.enemySpeed += 50;
