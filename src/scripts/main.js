@@ -76,10 +76,6 @@ class GameScene extends Phaser.Scene {
 
         this.projectileImg.visible = false;
 
-        // Projectile out of bounds
-        if (this.projectileImg.y <= -this.projectileImg.height / 2) {
-            this.resetBall();
-        }
     }
 
     update() {
@@ -95,10 +91,15 @@ class GameScene extends Phaser.Scene {
         } if (this.cursors.down.isDown) {
             this.player.y += 10;
         } 
-        else if (this.cursors.space.isDown) {
+        if (this.cursors.space.isDown) {
             if (this.projectileState == 'ready') {
                 this.fireBall();
             }
+        }
+
+        // Projectile out of bounds
+        if (this.projectileImg.y <= -this.projectileImg.height / 2) {
+            this.resetBall();
         }
     }
 
@@ -157,8 +158,8 @@ class GameScene extends Phaser.Scene {
 // Set configuration for phaser game instance
 const config = {
     type: Phaser.AUTO,
-    width: 960,
-    height: 720,
+    width: 1500,
+    height: 900,
 
     // Add physics, arcade, and scene
     physics: {
