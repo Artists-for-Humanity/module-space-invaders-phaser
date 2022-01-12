@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import GlobalState from './GlobalState';
-import MenuScene from './MenuScene';
-import GameScene from './GameScene';
-import GameOverScene from './GameOverScene';
+import MenuScene from './Scenes/MenuScene';
+import GameScene from './Scenes/GameScene';
+import GameOverScene from './Scenes/GameOverScene';
 
 // Set configuration for phaser game instance
 const config = {

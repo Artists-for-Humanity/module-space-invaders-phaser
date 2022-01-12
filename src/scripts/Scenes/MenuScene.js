@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import WebFont from 'webfontloader';
 import range from 'inclusive-range';
-import { colors } from './constants';
-import { IMAGES } from './assets';
+import { colors } from '../constants';
+import { IMAGES } from '../assets';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {

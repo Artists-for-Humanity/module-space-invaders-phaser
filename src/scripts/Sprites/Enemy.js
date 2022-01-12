@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { colors } from './constants';
+import { colors } from '../constants';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, speed) {

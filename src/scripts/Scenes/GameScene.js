@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import { IMAGES } from './assets';
-import { colors } from './constants';
-import Enemy from './Enemy';
+import { IMAGES } from '../assets';
+import { colors } from '../constants';
+import Enemy from '../Sprites/Enemy';
 
 export default class GameScene extends Phaser.Scene {
   // Misc game object declarations
@@ -35,12 +35,12 @@ export default class GameScene extends Phaser.Scene {
   preload() {
     this.load.image(IMAGES.BACKGROUND['KEY'], IMAGES.BACKGROUND['FILE']);
     this.load.image(IMAGES.ENEMY['KEY'], IMAGES.ENEMY['FILE']);
-    this.load.image('bullet', new URL('../assets/ball.png', import.meta.url).href);
-    this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);
+    this.load.image('bullet', new URL('../../assets/ball.png', import.meta.url).href);
+    this.load.image('spraycan', new URL('../../assets/spraycan.png', import.meta.url).href);
 
-    this.load.audio('background', new URL('../assets/background.wav', import.meta.url).href);
-    this.load.audio('spraycan', new URL('../assets/spraycan.wav', import.meta.url).href);
-    this.load.audio('wet_impact', new URL('../assets/wet_impact.wav', import.meta.url).href);
+    this.load.audio('background', new URL('../../assets/background.wav', import.meta.url).href);
+    this.load.audio('spraycan', new URL('../../assets/spraycan.wav', import.meta.url).href);
+    this.load.audio('wet_impact', new URL('../../assets/wet_impact.wav', import.meta.url).href);
   }
 
   create() {
