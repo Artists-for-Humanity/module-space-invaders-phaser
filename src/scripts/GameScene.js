@@ -71,8 +71,8 @@ export default class GameScene extends Phaser.Scene {
     //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
     this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
 
-    //  Checks to see if the bullet overlaps with any of the enemies, if so call the onBallHitEnemy function
-    this.physics.add.overlap(this.bullets, this.enemies, this.onBallHitEnemy, null, this);
+    //  Checks to see if the bullet overlaps with any of the enemies, if so call the BulletHitEnemy function
+    this.physics.add.overlap(this.bullets, this.enemies, this.BulletHitEnemy, null, this);
 
     // Audio
     this.splatSound = this.sound.add('wet_impact');
@@ -130,6 +130,7 @@ export default class GameScene extends Phaser.Scene {
     setTimeout(() => {
       this.canFire = true;
     }, this.fireInterval);
+
     const bulletHeight = this.game.textures.list['bullet'].source[0].height;
     this.bullets
       .create(
@@ -141,14 +142,11 @@ export default class GameScene extends Phaser.Scene {
     this.bulletSound.play();
   }
 
-  // Player & Canvas collision
-  onPlayerHitEnemy(player) {
-    this.physics.pause();
-    player.setTint(0xff0000);
+  onPlayerHitEnemy() {
     this.showGameOverText();
   }
 
-  onBallHitEnemy(bullet, enemy) {
+  BulletHitEnemy(bullet, enemy) {
     this.splatSound.play();
     enemy.destroy();
 
