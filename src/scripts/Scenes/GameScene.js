@@ -2,14 +2,13 @@ import Phaser from 'phaser';
 import { IMAGES } from '../assets';
 import { colors } from '../constants';
 import Enemy from '../Sprites/Enemy';
+import Player from '../Sprites/Player';
 
 export default class GameScene extends Phaser.Scene {
   // Misc game object declarations
   player;
-  cursors;
   musicSound;
   splatSound;
-  bulletSound;
   homeScreen;
   playButton;
 
@@ -20,11 +19,6 @@ export default class GameScene extends Phaser.Scene {
   enemies;
   enemySpeed = 150;
   numEnemies = 6;
-
-  // Bullet object declaration
-  bullets;
-  canFire = true;
-  fireInterval = 1000;
 
   constructor() {
     super({
@@ -44,18 +38,10 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    this.player = this.physics.add.sprite(this.game.config.width / 2, 600, 'spraycan');
-
-    // Keep the player in the window
-    this.player.setCollideWorldBounds(true);
-
-    // Initialize keyboard manager
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.player = new Player(this, this.game.config.width / 2, 600);
 
     this.enemies = this.add.group();
     this.generateEnemies();
-
-    this.bullets = this.physics.add.group();
 
     this.scoreText = this.add.text(16, this.game.config.height - 38, '', {
       fontFamily: 'Space Mono',
@@ -71,46 +57,21 @@ export default class GameScene extends Phaser.Scene {
     //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
     this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
 
-    //  Checks to see if the bullet overlaps with any of the enemies, if so call the BulletHitEnemy function
-    this.physics.add.overlap(this.bullets, this.enemies, this.BulletHitEnemy, null, this);
+    //  Checks to see if the bullet overlaps with any of the enemies, if so call the bulletHitEnemy function
+    this.physics.add.overlap(this.player.bullets, this.enemies, this.bulletHitEnemy, null, this);
 
     // Audio
     this.splatSound = this.sound.add('wet_impact');
-    this.bulletSound = this.sound.add('spraycan');
     this.musicSound = this.sound.add('background', {
       loop: true,
     });
   }
 
   update() {
-    // Assign arrow keys for movement mechanics
-    if (this.cursors.left.isDown) {
-      this.player.x -= 10;
-    }
-    if (this.cursors.right.isDown) {
-      this.player.x += 10;
-    }
-    if (this.cursors.up.isDown) {
-      this.player.y -= 10;
-    }
-    if (this.cursors.down.isDown) {
-      this.player.y += 10;
-    }
-    if (this.cursors.space.isDown) {
-      this.fireBullet();
-    }
+    this.player.update();
 
     this.enemies.children.iterate((child) => {
       child.update();
-    });
-
-    this.bullets.children.iterate((child) => {
-      if (child) {
-        const body = child.body;
-        if (child.y <= -child.height / 2) {
-          child.destroy();
-        }
-      }
     });
   }
 
@@ -122,31 +83,11 @@ export default class GameScene extends Phaser.Scene {
     this.scene.start('GameOverScene');
   }
 
-  fireBullet() {
-    if (this.canFire === false) {
-      return;
-    }
-    this.canFire = false;
-    setTimeout(() => {
-      this.canFire = true;
-    }, this.fireInterval);
-
-    const bulletHeight = this.game.textures.list['bullet'].source[0].height;
-    this.bullets
-      .create(
-        this.player.x - 8,
-        this.player.y - Math.abs(this.player.height / 2 - bulletHeight / 2),
-        'bullet'
-      )
-      .setVelocityY(-250);
-    this.bulletSound.play();
-  }
-
   onPlayerHitEnemy() {
     this.showGameOverText();
   }
 
-  BulletHitEnemy(bullet, enemy) {
+  bulletHitEnemy(bullet, enemy) {
     this.splatSound.play();
     enemy.destroy();
 
