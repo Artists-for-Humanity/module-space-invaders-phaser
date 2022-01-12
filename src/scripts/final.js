@@ -58,7 +58,7 @@ class GameScene extends Phaser.Scene {
         // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
         this.enemies = this.physics.add.group();
         this.enemies.setVelocityX(this.enemySpeed * -1);
-        this.resetEnemies();
+        this.setEnemies();
 
         // Paintball
         this.paintballImg = this.physics.add.sprite(
@@ -195,7 +195,7 @@ class GameScene extends Phaser.Scene {
         // A new batch of enemies to defeat
         if (this.enemies.countActive(true) === 0) {
             this.speedUpEnemies();
-            this.resetEnemies();
+            this.setEnemies();
         }
     }
 
@@ -208,7 +208,7 @@ class GameScene extends Phaser.Scene {
         this.paintballImg.visible = false;
     }
 
-    resetEnemies() {
+    setEnemies() {
         // TODO: Make this read from the image?
         const imageSize = {
             width: 64,
