@@ -139,11 +139,9 @@ class GameScene extends Phaser.Scene {
             
             if (body.x < 0) {
                 body.setVelocityX(this.enemySpeed);
-                body.x = 0;
                 body.y += yIncrement;
             } else if (body.x > config.width - child.width) {
                 body.setVelocityX(this.enemySpeed * -1);
-                body.x = config.width - child.width;
                 body.y += yIncrement;
             }
         });

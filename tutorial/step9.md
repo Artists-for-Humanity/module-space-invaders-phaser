@@ -29,6 +29,7 @@ Then within the the curly brackets add:
 ```js
 this.projectileState = 'fire';
 this.projectileImg.visible = true;
+this.projectileImg.body.enable = true;
 this.projectileImg.x = this.player.x;
 this.projectileImg.y = this.player.y;
 this.projectileImg.setVelocityY(-250);
@@ -52,7 +53,7 @@ Save the file then load [localhost:1234](http://localhost:1234) to test that the
 Below `fireProjectile()` let's create a new function and name it `resetProjectile()`;
 
 ```js
-// Reset the ball
+// Reset the projectile
 resetProjectile() {
 }
 ```
@@ -68,11 +69,11 @@ this.projectileImg.setVelocityY(0);
 this.projectileImg.visible = false;
 ```
 
-Finally, inside `create()` and below `if (this.cursors.space.isDown){}` add:
+Finally, inside `update()` and below `if (this.cursors.space.isDown){}` add:
 
 ```js
 // Projectile out of bounds
-if (this.projectileImg.y <= -this.projectileImg.height / 2) {
+if (this.projectileImg.y <= -16) {
     this.resetProjectile();
 }
 ```
