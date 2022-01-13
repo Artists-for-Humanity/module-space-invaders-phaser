@@ -44,7 +44,7 @@ Within the curly brackets add:
 
 ```js
 for (let i = 0; i < this.numEnemies; i++) {
-    this.enemies.create(P.Math.Between(64, 896), P.Math.Between(64, 296), 'enemy');
+    this.enemies.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
 }
 this.enemies.setVelocityX(this.enemySpeed * -1);
 ```
