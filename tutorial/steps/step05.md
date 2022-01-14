@@ -14,15 +14,15 @@ Let's create a folder that will hold all our assets for the game like this backg
 
 Before we move on to the next image for our game we have to make sure the background is the proper size so that when we display it in the scene we don't have any issues. On a mac, you can check the attributes of the image in the finder window by navigating to that file selecting it but don't open it. Take a look at the dimensions attribute and make sure it is set to `960 x 720` like so: 
 
-![game assets sizing](images/game-assets-sizing-background.png)
+![game assets sizing](../images/game-assets-sizing-background.png)
 
 If the dimensions of the image are different they can be changed using this [website](https://resizeimage.net/#google_vignette). First, upload the downloaded image as outlined in step 1:
 
-![game assets sizing](images/game-assets-sizing-background2.png)
+![game assets sizing](../images/game-assets-sizing-background2.png)
 
 Then skip to step 4 where you will uncheck the `keep aspect ratio` box and set the pixel size to `960 x 720 px` like so:
 
-![game assets sizing](images/game-assets-sizing-background3.png)
+![game assets sizing](../images/game-assets-sizing-background3.png)
 
 Finally, in step 6 set the output image format to `png` and hit the resize image button. Once complete download the newly resized image, check the attributes for the correct dimensions, then save it in the `gameAssets` folder again as `myBackground.png`. This version should replace any previous version within the `gameAssets` folder.
 
@@ -35,7 +35,7 @@ You can use google images for this step as well but I would recommend using the 
 
 Another useful feature of the flaticon site is when downloading the image you can also preselect the pixel size which saves some time. We want our player image to be `64 x 64` so when downloading make sure to preselect that as our `png` image size like so:
 
-![game assets sizing](images/game-assets-sizing-player.png)
+![game assets sizing](../images/game-assets-sizing-player.png)
 
 Once you have the image downloaded save it in the `gameAssets` folder as `myPlayer.png`
 

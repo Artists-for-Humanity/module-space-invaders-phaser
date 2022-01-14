@@ -74,7 +74,7 @@ constructor() {
 }
 ```
 
-This code runs our constructor function inside of our class. This function is related to OOP and is not unique to Phaser. We've added a `console.log` here so we can debug this code which we will look at in a second.
+This code runs our constructor method inside of our class. This method and methods in general are related to OOP and are not unique to Phaser. Learn more about methods [here](https://developer.mozilla.org/en-US/docs/Glossary/Method). We've added a `console.log` here so we can test and debug this code which we will look at in a second.
 
 ```javascript
 preload() {
@@ -90,15 +90,15 @@ update() {
 }
 ```
 
-These 3 functions are related to Phaser. You can [read a bit about them here](https://workshops.nuevofoundation.org/phaser-space-invaders-game/preload-create-update/). Once again, we've added some `console.log` code for debugging.
+These 3 methods are related to Phaser. You can [read a bit about them here](https://workshops.nuevofoundation.org/phaser-space-invaders-game/preload-create-update/). Once again, we've added some `console.log` code for debugging.
 
 ---
 
 Let's go back to our web browser and look in our console. You should see something like this:
 
-![Class debugging console](images/class-debug-console.png)
+![Class debugging console](../images/class-debug-console.png)
 
-We can see the order in which the functions we put inside our class are running. First, the constructor function gets run, followed by preload and create. Lastly, the update function is run but you'll notice it's run many times. The update function is meant to run constantly (you should see a number next to it increasing) and is where a majority of our game code will live. Every time the function runs the number next to it in our console increases. Lastly, Don't worry about the yellow warning message in the console for the 'AudioContext', we will take care of that in the next step.
+We can see the order in which the methods we put inside our class are running. First, the constructor method gets run, followed by preload and create. Lastly, the update method is run but you'll notice it's run many times. The update method is meant to run constantly (you should see a number next to it increasing) and is where a majority of our game code will live. Every time the method runs the number next to it in our console increases. Lastly, Don't worry about the yellow warning message in the console for the 'AudioContext', we will take care of that in the next step.
 
 ---
 
@@ -122,9 +122,9 @@ const config = {
 };
 ```
 
-This code is creating a variable that contains the configuration for Phaser. A good explanation of this can be found on the [nuevofoundation website](https://workshops.nuevofoundation.org/phaser-space-invaders-game/phaser-fundementals/):
+This code is creating a variable named `config` that stores the configuration for our game. A good explanation of this can be found on the [nuevofoundation website](https://workshops.nuevofoundation.org/phaser-space-invaders-game/phaser-fundementals/):
 
-> In this variable, you’ll notice that we have defined a variety of characteristics of our game like the width, the height [...] We have also defined the scenes that we will be using (more info on scenes a bit later). You can also create a game without scenes and simply put all of the code into the game.js file.
+> In this variable, you’ll notice that we have defined a variety of characteristics of our game like the width, height, and background color. We have also defined the scenes that we will be using (more info on scenes a bit later). You can also create a game without scenes and simply put all of the code into the game.js file.
 >
 > You’ll also notice that we define the physics of the game in Config as well. In game design, physics is one of the most essential aspects that define the “feel” of a game. For example, the bouncy physics in Mario distinctively makes it “feel like Mario.” For our game, you can see that we use “arcade” physics, a type of physics in Phaser that is very simple to use. Also notice that in our Physics, we define Gravity to be 0, because our game is a Space Shooter so we don’t need any gravity pulling our characters down.
 
@@ -132,7 +132,7 @@ This code is creating a variable that contains the configuration for Phaser. A g
 new Phaser.Game(config);
 ```
 
-Lastly, we need to tell Phaser to start. This line creates a new instance of a `Phaser.Game` and passes it to our configuration variable. Without this line, we'd be importing Phaser and making variables but nothing would be running.
+Lastly, we need to tell Phaser to start. The line above creates a new instance of a `Phaser.Game` and passes it to our configuration variable. Without this line, we'd be importing Phaser and making variables but nothing would be running.
 
 # Next Step
 

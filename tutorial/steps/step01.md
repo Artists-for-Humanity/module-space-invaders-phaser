@@ -1,6 +1,6 @@
 # Before we begin
 
-As we mentioned in the [README](../README.md) all of the files we use and code we write will be inside of the `src` folder. For simplicity we will not put `src` whenever referencing files. So, when I say open `scripts/final.js` I am referring to the file in `src/scripts/final.js`.
+As we mentioned in the [README](../README.md) all of the files we use and code we write will be inside of the `src` folder. For simplicity, we will not put `src` whenever referencing files. So, when I say open `scripts/final.js` I am referring to the file in `src/scripts/final.js`.
 
 ## Overview of the Existing Files
 
@@ -26,7 +26,7 @@ Notice the `scripts/final.js`. This is how our HTML file loads our Javascript fi
 
 ### [assets](../src/assets)
 
-This folder contains all of the "assets" our project will use. An asset can be an image file, audio file, or video file. In this project we will just be using image and audio files.
+This folder contains all of the "assets" our project will use. An asset can be an image file, audio file, or video file. In this project, we will just be using image and audio files.
 
 # Next Step
 

@@ -1,11 +1,11 @@
 # World Building
 
 ## Display an Image
-Let's build up our scene by first adding our background image. We will be adding this to the `create()` function.
+Let's build up our scene by first adding our background image. We will be adding this to the `create()` method.
 
-> This function is relatively straightforward - it runs once at the beginning of the game and allows the user to place the things that they’ve preloaded with preload() and create objects within our game such as animations, collision detectors, text, groups, and much more.
+> This method is relatively straightforward - it runs once at the beginning of the game and allows the user to place the things that they’ve preloaded with preload() and create objects within our game such as animations, collision detectors, text, groups, and much more.
 
-Inside `main.js` navigate to the `create()` function on line 19:
+Inside `main.js` navigate to the `create()` method on line 19:
 
 ```js
 create() {
@@ -24,7 +24,7 @@ this.add.image(480, 360, 'background');
 
 ## Placing a Character
 
-Next, let's add our player character to the screen. To do this, we must first define a variable that will reference our player object. Navigate to the top of `main.js` inside the `constructor()` and add the following code below the `console.log()` on line 6:
+Next, let's add our player character to the screen. To do this, we must first define a field that will reference our player object. Navigate to the top of `main.js` inside the `constructor()` and add the following code below the `console.log()` on line 6:
 
 ```js
 // Misc game object declarations
@@ -39,7 +39,7 @@ this.player = this.physics.add.sprite(480, 600, 'player');
 
 Save the file then load [localhost:1234](http://localhost:1234), we should see our background image displayed as well as our player character at the bottom center of the screen like so:
 
-![image test](images/image-test1.png)
+![image test](../images/image-test1.png)
 
 # Review
 
@@ -47,7 +47,7 @@ Save the file then load [localhost:1234](http://localhost:1234), we should see o
 
 For reference, coordinate `(0,0)` is located in the top left corner, and `(960, 720)` is located in the bottom right corner of our scene. This is why when we place our background image with the same dimension it fits perfectly into the scene.
 
-The purpose of the variable `this.player` is to serve as a reference to our player object which we will need to access later in our code when we're adding movement and other mechanics. The background image does not need to be referenced by a variable because we only interact with it once when we place it inside the scene.
+The purpose of the field `this.player` is to serve as a reference to our player object which we will need to access later in our code when we're adding movement and other mechanics. The background image does not need to be referenced by a field because we only interact with it once when we place it inside the scene.
 
 # Next Step
 Now that the images have been successfully added to the scene, we can begin adding some mechanics in the [next step](step08.md)!

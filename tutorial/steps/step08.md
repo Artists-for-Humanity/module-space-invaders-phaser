@@ -10,7 +10,7 @@ To play our game one of the first mechanics we need to implement for the player 
 
 ### Left and Right Arrow Keys
 
-First, let's create a variable that will reference our cursor object. To do this, navigate to `this.player` on line 8 of `main.js`. Below this line add the following:
+First, let's create a field that will reference our cursor object. To do this, navigate to `this.player` on line 8 of `main.js`. Below this line add the following:
 
 ```js
 this.cursors;
@@ -50,7 +50,7 @@ Now, when we load [localhost:1234](http://localhost:1234), our player cannot tra
 
 # Review
 
-The function below populates the cursors object with some properties:
+The method below populates the cursors object with some properties:
 
 ```js
 this.cursors = this.input.keyboard.createCursorKeys();

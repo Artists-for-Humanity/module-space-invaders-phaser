@@ -16,7 +16,7 @@ this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
 this.projectileImg.visible = false;
 ```
 
-Next, we need a function that will handle our firing mechanic. Let's create our `fireProjectile()` function by adding the following below `update()`:
+Next, we need a method that will handle our firing mechanic. Let's create our `fireProjectile()` method by adding the following below `update()`:
 
 ```js
 // Fire the projectile
@@ -50,7 +50,7 @@ if (this.cursors.space.isDown) {
 
 Save the file then load [localhost:1234](http://localhost:1234) to test that the projectile fires when the space bar is pressed. Notice that we can only fire the projectile once, let's update our code so that we can fire the projectile multiple times.
 
-Below `fireProjectile()` let's create a new function and name it `resetProjectile()`;
+Below `fireProjectile()` let's create a new method and name it `resetProjectile()`;
 
 ```js
 // Reset the projectile
@@ -82,17 +82,17 @@ Save the file then load [localhost:1234](http://localhost:1234), we should be ab
 
 # Review
 
-First, in our `constructor()` we declared variables for the `projectileImg` object and `projectileState`. The projectile can be in one of two states, `ready` or `fire`. Let's define our `ready` state to be whenever the player is waiting to fire the projectile, which means our `fire` state is whenever the space bar is pressed and the projectile appears on the screen.
+First, in our `constructor()` we defined fields for the `projectileImg` object and `projectileState`. The projectile can be in one of two states, `ready` or `fire`. Let's define our `ready` state to be whenever the player is waiting to fire the projectile, which means our `fire` state is whenever the space bar is pressed and the projectile appears on the screen.
 
 Next, in `create()` we added the image to the scene. It's added at coordinate `(-1440, -1920)`, somewhere offscreen so it does not appear  in the window. We also change its visibility to `false` since the player does not need to see it on screen until they actually press the space bar.
 
-Then, we added the `fireProjectile()` function which is where we update the projectile to the `fire` state. We also change the projectiles visibility back to `true` and update its `x` and `y` position to, `this.player.x` and `this.player.y`. We set the position of the projectile to the player's coordinates so that it appears to come from the player when fired. 
+Then, we added the `fireProjectile()` method which is where we update the projectile to the `fire` state. We also change the projectiles visibility back to `true` and update its `x` and `y` position to, `this.player.x` and `this.player.y`. We set the position of the projectile to the player's coordinates so that it appears to come from the player when fired. 
 
 The line, `this.projectileImg.setVelocityY(-250)`, tells the projectile to travel on the y-axis with the specified intensity. The sign of the value in parenthesis indicates the direction; '`-`' indicates up and '`+`' indicates down.
 
-Finally, we programed our cursors object to check for when the space bar is pressed. If this condition is `true`,  we check if the projectile's state is `ready`. If the state is `ready` we then call and execute the `fireProjectile()` function.
+Finally, we programed our cursors object to check for when the space bar is pressed. If this condition is `true`,  we check if the projectile's state is `ready`. If the state is `ready` we then call and execute the `fireProjectile()` method.
 
-The last thing we did was create a `resetProjectile()` function which updates the state to `ready` if it isn't already. This function also stops the movement of the projectile and updates its visibility to be false. We call and execute `resetProjectile()` inside `update()`, within a conditional that checks when the projectile goes off offscreen.
+The last thing we did was create a `resetProjectile()` method which updates the state to `ready` if it isn't already. This method also stops the movement of the projectile and updates its visibility to be false. We call and execute `resetProjectile()` inside `update()`, within a conditional that checks when the projectile goes off offscreen.
 
 # Next Step
 
