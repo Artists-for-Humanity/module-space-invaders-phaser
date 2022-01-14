@@ -10,7 +10,7 @@ import Phaser from 'phaser';
 
 This code will import the Phaser.js  [library](https://en.wikipedia.org/wiki/Library_(computing)#:~:text=Library%20code%20is%20organized%20in,only%20within%20that%20one%20program.) into our file and allow us to use it. The way this works is through `npm` (short for Node Package Manager). I briefly discussed how this works in the **Project Files Overview** section in the [Readme](../README.md#project-files-overview) under `package.json`.
 
-Basically, npm will take the text we have inside the quotes, in this case `'phaser'`, and it will check if we've installed this using our `package.json` file. You can see an entry in [package.json](../package.json#L20) for `'phaser'`.
+Npm will take the text we have inside the quotes, in this case `'phaser'`, and it will check if we've installed this using our `package.json` file. You can see an entry in [package.json](../package.json#L20) for `'phaser'`.
 
 Below that import line add:
 
@@ -65,7 +65,7 @@ class GameScene extends Phaser.Scene {
 }
 ```
 
-This code creates a class that is based off of a Scene from the Phaser library and stores it in a variable called `GameScene`. `GameScene` can be any name you want you just have to make sure to use the same name whereever you see `GameScene` referenced. A "class" is a concept in OOP (or Object Oriented Programming). To get a general idea of what OOP is you can [watch this video](https://www.youtube.com/watch?v=m_MQYyJpIjg) if you'd like. **This video covers the concept of OOP however the code they use is Java which is a bit different than Javascript. Don't worry about this, the video is just to give you an idea of the concepts of OOP.**
+This code creates a class named `Gamescene` that is based on a Scene from the Phaser library. `GameScene` can be any name you want you just have to make sure to use the same name wherever you see `GameScene` referenced. A "class" is a concept in OOP (or Object-Oriented Programming). To get a general idea of what OOP is you can [watch this video](https://www.youtube.com/watch?v=m_MQYyJpIjg) if you'd like. **This video covers the concept of OOP however the code they use is Java which is a bit different than Javascript. Don't worry about this, the video is just to give you an idea of the concepts of OOP.**
 
 ```javascript
 constructor() {
@@ -98,7 +98,7 @@ Let's go back to our web browser and look in our console. You should see somethi
 
 ![Class debugging console](images/class-debug-console.png)
 
-We can see the order in which the functions we put inside our class are running. First the constructor function gets run, followed by preload and create. Lastly the update function is run but you'll notice it's run many times. The update function is meant to run constantly (you should see a number next to it increasing) and is where a majority of our game code will live. Everytime the function runs the number next to it in our console increases. Lastly, Don't worry about the yellow warning message in the console for the 'AudioContext', we will take care of that in the next step.
+We can see the order in which the functions we put inside our class are running. First, the constructor function gets run, followed by preload and create. Lastly, the update function is run but you'll notice it's run many times. The update function is meant to run constantly (you should see a number next to it increasing) and is where a majority of our game code will live. Every time the function runs the number next to it in our console increases. Lastly, Don't worry about the yellow warning message in the console for the 'AudioContext', we will take care of that in the next step.
 
 ---
 
@@ -132,8 +132,8 @@ This code is creating a variable that contains the configuration for Phaser. A g
 new Phaser.Game(config);
 ```
 
-Lastly we need to tell Phaser to start. This line creates a new instance of a `Phaser.Game` and passes it our configuration variable. Without this line we'd be importing Phaser and making variables but nothing would actually be running.
+Lastly, we need to tell Phaser to start. This line creates a new instance of a `Phaser.Game` and passes it to our configuration variable. Without this line, we'd be importing Phaser and making variables but nothing would be running.
 
 # Next Step
 
-At this point we should be seeing a black webpage and seeing some stuff in our console. If so, we can move on to the [next step](step04.md)!
+At this point, we should be seeing a black webpage and seeing some stuff in our console. If so, we can move on to the [next step](step04.md)!
