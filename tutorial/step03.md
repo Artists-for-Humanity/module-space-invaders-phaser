@@ -136,4 +136,4 @@ Lastly we need to tell Phaser to start. This line creates a new instance of a `P
 
 # Next Step
 
-At this point we should be seeing a black webpage and seeing some stuff in our console. If so, we can move on to the [next step](step4.md)!
+At this point we should be seeing a black webpage and seeing some stuff in our console. If so, we can move on to the [next step](step04.md)!

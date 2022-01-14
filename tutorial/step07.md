@@ -50,4 +50,4 @@ For reference, coordinate `(0,0)` is located in the top left corner, and `(960, 
 The purpose of the variable `this.player` is to serve as a reference to our player object which we will need to access later in our code when we're adding movement and other mechanics. The background image does not need to be referenced by a variable because we only interact with it once when we place it inside the scene.
 
 # Next Step
-Now that the images have been successfully added to the scene, we can begin adding some mechanics in the [next step](step8.md)!
+Now that the images have been successfully added to the scene, we can begin adding some mechanics in the [next step](step08.md)!

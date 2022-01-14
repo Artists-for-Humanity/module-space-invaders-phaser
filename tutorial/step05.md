@@ -47,4 +47,4 @@ The final image we will need for our game is an image that represents the projec
 
 # Next Step
 
-Now that we have all our image files where we want them we can start loading them into our scene in the [next step](step6.md)!
+Now that we have all our image files where we want them we can start loading them into our scene in the [next step](step06.md)!

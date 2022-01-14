@@ -28,4 +28,4 @@ This folder contains all of the "assets" our project will use. An asset can be a
 
 # Next Step
 
-You are ready to move on to the [next step](step2.md)!
+You are ready to move on to the [next step](step02.md)!

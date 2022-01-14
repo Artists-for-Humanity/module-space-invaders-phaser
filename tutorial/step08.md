@@ -64,13 +64,20 @@ if (this.cursors.left.isDown)
 
 The `if` keyword indicates that we are evaluating a conditional. Conditionals are expressions that will evaluate to either `true` or `false`. You can watch [this video](https://www.youtube.com/watch?v=o_iO9WuoWaM) to learn more about conditional expressions.
 
-In our code one of the conditionals is checking to see if the left key is being pressed: `this.cursors.left.isDown`. If this is true then the code within the curly brackets is executed: 
+In our code the first conditional is checking to see if the left key is being pressed: `this.cursors.left.isDown`. If this is true then the code within the curly brackets is executed:
+
 ```js
 this.player.x -= 10
+```
+
+Another way to write the line of code above is:
+
+```js
+this.player.x = this.player.x - 10
 ```
 
 The line above is telling our program to update the `x` position of the player by 10 pixels to the left. The direction is indicated by the 'minus' symbol before the equals sign. The case for moving to the right is handled by the `this.cursors.right.isDown` conditional.
 
 # Next Step
 
-Now that our player can move, we will be adding our projectile to the game and a firing mechanic that will allow our player to fire the projectile in the [next step](step9.md)!
+Now that our player can move, we will be adding our projectile to the game and a firing mechanic that will allow our player to fire the projectile in the [next step](step09.md)!

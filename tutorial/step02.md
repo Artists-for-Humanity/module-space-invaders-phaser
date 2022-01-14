@@ -60,4 +60,4 @@ Undo what we did and make sure your [index.html](../src/index.html) file says:
 
 # Next Step
 
-Now that we know our `main.js` file is hooked up we can move on to the [next step](step3.md)!
+Now that we know our `main.js` file is hooked up we can move on to the [next step](step03.md)!

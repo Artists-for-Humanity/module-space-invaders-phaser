@@ -58,4 +58,4 @@ Save the file then navigate to the web inspector, our console should look someth
 
 This tells us that we successfully made it from the start to the end of the preload function with no issues. We should try and test our code at regular intervals to minimize the number of bugs we encounter.
 
-Now that the images have been succseffully loaded, we can begin to display them in the [next step](step7.md)!
+Now that the images have been succseffully loaded, we can begin to display them in the [next step](step07.md)!
