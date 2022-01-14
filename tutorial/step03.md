@@ -1,8 +1,8 @@
-# Connecting Phaser.js
+# Using Phaser.js
 
 Let's go ahead and start writing some code using the Phaser.js library. First, delete the `console.log("Does this work");` from `main.js`. Since we know our file is working we no longer need this debugging code.
 
-Inside of our empty `main.js` file add this code:
+Inside of our `main.js` file add this code:
 
 ```javascript
 import Phaser from 'phaser';
@@ -12,7 +12,17 @@ This code will import the Phaser.js  [library](https://en.wikipedia.org/wiki/Lib
 
 Basically, npm will take the text we have inside the quotes, in this case `'phaser'`, and it will check if we've installed this using our `package.json` file. You can see an entry in [package.json](../package.json#L20) for `'phaser'`.
 
-Below that import line add:
+TODO: Is this package.json stuff too in depth?
+
+Now that we have the Phaser.js plugin imported lets use it!
+
+Below
+
+```javascript
+import Phaser from 'phaser';
+```
+
+copy and paste:
 
 ```javascript
 class GameScene extends Phaser.Scene {
@@ -74,7 +84,11 @@ constructor() {
 }
 ```
 
-This code runs our constructor function inside of our class. This function is related to OOP and is not unique to Phaser. We've added a `console.log` here so we can debug this code which we will look at in a second.
+This code runs our "constructor" function inside of our "class". This constructor function is the first function that is run when we use our class and is not unique to Phaser. We've added a `console.log` here so we can debug this code which we will look at in a second.
+
+---
+
+`preload`, `create`, and `update` are related to Phaser. You can [read a bit about them here](https://workshops.nuevofoundation.org/phaser-space-invaders-game/preload-create-update/). Once again, we've added some `console.log` to each of them for debugging.
 
 ```javascript
 preload() {
@@ -89,8 +103,6 @@ update() {
     console.log("update");
 }
 ```
-
-These 3 functions are related to Phaser. You can [read a bit about them here](https://workshops.nuevofoundation.org/phaser-space-invaders-game/preload-create-update/). Once again, we've added some `console.log` code for debugging.
 
 ---
 
