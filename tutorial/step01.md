@@ -4,7 +4,9 @@ As we mentioned in the [README](../README.md) all of the files we use and code w
 
 ## Overview of the Existing Files
 
-Before we go and write our own code we will review the existing files already there.
+Before we go and write our own code we will review the existing files already there as shown below:
+
+![File overview](images/file-overview.png)
 
 ### [index.html](../src/index.html)
 
