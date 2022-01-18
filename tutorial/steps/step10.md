@@ -121,9 +121,9 @@ Then, we added a `setEnemies()` method which creates and adds our enemies into t
 
   Lastly, inside create we use `overlap()` to check for overlaps between the enemies and our projectile. We also use `collider()` to check for collisions between our player and the enemies. If an overlap or a collision is detected, the respective 'HitEnemy' method is called and executed resulting in the desired update to the game.
 
-  # Final Step
+  # Next Step
 
-  Congratulations! You have coded a functional javascript game built using the Phaser 3 library. There are some final touches including displaying/updating the game score, displaying a game over text, adding a start menu, and adding some audio to our game for sound effects. We will tackle all of these in the [final step](step11.md)!
+  Congratulations! You have coded a functional javascript game built using the Phaser 3 library. There are some final touches including displaying/updating the game score, displaying a game over text, adding a start menu, and adding some audio to our game for sound effects. We will tackle all of these in the [next steps](step11.md)!
 
 
 
