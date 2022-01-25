@@ -43,8 +43,13 @@ Lastly, let's program space bar to fire our projectile. Inside `update()` below 
 ```js
 if (this.cursors.space.isDown) {
     if (this.projectileState == 'ready') {
+<<<<<<< Updated upstream:tutorial/steps/step09.md
         this.fireProjectile();
     }
+=======
+        this.fireBall();
+    }   
+>>>>>>> Stashed changes:tutorial/step9.md
 }
 ```
 
