@@ -34,8 +34,10 @@ class GameScene extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
         this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile'); 
         this.projectileImg.visible = false; 
-        this.enemies = this.physics.ass.group();
-        
+        this.enemies = this.physics.add.group();
+        this.setEnemies();
+        this.physics.add.collider(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this);
+        this.physics.add.overlap(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
     }
 
     update() {
@@ -50,11 +52,11 @@ class GameScene extends Phaser.Scene {
        
         else if(this.cursors.space.isDown){
             if (this.projectileState == 'ready'){
-                this.fireBall();
+                this.fireLazer();
             }
         }
         if (this.projectileImg.y <= -this.projectileImg.height / 2) {
-            this.resetBall();
+            this.resetLazer();
         }
         this.enemies.children.iterate((child)=> {
             const body = child.body;
@@ -68,15 +70,15 @@ class GameScene extends Phaser.Scene {
             });
 
         }
-    }
-    fireBall(){
+
+    fireLazer(){
         this.projectileState = 'fire';
         this.projectileImg.visible = true;
         this.projectileImg.x = this.player.x;
         this.projectileImg.y = this.player.y; 
         this.projectileImg.setVelocityY(-250);
     }
-    resetBall(){
+    resetLazer(){
         if(this.projectileState === 'state'){
             return;
         }
@@ -84,6 +86,25 @@ class GameScene extends Phaser.Scene {
         this.projectileImg.setVelocityY(0);
         this.projectileImg.visible = false; 
     }
+    setEnemies(){
+        for (let i = 0; i < this.numEnemies; i ++){
+            this.enemies.create(Phaser.Math.Between(64,869), Phaser.Math.Between(64,296), 'enemy');
+        }
+        this,this.enemies.setVelocityX(this.enemySpeed * -1);
+    }
+    onProjectileHitEnemy(projectileImg, enemy) { 
+        enemy.disableBody(true, true);
+        projectileImg.body.enable = false; 
+        this.resetLazer();
+
+
+    }
+    onPlayerHitEnemy(player) {
+        this.physics.pause()
+        player.setTint(0xff0000);
+    }
+
+}
 
 const config = {
     type: Phaser.AUTO,
