@@ -37,31 +37,38 @@ class GameScene extends Phaser.Scene {
         // Add images to Scene
         this.add.image(480, 360, 'background');
         this.player = this.physics.add.sprite(480, 600, 'player');
-        // Initialize keyboard manager
-        this.cursors = this.input.keyboard.createCursorKeys();
+
         // Set world bounds for player
         this.player.setCollideWorldBounds(true);
+
+        // Initialize keyboard manager
+        this.cursors = this.input.keyboard.createCursorKeys();
+
         // Paintball
-        this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile')
-        this.projectileImg.visible = false;
         this.enemies = this.physics.add.group();
         this.enemies.setVelocityX(this.enemySpeed * -1);
         this.resetEnemies();
-        this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
-        this.physics.overlap(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this);
+
+        this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile')
+        this.projectileImg.visible = false;
+
+        
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
             fontSize: '32px',
-            fill: '#000',
+            fill: '#fff',
         });
         this.gameOverText = this.add.text(config.width / 2, 400, 'Game Over', {
             fontSize: '64px',
-            fill: '#000',
+            fill: '#fff',
         });
         this.gameOverText.visible = false;
+        
+        this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
+        this.physics.add.overlap(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this);
     }
 
     update() {
-        console.log("update");
+        console.log("updatedfdf", x, y);
         if (this.gameOver) {
             return;
         }
@@ -78,42 +85,31 @@ class GameScene extends Phaser.Scene {
                 this.fireProjectile();
             }
         }
-
-        // Paintball out of bounds
-        if (this.projectileImg.y <= -this.projectileImg.height / 2) {
-            this.resetProjectile();
-        }
-
+        
         this.enemies.children.iterate((child) => {
             const body = child.body;
-
+            
             if (body.x < 0) {
                 body.setVelocityX(this.enemySpeed);
                 body.y += 64;
             } else if (body.x > 896) {
-                    body.setVelocityX(this.enemySpeed * -1);
-                    body.y += 64;
+                body.setVelocityX(this.enemySpeed * -1);
+                body.y += 64;
             }
         });
-
-    }
-    // Reset the ball
-    resetProjectile() {
-        if (this.projectileState === 'ready') {
-            return;
+        
+        // Paintball out of bounds
+        if (this.projectileImg.y <= -this.projectileImg.height / 2) {
+            this.resetProjectile();
         }
-        this.projectileState = 'ready';
-        this.projectileImg.setVelocityY(0);
-        this.projectileImg.visible = false;
     }
-
-    resetEnemies() {
-        for (let i = 0; i < this.numEnemies; i++) {
-            this.enemies.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
-        }
-        this.enemies.setVelocityX(this.enemySpeed * -1);
+    showGameOverText() {
+        this.gameOverText.setOrigin(0.5);
+        this.gameOverText.visible = true;
+        this.enemies.children.iterate((child) => {
+            child.y = config.height * 2;
+        });
     }
-
     // Fire the ball
     fireProjectile() {
         this.projectileState = 'fire';
@@ -124,28 +120,52 @@ class GameScene extends Phaser.Scene {
         this.projectileImg.setVelocityY(-250);
     }
 
+    onPlayerHitEnemy(player) {
+        this.physics.pause();
+        player.setTint(0xff0000);
+        this.gamerOver =  true;
+        this.showGameOverText();
+   }
+
     onProjectileHitEnemy(projectileImg, enemy) {
         enemy.disableBody(true, true);
         projectileImg.body.enable = false;
-        this.enemy.setTint(0xff0000);
+        this.resetProjectile();
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
+
+        if (this.enemies.countActive(true) === 0) {
+            this.speedUpEnemies();
+            this.resetEnemies();
+        }
     }
 
-    onPlayerHitEnemy(player) {
-         this.physics.pause();
-         this.player.setTint(0xff0000);
-         this.gamerOver =  true;
-         this.showGameOverText();
+    // Reset the ball
+    resetProjectile() {
+        if (this.projectileState === 'ready') {
+            return;
+        }
+        this.projectileState = 'ready';
+        this.projectileImg.setVelocityY(0);
+        this.projectileImg.visible = false;
+    }
+    
+    resetEnemies() {
+        for (let i = 0; i < this.numEnemies; i++) {
+            this.enemies.create(
+                Phaser.Math.Between(64, 896), 
+                Phaser.Math.Between(64, 296), 
+                'enemy'
+            );
+        }
+        this.enemies.setVelocityX(this.enemySpeed * -1);
     }
 
-    showGameOverText() {
-        this.gameOverText.setOrigin(0.5);
-        this.gameOverText.visible = true;
-        this.enemies.children.iterate((child) => {
-            child.y = config.height * 2;
-        });
-    }
+
+
+
+
+
 
 }
 
@@ -171,5 +191,7 @@ const config = {
     },
 };
 
+var x = 0
+let y = 1
 // Initialize game instance
 new Phaser.Game(config);
