@@ -191,7 +191,5 @@ const config = {
     },
 };
 
-var x = 0
-let y = 1
 // Initialize game instance
 new Phaser.Game(config);
