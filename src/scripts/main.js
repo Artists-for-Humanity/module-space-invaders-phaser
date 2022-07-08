@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
         this.score = 0;
         this.gameOverText;
         this.gameOver = false;
+        this.startScreen;
     }
 
     preload() {
@@ -52,7 +53,7 @@ class GameScene extends Phaser.Scene {
         this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile')
         this.projectileImg.visible = false;
 
-        
+
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
             fontSize: '32px',
             fill: '#fff',
@@ -62,13 +63,14 @@ class GameScene extends Phaser.Scene {
             fill: '#fff',
         });
         this.gameOverText.visible = false;
-        
+
         this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
         this.physics.add.overlap(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this);
+
+        this.startScreen = this.add.image(480, 360, 'background')
     }
 
     update() {
-        console.log("updatedfdf", x, y);
         if (this.gameOver) {
             return;
         }
@@ -85,10 +87,10 @@ class GameScene extends Phaser.Scene {
                 this.fireProjectile();
             }
         }
-        
+
         this.enemies.children.iterate((child) => {
             const body = child.body;
-            
+
             if (body.x < 0) {
                 body.setVelocityX(this.enemySpeed);
                 body.y += 64;
@@ -97,7 +99,7 @@ class GameScene extends Phaser.Scene {
                 body.y += 64;
             }
         });
-        
+
         // Paintball out of bounds
         if (this.projectileImg.y <= -this.projectileImg.height / 2) {
             this.resetProjectile();
@@ -123,9 +125,9 @@ class GameScene extends Phaser.Scene {
     onPlayerHitEnemy(player) {
         this.physics.pause();
         player.setTint(0xff0000);
-        this.gamerOver =  true;
+        this.gamerOver = true;
         this.showGameOverText();
-   }
+    }
 
     onProjectileHitEnemy(projectileImg, enemy) {
         enemy.disableBody(true, true);
@@ -149,24 +151,17 @@ class GameScene extends Phaser.Scene {
         this.projectileImg.setVelocityY(0);
         this.projectileImg.visible = false;
     }
-    
+
     resetEnemies() {
         for (let i = 0; i < this.numEnemies; i++) {
             this.enemies.create(
-                Phaser.Math.Between(64, 896), 
-                Phaser.Math.Between(64, 296), 
+                Phaser.Math.Between(64, 896),
+                Phaser.Math.Between(64, 296),
                 'enemy'
             );
         }
         this.enemies.setVelocityX(this.enemySpeed * -1);
     }
-
-
-
-
-
-
-
 }
 
 // Set configuration for phaser game instance
