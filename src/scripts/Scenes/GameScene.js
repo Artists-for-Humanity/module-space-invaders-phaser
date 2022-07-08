@@ -1,8 +1,17 @@
 import Phaser from 'phaser';
 
-class GameScene extends Phaser.Scene {
+
+// Set configuration for phaser game instance
+const config = {
+    type: Phaser.AUTO,
+    width: 960,
+    height: 720,
+}
+export default class GameScene extends Phaser.Scene {
     constructor() {
-        super();
+        super({
+            key: "GameScene"
+        });
         console.log("constructor");
         //misc game object declarations
         this.player;
@@ -15,6 +24,8 @@ class GameScene extends Phaser.Scene {
         //projectile object declaration
         this.projectileImg;
         this.projectileState = 'ready';
+      
+    
 
         //game text declaration
         this.scoreText;
@@ -25,10 +36,10 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         console.log("preload START")
-        this.load.image('background', new URL('../assets/myAssets/myBackground.png', import.meta.url).href);
-        this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
-        this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
-        this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
+        this.load.image('background', new URL('../../assets/myAssets/myBackground.png', import.meta.url).href);
+        this.load.image('projectile', new URL('../../assets/myAssets/myProjectile.png', import.meta.url).href);
+        this.load.image('enemy', new URL('../../assets/myAssets/myEnemy.png', import.meta.url).href);
+        this.load.image('player', new URL('../../assets/myAssets/myPlayer.png', import.meta.url).href);
         console.log("preload END")
     }
 
@@ -84,6 +95,8 @@ class GameScene extends Phaser.Scene {
         if (this.cursors.down.isDown) {
             this.player.y += 10;
         }
+
+    
         //space 
         if (this.cursors.space.isDown) {
             if (this.projectileState == 'ready') {
@@ -94,6 +107,7 @@ class GameScene extends Phaser.Scene {
         if (this.projectileImg.y <= 16) {
             this.resetProjectile();
         }
+        
         //on border collision change enemy direction and move down by 64px
         this.enemies.children.iterate((child) => {
             const body = child.body;
@@ -107,6 +121,7 @@ class GameScene extends Phaser.Scene {
                 body.y += 64;
             }
         });
+       
     }
 
     //fire the projectile
@@ -117,6 +132,9 @@ class GameScene extends Phaser.Scene {
         this.projectileImg.x = this.player.x;
         this.projectileImg.y = this.player.y;
         this.projectileImg.setVelocityY(-250);
+    
+
+
     }
     //reset the projectile
     resetProjectile() {
@@ -126,20 +144,38 @@ class GameScene extends Phaser.Scene {
         this.projectileState = 'ready';
         this.projectileImg.setVelocityY(0);
         this.projectileImg.visible = false;
+        this.projectileImg.x = 0;
+        this.projectileImg.y = 0;
     }
     setEnemies() {
         for (let i = 0; i < this.numEnemies; i++) {
-            this.enemies.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
+            this.enemies.create(
+                Phaser.Math.Between(64, 896), 
+                Phaser.Math.Between(64, 296), 'enemy');
         }
         this.enemies.setVelocityX(this.enemySpeed * -1);
+
+        
     }
+
+    speedUpEnemies() {
+        this.enemySpeed += 50;
+        this.enemies.setVelocityX(this.enemySpeed * -1);
+    }
+    
     onProjectileHitEnemy(projectileImg, enemy) {
-        enemy.disableBody(true, true);
-        projectileImg.body.enable = false;
+        // enemy.disableBody(true, true);
+        // projectileImg.body.enable = false;
+        enemy.destroy();
         this.resetProjectile();
     //increment and update the score
         this.score += 1;
         this.scoreText.setText(`SCORE: ${this.score}`);
+
+        if (this.enemies.countActive(true) === 0) {
+            this.speedUpEnemies();
+            this.setEnemies();
+        }
     }
     //player and canvas collision
     onPlayerHitEnemy(player) {
