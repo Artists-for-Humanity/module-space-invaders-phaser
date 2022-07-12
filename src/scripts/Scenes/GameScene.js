@@ -30,7 +30,7 @@ export default class GameScene extends Phaser.Scene {
         //game text declaration
         this.scoreText;
         this.score = 0;
-        this.gameOverText;
+       
         this.gameOver = false;
     }
 
@@ -73,11 +73,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     //game over text
-    this.gameOverText = this.add.text(config.width / 2, 400, 'GAME OVER', {
-        fontSize: '64px',
-        fill: '#000',
-    });
-    this.gameOverText.visible = false;
+   
 }
 
     update() {
@@ -181,18 +177,11 @@ export default class GameScene extends Phaser.Scene {
     onPlayerHitEnemy(player) {
         this.physics.pause();
         player.setTint(0xff0000);
-        this.gameOver = true;
-        this.showGameOverText();
+        // this.gameOver = true;
+        this.scene.start('GameOverScene');
         this.player.visible = false;
     }
 
-    //game over
-    showGameOverText() {
-        this.gameOverText.setOrigin(0.5);
-        this.gameOverText.visible = true;
-        this.enemies.children.iterate((child) => {
-            child.y = config.height * 2;
-        });
-    }
+    
 }
 

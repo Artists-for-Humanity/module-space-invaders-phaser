@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GameOverScene from './Scenes/GameOverScene';
 import GameScene from './Scenes/GameScene';
 import StartScene from './Scenes/StartScene';
 
@@ -15,10 +16,13 @@ const config = {
             gravity: {
                 y: 0,
             },
-            debug: true,
+            debug: false,
         },
     },
-    scene: [StartScene, GameScene], 
+    scene: [StartScene, GameScene, GameOverScene],
+    
+    
+
     audio: {
         disableWebAudio: true,
     },
