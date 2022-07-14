@@ -19,12 +19,14 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
+        this.load.image('background', new URL('../assets/factoryBackground.png',
+            import.meta.url).href);
 
     }
 
     create() {
         // Add images to Scene
-
+        this.add.image(540, 360, 'background')
         // Set world bounds & general bounds for player
 
         // Initialize keyboard manager

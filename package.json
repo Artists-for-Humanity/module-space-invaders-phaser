@@ -1,22 +1,25 @@
 {
-  "name": "invaders_project",
+  "name": "factory",
   "version": "1.0.0",
   "description": "",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "source": "src/index.html",
   "scripts": {
-    "start": "parcel --no-hmr",
-    "build": "parcel build"
+    "start": "snowpack dev",
+    "build": "snowpack build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.5.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3",
-    "parcel": "^2.0.1"
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "parcel": "^2.0.1",
+    "prettier": "^2.5.1"
   },
   "dependencies": {
-    "phaser": "^3.55.2"
+    "phaser": "^3.55.2",
+    "snowpack": "^3.8.8",
+    "webfontloader": "^1.6.28"
   }
 }
