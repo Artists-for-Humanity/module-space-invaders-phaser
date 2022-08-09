@@ -34,7 +34,8 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', new URL('../assets/final/background.png', import.meta.url).href);
+        this.load.image('background', new URL('../assets/myAssets/background.png',
+        import.meta.url).href);
         this.load.image('ball', new URL('../assets/final/ball.png', import.meta.url).href);
         this.load.image('canvas', new URL('../assets/final/canvas.png', import.meta.url).href);
         this.load.image('spraycan', new URL('../assets/final/spraycan.png', import.meta.url).href);
