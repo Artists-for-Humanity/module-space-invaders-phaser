@@ -34,14 +34,14 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', new URL('../assets/final/background.png', import.meta.url).href);
-        this.load.image('ball', new URL('../assets/final/ball.png', import.meta.url).href);
-        this.load.image('canvas', new URL('../assets/final/canvas.png', import.meta.url).href);
-        this.load.image('spraycan', new URL('../assets/final/spraycan.png', import.meta.url).href);
+        this.load.image('background', new URL('../assets/background.png', import.meta.url).href);
+        this.load.image('ball', new URL('../assets/ball.png', import.meta.url).href);
+        this.load.image('canvas', new URL('../assets/canvas.png', import.meta.url).href);
+        this.load.image('spraycan', new URL('../assets/spraycan.png', import.meta.url).href);
 
-        this.load.audio('background', new URL('../assets/final/background.wav', import.meta.url).href);
-        this.load.audio('spraycan', new URL('../assets/final/spraycan.wav', import.meta.url).href);
-        this.load.audio('wet_impact', new URL('../assets/final/wet_impact.wav', import.meta.url).href);
+        this.load.audio('background', new URL('../assets/background.wav', import.meta.url).href);
+        this.load.audio('spraycan', new URL('../assets/spraycan.wav', import.meta.url).href);
+        this.load.audio('wet_impact', new URL('../assets/wet_impact.wav', import.meta.url).href);
     }
 
     create() {
@@ -91,7 +91,7 @@ class GameScene extends Phaser.Scene {
         this.musicSound = this.sound.add('background', {
             loop: true,
         });
-    
+
         this.physics.pause();
         this.homeScreen = this.add.image(config.width / 2, config.height / 2, 'background');
 
@@ -112,14 +112,14 @@ class GameScene extends Phaser.Scene {
         if (this.gameOver) {
             return;
         }
-    
+
         // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
             this.player.x -= 10;
         }
         if (this.cursors.right.isDown) {
             this.player.x += 10;
-        } 
+        }
         // else if (cursors.up.isDown) {
         //     player.y -= 10;
         // }
@@ -131,12 +131,12 @@ class GameScene extends Phaser.Scene {
                 this.fireBall();
             }
         }
-    
+
         // On border collision change enemy direction and move down by 60px
         this.enemies.children.iterate((child) => {
             const body = child.body;
             const yIncrement = child.height;
-            
+
             if (body.x < 0) {
                 body.setVelocityX(this.enemySpeed);
                 body.y += yIncrement;
@@ -145,7 +145,7 @@ class GameScene extends Phaser.Scene {
                 body.y += yIncrement;
             }
         });
-    
+
         // Paintball out of bounds
         if (this.paintballImg.y <= -this.paintballImg.height / 2) {
             this.resetBall();
@@ -234,7 +234,7 @@ const config = {
     type: Phaser.AUTO,
     width: 960,
     height: 720,
-    
+
     // Add physics, arcade, scene, and audio
     physics: {
         default: 'arcade',
