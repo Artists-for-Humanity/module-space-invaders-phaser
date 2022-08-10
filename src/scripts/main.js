@@ -44,25 +44,19 @@ class GameScene extends Phaser.Scene {
 
     create() {
 
-        //console.log()
         // Add images and sprites to scene
         this.background = this.add.image(config.width / 2, config.height / 2, 'background');
 
         // Initialize keyboard manager
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
-        this.physics.add.collider(this.character, this.ramen, this.onPlayerHitEnemy, null, this);
-
-        //  Checks to see if the painball overlaps with any of the enemies, if so call the onBallHitEnemy function
-        this.physics.add.overlap(this.rocket, this.enemies, this.onBallHitEnemy, null, this);
-        
-        console.log('hello 02');
-
         //Add player to scene
         this.character = this.physics.add.sprite(config.width / 2, 600, 'character');
         this.character.setCollideWorldBounds(true);
-        this.character.setScale(0.5)
+        this.character.setScale(0.5);
+
+        // Add projectile to scene
+        this.rocket = this.physics.add.sprite(config.width * -2, config.height * -2, 'rocket');
 
         // Some enemies for the player to shoot randomly generated between Y(50-300) and X(50-900)
         this.ramen = this.physics.add.group();
@@ -70,75 +64,67 @@ class GameScene extends Phaser.Scene {
         this.resetramens();
         // this.ramen.setCollideWorldBounds(true);
 
-        // Projectile
-        this.rocket = this.physics.add.sprite(
-            config.height * -2,
-            config.width * -2,
-            'rocket'
-        );
+        //  Checks to see if the player collides with any of the enemies, if he does call the onPlayerHitEnemy function
+        this.physics.add.collider(this.character, this.ramen, this.onPlayerHitEnemy, null, this);
+
+        //  Checks to see if the painball overlaps with any of the enemies, if so call the onBallHitEnemy function
+        this.physics.add.overlap(this.rocket, this.ramen, this.onBallHitEnemy, null, this);
 
         this.rocket.visible = false;
 
-        console.log('hello 03');
-        this.physics.pause();
+        // this.physics.pause();
+
 
     }
 
     update() {
-        console.log('hello 01');
-        
-
-
         // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
             this.character.x -= 10;
+            console.log('testing left button');
+
         } if (this.cursors.right.isDown) {
             this.character.x += 10;
-        //} if (this.cursors.up.isDown) {
-        //this.character.y -= 10;
-        //} if (this.cursors.down.isDown) {
-        //   this.character.y += 10;
-        } 
+        }
         else if (this.cursors.space.isDown) {
-            console.log('reachme 02') 
 
             if (this.rocketState === 'ready') {
-                //this.rocket.y;
                 this.fireRocket();
-                console.log('reachme 01') 
             }
         }
 
         // Projectile out of bounds
         if (this.rocket.y <= -this.rocket.height / 2) {
-            this.resetBall();
+            this.resetRocket();
         }
 
         this.ramen.children.iterate((child) => {
+
             const body = child.body;
             const yIncrement = child.height;
-            
+
             if (body.x < 0) {
                 body.setVelocityX(this.ramenSpeed);
-                 body.y += yIncrement;
+                body.y += yIncrement;
             } else if (body.x > config.width - child.width) {
                 body.setVelocityX(this.ramenSpeed * -1);
                 body.y += yIncrement;
             }
         });
 
-        console.log('hello 02');
- // Paintball out of bounds
+        // Paintball out of bounds
         if (this.rocket.y <= -this.rocket.height / 2) {
-            this.resetBall();
+            this.resetRocket();
+
         }
+
+
     }
 
     // Player & Canvas collision
     onPlayerHitEnemy(player) {
-        this.physics.pause();
+        // this.physics.pause();
         player.setTint(0xff0000);
-        console.log('hello 00');
         this.gameOver = true;
         // this.showGameOverText();
     }
@@ -146,7 +132,7 @@ class GameScene extends Phaser.Scene {
     onBallHitEnemy(rocket, ramen) {
         ramen.disableBody(true, true);
         rocket.body.enable = false;
-        this.resetBall();
+        this.resetRocket();
 
         // Add and update the score
         this.score += 1;
@@ -158,7 +144,7 @@ class GameScene extends Phaser.Scene {
             this.resetramens();
         }
     }
-    
+
     resetramens() {
         // TODO: Make this read from the image?
         const imageSize = {
@@ -176,10 +162,9 @@ class GameScene extends Phaser.Scene {
         this.ramen.setVelocityX(this.ramenSpeed * -1);
     }
 
-    
+
     // Fire the ball
     fireRocket() {
-        console.log('reachme 00')
         this.rocketState = 'rocket';
         this.rocket.visible = true;
         this.rocket.body.enable = true;
@@ -190,7 +175,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Reset the ball
-    resetRcoket() {
+    resetRocket() {
         if (this.rocketState === 'ready') {
             return;
         }
@@ -199,7 +184,7 @@ class GameScene extends Phaser.Scene {
         this.rocket.visible = false;
     }
 
-    
+
 
     // Genrate Random number between two ints and return value
     randomNum(x, y) {
@@ -210,6 +195,8 @@ class GameScene extends Phaser.Scene {
         this.ramenSpeed += 50;
         this.ramens.setVelocityX(this.ramenSpeed * -1);
     }
+
+}
 
 // Set configuration for phaser game instance
 const config = {
