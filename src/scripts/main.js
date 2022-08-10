@@ -55,7 +55,7 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.character, this.ramen, this.onPlayerHitEnemy, null, this);
 
         //  Checks to see if the painball overlaps with any of the enemies, if so call the onBallHitEnemy function
-        this.physics.add.overlap(this.paintballImg, this.enemies, this.onBallHitEnemy, null, this);
+        this.physics.add.overlap(this.rocket, this.enemies, this.onBallHitEnemy, null, this);
         
         console.log('hello 02');
 
@@ -80,7 +80,7 @@ class GameScene extends Phaser.Scene {
         this.rocket.visible = false;
 
         console.log('hello 03');
-
+        this.physics.pause();
 
     }
 
@@ -94,16 +94,16 @@ class GameScene extends Phaser.Scene {
             this.character.x -= 10;
         } if (this.cursors.right.isDown) {
             this.character.x += 10;
-        } if (this.cursors.up.isDown) {
-        this.character.y -= 10;
-        } if (this.cursors.down.isDown) {
-            this.character.y += 10;
+        //} if (this.cursors.up.isDown) {
+        //this.character.y -= 10;
+        //} if (this.cursors.down.isDown) {
+        //   this.character.y += 10;
         } 
-        if (this.cursors.space.isDown) {
+        else if (this.cursors.space.isDown) {
             console.log('reachme 02') 
 
             if (this.rocketState === 'ready') {
-                this.rocket.y;
+                //this.rocket.y;
                 this.fireRocket();
                 console.log('reachme 01') 
             }
@@ -128,7 +128,10 @@ class GameScene extends Phaser.Scene {
         });
 
         console.log('hello 02');
-
+ // Paintball out of bounds
+        if (this.rocket.y <= -this.rocket.height / 2) {
+            this.resetBall();
+        }
     }
 
     // Player & Canvas collision
@@ -140,10 +143,9 @@ class GameScene extends Phaser.Scene {
         // this.showGameOverText();
     }
 
-    onBallHitEnemy(paintballImg, ramen) {
+    onBallHitEnemy(rocket, ramen) {
         ramen.disableBody(true, true);
-        paintballImg.body.enable = false;
-        this.splatSound.play();
+        rocket.body.enable = false;
         this.resetBall();
 
         // Add and update the score
@@ -188,7 +190,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Reset the ball
-    resetBall() {
+    resetRcoket() {
         if (this.rocketState === 'ready') {
             return;
         }
@@ -196,6 +198,8 @@ class GameScene extends Phaser.Scene {
         this.rocket.setVelocityY(0);
         this.rocket.visible = false;
     }
+
+    
 
     // Genrate Random number between two ints and return value
     randomNum(x, y) {
@@ -206,9 +210,6 @@ class GameScene extends Phaser.Scene {
         this.ramenSpeed += 50;
         this.ramens.setVelocityX(this.ramenSpeed * -1);
     }
-}
-
-
 
 // Set configuration for phaser game instance
 const config = {
