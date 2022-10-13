@@ -215,8 +215,8 @@ class GameScene extends Phaser.Scene {
 
         for (let i = 0; i < this.numEnemies; i++) {
             this.enemies.create(
-                Phaser.Math.Between(imageSize.width, config.width - imageSize.width),
-                Phaser.Math.Between(imageSize.height, (config.height / 2) - imageSize.height),
+                Math.Between(imageSize.width, config.width - imageSize.width),
+                Math.Between(imageSize.height, (config.height / 2) - imageSize.height),
                 'canvas'
             );
         }
