@@ -13,9 +13,9 @@ class GameScene extends Phaser.Scene {
     preload() {
         console.log("preload START");
         this.load.image('background', new URL('../assets/myAssets/myBackground.png', import.meta.url).href);
-        this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
-        this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
-        this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
+        // this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
+        // this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
+        // this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
         console.log("preload END");
        
 
@@ -25,13 +25,13 @@ class GameScene extends Phaser.Scene {
     create() {
         console.log("create");
         // Add images to Scene
-        this.add.image(480, 360, 'background');
-        this.player = this.physics.add.sprite(480, 600, 'player');
+        this.add.image(640, 360, 'background');
+        // this.player = this.physics.add.sprite(480, 600, 'player');
 
         // Initialize keyboard manager
         this.cursors = this.input.keyboard.createCursorKeys();
         // Set world bounds for player
-        this.player.setCollideWorldBounds(true);
+        // this.player.setCollideWorldBounds(true);
         // Fire the projectile
        
     }
@@ -51,9 +51,9 @@ class GameScene extends Phaser.Scene {
             }
         }
         //  Projectile out of bounds
-        if (this.projectileImg.y <= -16) {
-            this.resetProjectile();
-        }
+        // if (this.projectileImg.y <= -16) {
+        //     this.resetProjectile();
+        // }
 
     }
 
@@ -84,7 +84,7 @@ class GameScene extends Phaser.Scene {
 // Set configuration for phaser game instance
 const config = {
     type: Phaser.AUTO,
-    width: 960,
+    width: 1280,
     height: 720,
     
     // Add physics, arcade, and scene
@@ -104,5 +104,5 @@ const config = {
 // Initialize game instance
 new Phaser.Game(config);
 // Projectile object declaration
-this.projectileImg;
-this.projectileState = 'ready';
+// this.projectileImg;
+// this.projectileState = 'ready';
