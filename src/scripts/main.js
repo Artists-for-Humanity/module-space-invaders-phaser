@@ -8,17 +8,19 @@ class GameScene extends Phaser.Scene {
         this.player;
         this.cursors;
 
+        // Projectile object declaration
+        this.projectileImg;
+        this.projectileState = 'ready';
+
     }
 
     preload() {
         console.log("preload START");
         this.load.image('background', new URL('../assets/myAssets/myBackground.png', import.meta.url).href);
-        // this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
-        // this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
-        // this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
+        this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
+        this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
+        this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
         console.log("preload END");
-       
-
         
     }
 
@@ -26,24 +28,26 @@ class GameScene extends Phaser.Scene {
         console.log("create");
         // Add images to Scene
         this.add.image(640, 360, 'background');
-        // this.player = this.physics.add.sprite(480, 600, 'player');
+        this.player = this.physics.add.sprite(640, 600, 'player').setScale(.25,.25);
 
         // Initialize keyboard manager
         this.cursors = this.input.keyboard.createCursorKeys();
+        // Projectile
+        this.projectileImg = this.physics.add.sprite(-1440,-1920, 'projectile');
+        this.projectileImg.visible = false;
         // Set world bounds for player
-        // this.player.setCollideWorldBounds(true);
+        this.player.setCollideWorldBounds(true);
         // Fire the projectile
-       
     }
 
     update() { 
         console.log("update"); 
         // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
-            this.player.x -= 10;
+            this.player.x -= 15;
         }
         if (this.cursors.right.isDown) {
-            this.player.x += 10;
+            this.player.x += 15;
         }
         if (this.cursors.space.isDown) {
             if (this.projectileState == 'ready') {
@@ -51,12 +55,15 @@ class GameScene extends Phaser.Scene {
             }
         }
         //  Projectile out of bounds
-        // if (this.projectileImg.y <= -16) {
-        //     this.resetProjectile();
-        // }
+        if (this.projectileImg.y <= -16) {
+            this.resetProjectile();
+        }
+
+
 
     }
 
+    // Fire the projectile
     fireProjectile() {
         this.projectileState = 'fire';
         this.projectileImg.visible = true;
