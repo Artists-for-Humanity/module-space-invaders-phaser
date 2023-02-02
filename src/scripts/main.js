@@ -4,6 +4,7 @@ class GameScene extends Phaser.Scene {
     constructor(){
         super();
         console.log("constructor");
+        this.player;
     }
 
     preload() {
@@ -17,6 +18,8 @@ class GameScene extends Phaser.Scene {
 
     create() {
         console.log("create");
+        this.add.image(480,360, 'background');
+        this.player = this.physics.add.sprite(480,600, 'player');
     }
 
     update() {
