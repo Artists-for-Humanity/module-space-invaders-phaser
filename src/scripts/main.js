@@ -5,7 +5,8 @@ class GameScene extends Phaser.Scene {
         super();
         console.log("constructor");
         this.player;
-    }
+        this.cursors;
+    }   
 
     preload() {
         console.log("preload START");
@@ -20,10 +21,18 @@ class GameScene extends Phaser.Scene {
         console.log("create");
         this.add.image(480,360, 'background');
         this.player = this.physics.add.sprite(480,600, 'player');
+        this.player.setCollideWorldBounds(true);
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
 
     update() {
         console.log("update 1234");
+        if (this.cursors.left.isDown) {
+            this.player.x -= 10;
+        }
+        if (this.cursors.right.isDown) {
+            this.player.x += 10;
+        }
     }
 }
 
