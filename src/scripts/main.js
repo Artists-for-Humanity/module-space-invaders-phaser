@@ -127,6 +127,11 @@ class GameScene extends Phaser.Scene {
         // Increment and update the score
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
+        //moar
+        if (this.enemies.countActive(true) === 0) {
+            this.speedUpEnemies();
+            this.setEnemies();
+        }
     }
     // Player & Canvas collision
     onPlayerHitEnemy(player) {
@@ -142,6 +147,10 @@ class GameScene extends Phaser.Scene {
         this.enemies.children.iterate((child) => {
             child.y = config.height * 2;
         });
+    }
+    speedUpEnemies() {
+        this.enemySpeed += 50;
+        this.enemies.setVelocityX(this.enemySpeed * -1);
     }
 }
 // Set configuration for phaser game instance
