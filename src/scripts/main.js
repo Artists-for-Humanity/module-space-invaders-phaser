@@ -78,6 +78,9 @@ class GameScene extends Phaser.Scene {
                 this.fireProjectile();
             }
         }
+        if (this.cursors.up.isDown) {
+            this.showGameOverText();
+        }
         // Projectile out of bounds
         if (this.projectileImg.y <= -16) {
             this.resetProjectile();
@@ -148,6 +151,7 @@ class GameScene extends Phaser.Scene {
             child.y = config.height * 2;
         });
     }
+    //fastar
     speedUpEnemies() {
         this.enemySpeed += 50;
         this.enemies.setVelocityX(this.enemySpeed * -1);
