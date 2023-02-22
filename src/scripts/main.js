@@ -17,8 +17,10 @@ class GameScene extends Phaser.Scene {
         this.gameOverText;
         this.gameOver = false;
         // Projectile object declaration
-        this.projectileImg;
+        // this.projectileImg;
         this.projectileState = 'ready';
+        this.numProjectiles = 100;
+        this.projectiles;
     }
 
     preload() {
@@ -40,8 +42,11 @@ class GameScene extends Phaser.Scene {
         // Set world bounds for player
         this.player.setCollideWorldBounds(true);
         // Projectile
-        this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
-        this.projectileImg.visible = false;
+        // this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
+        // this.projectileImg.visible = false;
+        this.projectiles = this.physics.add.group();
+        this.setProjectiles();
+
         // Some enemies for the player to attack
         this.enemies = this.physics.add.group();
         this.setEnemies();
@@ -49,7 +54,7 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null, this);
 
         //  Checks to see if the projectile overlaps with any of the enemies, if so call the onProjectileHitEnemy method
-        this.physics.add.overlap(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this); 
+        this.physics.add.overlap(this.projectiles, this.enemies, this.onProjectileHitEnemy, null, this); 
         //  The Score text
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
             fontSize: '32px',
@@ -65,6 +70,9 @@ class GameScene extends Phaser.Scene {
 
 
     update() {
+        if (this.gameOver) {
+            return;
+        }
         console.log("update");
         // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
@@ -73,18 +81,28 @@ class GameScene extends Phaser.Scene {
         if (this.cursors.right.isDown) {
             this.player.x += 10;
         } 
-        if (this.cursors.space.isDown) {
-            if (this.projectileState == 'ready') {
-                this.fireProjectile();
+        // if (this.cursors.space.isDown) {
+        //     // this.projectileState = 'ready'
+        //     //this.createProjectile();
+        //     if (this.projectileState == 'ready') {
+        //         this.createProjectile();
+        //         this.fireProjectile();
+        //     }
+            
+        // }
+
+        this.projectiles.children.iterate((child) => {
+            const body = child.body;
+            if (this.cursors.space.isDown) {
+                    this.fireProjectile(body);
+                
             }
-        }
-        if (this.cursors.up.isDown) {
-            this.showGameOverText();
-        }
-        // Projectile out of bounds
-        if (this.projectileImg.y <= -16) {
-            this.resetProjectile();
-        }
+                    
+        });
+        
+        // if (this.projectileImg.y <= -16) {
+        //     this.resetProjectile();
+        // }
         // On border collision change enemy direction and move down by 64px
         this.enemies.children.iterate((child) => {
             const body = child.body;
@@ -98,35 +116,55 @@ class GameScene extends Phaser.Scene {
             }
         });
     }
-    
-    fireProjectile() {
-        this.projectileState = 'fire';
-        this.projectileImg.visible = true;
-        this.projectileImg.body.enable = true;
-        this.projectileImg.x = this.player.x;
-        this.projectileImg.y = this.player.y;
-        this.projectileImg.setVelocityY(-250);
-    
+
+    // createProjectile(){
+    //     this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
+    //     this.projectileImg.visible = false;
+    // }
+    fireProjectile(projectile) {
+        // this.projectileState = 'fire';
+        projectile.visible = true;
+        projectile.enable = true;
+        projectile.x = this.player.x;
+        projectile.y = this.player.y;
+        projectile.setVelocityY(-250);
     }
+    
+    // fireProjectile() {
+    //     this.projectileState = 'fire';
+    //     this.projectileImg.visible = true;
+    //     this.projectileImg.body.enable = true;
+    //     this.projectileImg.x = this.player.x;
+    //     this.projectileImg.y = this.player.y;
+    //     this.projectileImg.setVelocityY(-250);
+    // }
     //Reset projectile
-    resetProjectile() {
-        if(this.projectileState === 'ready'){
-            return;
-        }
-        this.projectileState = 'ready';
-        this.projectileImg.setVelocityY(0);
-        this.projectileImg.visible = false;
-    }
+    // resetProjectile() {
+    //     if(this.projectileState === 'ready'){
+    //         return;
+    //     }
+    //     this.projectileState = 'ready';
+    //     this.projectileImg.setVelocityY(0);
+    //     this.projectileImg.visible = false;
+    // }
     setEnemies() {
         for (let i = 0; i < this.numEnemies; i++) {
             this.enemies.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
         }
         this.enemies.setVelocityX(this.enemySpeed * -1);
     }
-    onProjectileHitEnemy(projectileImg, enemy) {
+    setProjectiles() {
+        for (let i = 0; i < this.numProjectiles; i++) {
+            // this.projectiles.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'projectile');
+
+            this.projectiles.create(-1440,-1920, 'projectile');
+            this.projectiles.visible = false;
+        }
+    }
+    onProjectileHitEnemy(projectile, enemy) {
         enemy.disableBody(true, true);
-        projectileImg.body.enable = false;
-        this.resetProjectile();
+        projectile.body.enable = false;
+        // this.resetProjectile();
         // Increment and update the score
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
