@@ -155,8 +155,6 @@ class GameScene extends Phaser.Scene {
     }
     setProjectiles() {
         for (let i = 0; i < this.numProjectiles; i++) {
-            // this.projectiles.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'projectile');
-
             this.projectiles.create(-1440,-1920, 'projectile');
             this.projectiles.visible = false;
         }
