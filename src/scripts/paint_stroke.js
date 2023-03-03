@@ -10,7 +10,7 @@ class GameScene extends Phaser.Scene {
         });
 
         this.KEY_BG = 'background'
-        this.KEY_BRUSH = 'brush'
+        this.KEY_BRUSH = 'custom_brush'
 
         this.isDown = false
         this.renderTexture = null
@@ -20,6 +20,8 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image(this.KEY_BG, new URL('../assets/final/artopia-bg.png', import.meta.url).href);
+        this.load.image(this.KEY_BRUSH, new URL('../assets/final/brush.png', import.meta.url).href);
+
     }
 
     create() {
