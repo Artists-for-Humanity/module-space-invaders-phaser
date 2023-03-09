@@ -9,7 +9,6 @@ class GameScene extends Phaser.Scene {
       key: 'Game',
     });
   }
-    
 
   preload() {
     this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
@@ -46,7 +45,7 @@ class GameScene extends Phaser.Scene {
         cellImage.on('pointerover', () => {
           cellImage.setVisible(false);
           cell.revealed = true;
-          console.log(cell);
+
         });
         items.add(cellImage).setOrigin(0)
       }
