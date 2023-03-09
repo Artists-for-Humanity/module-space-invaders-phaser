@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
+import AnimationScene from './AnimationScene'
 
 
 class GameScene extends Phaser.Scene {
   constructor() {
     super({
-      active: false,
+      active: true,
       visible: false,
       key: 'Game',
     });
@@ -16,7 +17,6 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(0, 0, 'artopia').setOrigin(0).setDepth(0);
     const rows = [];
     for (let i = 0; i < 40; i++) {
       const col = []
@@ -65,7 +65,6 @@ class GameScene extends Phaser.Scene {
 const config = {
   type: Phaser.AUTO,
   width: 1920,
-  backgroundColor: '#ffffff',
   height: 1080,
   // Add physics, arcade, scene, and audio
   physics: {
@@ -77,7 +76,7 @@ const config = {
       debug: false,
     },
   },
-  scene: GameScene,
+  scene: [AnimationScene, GameScene],
   audio: {
     disableWebAudio: true,
   },
