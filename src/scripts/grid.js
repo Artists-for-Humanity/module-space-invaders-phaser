@@ -17,6 +17,10 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+
+    // create grid of cells
+    const items = this.add.group();
+
     const rows = [];
     for (let i = 0; i < 40; i++) {
       const col = []
@@ -26,30 +30,47 @@ class GameScene extends Phaser.Scene {
           y: i,
           revealed: false,
         });
+
+        const x = j * (1920 / 50);
+        const y = i * (1080 / 40);
+        // 1920 / 50 = 38.2
+        // 1080 / 40 = 27
+        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27);
+
+        // cellImage.height = 1080 / 40;
+        // cellImage.width = 1920 / 50;
+        cellImage.on('pointerover', () => {
+          cellImage.setVisible(false);
+          col[j].revealed = true;
+          console.log(col[j])
+        });
+        items.add(cellImage).setOrigin(0);
+
       }
       rows.push(col);
     }
-    const items = this.add.group();
+    //const items = this.add.group();
 
-    for (const row in rows) {
-      for (const col in rows[row]) {
-        const cell = rows[row][col];
-        const x = col * (1920 / 50);
-        const y = row * (1080 / 40)
-        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive();
-        // if (col % 2 === 0) {
-        //   cellImage.setAlpha(0.5);
-        // }
-        cellImage.height = 1080 / 40;
-        cellImage.width = 1920 / 50;
-        cellImage.on('pointerover', () => {
-          cellImage.setVisible(false);
-          cell.revealed = true;
+    // add image to each cell on the grid
+    // for (const row in rows) {
+    //   for (const col in rows[row]) {
+    //     const cell = rows[row][col];
+    //     const x = col * (1920 / 50);
+    //     const y = row * (1080 / 40);
+    //     const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive();
+    //     // if (col % 2 === 0) {
+    //     //   cellImage.setAlpha(0.5);
+    //     // }
+    //     cellImage.height = 1080 / 40;
+    //     cellImage.width = 1920 / 50;
+    //     cellImage.on('pointerover', () => {
+    //       cellImage.setVisible(false);
+    //       cell.revealed = true;
 
-        });
-        items.add(cellImage).setOrigin(0)
-      }
-    }
+    //     });
+    //     items.add(cellImage).setOrigin(0);
+    //   }
+    // }
 
     items.setDepth(1);
   }
