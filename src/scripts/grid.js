@@ -31,9 +31,9 @@ class GameScene extends Phaser.Scene {
 
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        // 1920 / 50
+        // 1920 / 50 = 38.2
         // 1080 / 40 = 27
-        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(30, 20);
+        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27);
 
         // cellImage.height = 1080 / 40;
         // cellImage.width = 1920 / 50;
