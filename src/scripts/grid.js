@@ -17,8 +17,10 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+
     // create grid of cells
     const items = this.add.group();
+
     const rows = [];
     for (let i = 0; i < 40; i++) {
       const col = []
