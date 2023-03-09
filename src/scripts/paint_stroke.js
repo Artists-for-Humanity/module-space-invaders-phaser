@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-
+import AnimationScene from './AnimationScene';
 
 class GameScene extends Phaser.Scene {
     constructor() {
         super({
-            active: false,
+            active: true,
             visible: false,
             key: 'Game',
         });
@@ -19,18 +19,15 @@ class GameScene extends Phaser.Scene {
     
 
     preload() {
+        // loading asset images
         this.load.image(this.KEY_BG, new URL('../assets/final/artopia-bg.png', import.meta.url).href);
         this.load.image(this.KEY_BRUSH, new URL('../assets/final/brush.png', import.meta.url).href);
-
     }
 
     create() {
 
         const x = 600
         const y = 400
-
-        //reveal image
-        this.add.image(x, y, this.KEY_BG)
 
         //cover image
         const cover = this.make.image({
@@ -55,6 +52,8 @@ class GameScene extends Phaser.Scene {
             key: this.KEY_BRUSH,
             add: false
         })
+
+        this.brush.setDisplaySize(100, 100)
 
         this.renderTexture = rt
 
@@ -101,7 +100,7 @@ const config = {
             debug: false,
         },
     },
-    scene: GameScene,
+    scene: [AnimationScene, GameScene],
     audio: {
         disableWebAudio: true,
     },
