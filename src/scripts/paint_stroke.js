@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-
+import AnimationScene from './AnimationScene';
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -38,6 +38,7 @@ class GameScene extends Phaser.Scene {
       add: false
     });
 
+
     const width = cover.width;
     const height = cover.height;
 
@@ -56,7 +57,11 @@ class GameScene extends Phaser.Scene {
       add: false
     });
 
+
     this.renderTexture = rt;
+
+    this.brush.setDisplaySize(100, 100)
+
 
   }
 
@@ -132,14 +137,20 @@ const config = {
   width: 960,
   height: 720,
     
-  // Add physics, arcade, scene, and audio
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: {
-        y: 0,
-      },
-      debug: false,
+
+    // Add physics, arcade, scene, and audio
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: {
+                y: 0,
+            },
+            debug: false,
+        },
+    },
+    scene: [AnimationScene, GameScene],
+    audio: {
+        disableWebAudio: true,
     },
   },
   scene: GameScene,
