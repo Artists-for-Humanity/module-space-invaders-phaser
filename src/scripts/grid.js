@@ -151,6 +151,17 @@ class Cell {
   }
 }
 
+class ExpanderCell extends Cell {
+  constructor(x, y, grid, filled, parent) {
+    super(x, y, grid, filled);
+    this.parentCell = parent;
+  }
+
+  expandFromParent(fn) {
+    fn()
+  }
+}
+
 class GameScene extends Phaser.Scene {
   constructor() {
     super({
@@ -196,19 +207,24 @@ class GameScene extends Phaser.Scene {
     }
 
     this.rows = rows;
+    console.log(rows);
     this.items = items;
     this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN')
 
-    this.fillSquares(50 * 10, rows, items);
+    // this.fillSquares(50 * 10, rows, items);
     // tiers: 50, 100, 250, 500, 1000, 2500, 5000
 
     this.items.setDepth(1);
 
     console.log(this.controls);
+
+    // setInterval(() => {
+    //   this.fillSquares(50, rows, items);
+    // }, 10)
   }
 
   update() {
-    if (this.input.keyboard.checkDown(this.controls['ONE'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 100)) {
       this.fillSquares(tiers[0], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['TWO'], 1000)) {
@@ -230,11 +246,17 @@ class GameScene extends Phaser.Scene {
       this.fillSquares(tiers[6], this.rows, this.items)
     }
   }
-  
+
+  findEmptyCell(rows) {
+
+  }
+
   fillSquares(donation, rows, items) {
     const squares = donation / 50;
     // if (squares < 10) {
       // console.log(rows);
+
+      // debug edge case: already filled cells are being checked
       const src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
       src.revealed = true;
       const centerCell = new Cell(src.x, src.y, rows, src.revealed);
