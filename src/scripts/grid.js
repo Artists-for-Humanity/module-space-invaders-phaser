@@ -43,7 +43,7 @@ class Cell {
 
   // SIDE CENTER CELLS
   getCenterRightCell() {
-    if (this.constants.RIGHT >= this.grid[0].length) {
+    if (this.constants.RIGHT >= this.grid[0].length) { // Why not use >= 0
       return null;
     } else {
       return new Cell(this.constants.RIGHT, this.data.y, this.grid, this.grid[this.data.y][this.constants.RIGHT].revealed);
@@ -140,6 +140,7 @@ class Cell {
    * @param {'all' | 'x' | 't'} direction 
    * @returns A random cell adjacent in the given direction.
    */
+
   getRandomCell(direction) {
     const directions = {
       all: 'getSurroundingCells',
@@ -177,7 +178,7 @@ class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
-    this.load.image('artopia', new URL('../assets/final/artopia-bg.png', import.meta.url).href);
+    // this.load.image('artopia', new URL('../assets/final/Artopia_Example00.png', import.meta.url).href);
   }
 
   create() {
@@ -207,8 +208,10 @@ class GameScene extends Phaser.Scene {
     }
 
     this.rows = rows;
-    console.log(rows);
+    // console.log("Rows: " + this.rows);
     this.items = items;
+    // console.log("Items: " + items);
+
     this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN')
 
     // this.fillSquares(50 * 10, rows, items);
@@ -221,13 +224,19 @@ class GameScene extends Phaser.Scene {
     // setInterval(() => {
     //   this.fillSquares(50, rows, items);
     // }, 10)
+
+    console.log('Reachme 00')
+
   }
 
   update() {
-    if (this.input.keyboard.checkDown(this.controls['ONE'], 100)) {
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 1000)) {
       this.fillSquares(tiers[0], this.rows, this.items)
+
+
+
     }
-    if (this.input.keyboard.checkDown(this.controls['TWO'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['TWO'], 0)) {
       this.fillSquares(tiers[1], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['THREE'], 1000)) {
@@ -254,54 +263,68 @@ class GameScene extends Phaser.Scene {
   fillSquares(donation, rows, items) {
     const squares = donation / 50;
     // if (squares < 10) {
-      // console.log(rows);
 
-      // debug edge case: already filled cells are being checked
-      const src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
-      src.revealed = true;
-      const centerCell = new Cell(src.x, src.y, rows, src.revealed);
-      items.getChildren().find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
-      let total = 1;
-      while (total < squares) {
-        const targetCell = centerCell.getRandomCell();
-        if (!targetCell.filled) {
-          targetCell.filled = true;
-          items.getChildren().find(i => i.name === `(${targetCell.data.x}, ${targetCell.data.y})`).setVisible(false);
-          rows[targetCell.data.y][targetCell.data.x].revealed = true;
-          total++;
-          // console.log(total, targetCell.filled, targetCell.data, centerCell.getSurroundingCells().asArray.map(c => `${c.data.x}, ${c.data.y}`));
-        } else {
-          continue;
-        }
-        if (centerCell.getSurroundingCells().asArray.filter(cell => cell !== null && !cell.filled).length < 1) {
-          break;
-        }
+    // debug edge case: already filled cells are being checked
+    let src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
+    console.log("Src: " + src.x + ", " + src.y + ", " + src.revealed);
+    let count = 0
+    while (src.revealed) {
+      src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
+      count++;
+      if (count > 2000) {
+        console.log("All Cells Revealed!!!")
+        break;
       }
-      // centerCell.getSurroundingCells().asArray.forEach(surroundingCell => {
-      //   if (total < squares && surroundingCell !== null) {
-      //     surroundingCell.filled = true;
-      //     items.getChildren().find(i => i.name === `(${surroundingCell.data.x}, ${surroundingCell.data.y})`).setVisible(false);
-      //     // console.log(surroundingCell.data.x, surroundingCell.data.y, item.visible, surroundingCell.filled);
-      //     total++;
-      //   }
-      // });
-      if (total < squares) {
-        const expandables = centerCell.getSurroundingCells().asArray.filter(cell => cell !== null && cell.countUnpaintedCells() > 0);
-        // console.log(expandables);
-        if (expandables.length > 0) {
-          const expanderCell = expandables[Math.floor(Math.random() * expandables.length)];
-          // console.log(expanderCell);
-          this.expandSquares(expanderCell, total, squares, items, rows);
-          // while (total < squares) {
-          //   const nextCell = expanderCell.getRandomCell();
-          //   if (!nextCell || !nextCell.filled === true) continue;
-          //   nextCell.filled = true;
-          //   items.getChildren().find(i => i.name === `(${nextCell.data.x}, ${nextCell.data.y})`).setVisible(false);
-          //   rows[nextCell.data.y][nextCell.data.x].revealed = true;s
-          //   total++;
-          // }
-        }
+      console.log(count)
+    }
+    console.log("Src: " + src.x + ", " + src.y + ", " + src.revealed);
+    // console.log("Rows: " + rows[src.y][src.x].y);
+    console.log("Rows: " + rows[src.y][src.x].x + ", " + rows[src.y][src.x].y + ", " + rows[src.y][src.x].revealed);
+
+    src.revealed = true;
+    const centerCell = new Cell(src.x, src.y, rows, src.revealed);
+    items.getChildren().find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
+    let total = 1;
+    while (total < squares) {
+      const targetCell = centerCell.getRandomCell();
+      if (!targetCell.filled) {
+        targetCell.filled = true;
+        items.getChildren().find(i => i.name === `(${targetCell.data.x}, ${targetCell.data.y})`).setVisible(false);
+        rows[targetCell.data.y][targetCell.data.x].revealed = true;
+        total++;
+        // console.log(total, targetCell.filled, targetCell.data, centerCell.getSurroundingCells().asArray.map(c => `${c.data.x}, ${c.data.y}`));
+      } else {
+        continue;
       }
+      if (centerCell.getSurroundingCells().asArray.filter(cell => cell !== null && !cell.filled).length < 1) {
+        break;
+      }
+    }
+    // centerCell.getSurroundingCells().asArray.forEach(surroundingCell => {
+    //   if (total < squares && surroundingCell !== null) {
+    //     surroundingCell.filled = true;
+    //     items.getChildren().find(i => i.name === `(${surroundingCell.data.x}, ${surroundingCell.data.y})`).setVisible(false);
+    //     // console.log(surroundingCell.data.x, surroundingCell.data.y, item.visible, surroundingCell.filled);
+    //     total++;
+    //   }
+    // });
+    if (total < squares) {
+      const expandables = centerCell.getSurroundingCells().asArray.filter(cell => cell !== null && cell.countUnpaintedCells() > 0);
+      // console.log(expandables);
+      if (expandables.length > 0) {
+        const expanderCell = expandables[Math.floor(Math.random() * expandables.length)];
+        // console.log(expanderCell);
+        this.expandSquares(expanderCell, total, squares, items, rows);
+        // while (total < squares) {
+        //   const nextCell = expanderCell.getRandomCell();
+        //   if (!nextCell || !nextCell.filled === true) continue;
+        //   nextCell.filled = true;
+        //   items.getChildren().find(i => i.name === `(${nextCell.data.x}, ${nextCell.data.y})`).setVisible(false);
+        //   rows[nextCell.data.y][nextCell.data.x].revealed = true;s
+        //   total++;
+        // }
+      }
+    }
     // }
   }
 
@@ -312,6 +335,7 @@ class GameScene extends Phaser.Scene {
    * @param {number} goal 
    */
   expandSquares(expander, progress, goal, items, rows) {
+    console.log('Reachme 01')
     expander.getSurroundingCells().asArray.forEach(cell => {
       if (cell !== null && !cell.filled && progress < goal) {
         cell.filled = true;
