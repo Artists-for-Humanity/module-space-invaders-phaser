@@ -82,7 +82,7 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.input.keyboard.checkDown(this.controls['ONE'], 10)) {
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 1)) {
       this.fillSquares(tiers[0], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['TWO'], 100)) {
@@ -115,13 +115,11 @@ class GameScene extends Phaser.Scene {
     });
   }
 
-  fillSquares(donation, rows, items) {
-    const squares = donation / 50;
-    // if (squares < 10) {
-    // debug edge case: already filled cells are being checked
+  generateCenterCell(rows) {
+
     let src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
-    // console.log("Src: " + src.x + ", " + src.y + ", " + src.revealed);
     let count = 0;
+
     while (src.revealed) {
       if (this.checkForCompletion(rows)) {
         console.log("All Cells Revealed!!!")
@@ -131,15 +129,44 @@ class GameScene extends Phaser.Scene {
       count++;
       console.log(count)
     }
+    return src;
+  }
 
+  fillSquares(donation, rows, items) {
+    const squares = donation / 50;
 
-    // console.log("Src: " + src.x + ", " + src.y + ", " + src.revealed);
-    // // console.log("Rows: " + rows[src.y][src.x].y);
-    // console.log("Rows: " + rows[src.y][src.x].x + ", " + rows[src.y][src.x].y + ", " + rows[src.y][src.x].revealed);
+    const src = this.generateCenterCell(rows)
 
     src.revealed = true;
     const centerCell = new Cell(src.x, src.y, rows, src.revealed);
     items.getChildren().find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
+    console.log(`${centerCell.data.x}, ${centerCell.data.y}`)
+
+    centerCell.getSurroundingCells().asArray.forEach(child => {
+      console.log(child);
+    })
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    console.log(centerCell.getSurroundingCells().asArray.find(child => child != null && !child.filled));
+
+    if (squares === 2) {
+      if (centerCell.getSurroundingCells().asArray.every(child => child === null || child.filled)) {
+        this.fillSquares(50, rows, items)
+        console.log("ISLAND")
+      }
+
+      const nextCell = centerCell.getSurroundingCells().asArray.find(child => child != null && !child.filled);
+      items.getChildren().find(i => i.name === `(${nextCell.data.x}, ${nextCell.data.y})`).setVisible(false);
+
+    }
+
+
+
+
+
+
+
+
+
     // let total = 1;
 
     // while (total < squares) {
@@ -158,11 +185,11 @@ class GameScene extends Phaser.Scene {
     //   // console.log("Src: " + src.x + ", " + src.y + ", " + src.revealed);
     //   // // console.log("Rows: " + rows[src.y][src.x].y);
     //   // console.log("Rows: " + rows[src.y][src.x].x + ", " + rows[src.y][src.x].y + ", " + rows[src.y][src.x].revealed);
-  
+
     //   src.revealed = true;
     //   const centerCell = new Cell(src.x, src.y, rows, src.revealed);
     //   items.getChildren().find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
-      
+
     //   const targetCell = centerCell.getRandomCell();
     //   if (!targetCell.filled) {
     //     targetCell.filled = true;

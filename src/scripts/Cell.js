@@ -29,7 +29,7 @@ export default class Cell {
   }
 
   getTopRightCell() {
-    if (this.constants.RIGHT >= this.grid.length || this.constants.UP < 0) {
+    if (this.constants.RIGHT >= this.grid[0].length || this.constants.UP < 0) {
       return null;
     } else {
       return new Cell(this.constants.RIGHT, this.constants.UP, this.grid, this.grid[this.constants.UP][this.constants.RIGHT].revealed);
