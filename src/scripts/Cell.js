@@ -133,16 +133,19 @@ export default class Cell {
   /**
    * 
    * @param {'all' | 'x' | 't'} direction 
-   * @returns A random cell adjacent in the given direction.
+   * @returns {Cell} A random cell adjacent in the given direction.
    */
 
-  getRandomCell(direction) {
+  getRandomCell(direction, callback) {
     const directions = {
       all: 'getSurroundingCells',
       x: 'getXCells',
       t: 'getTCells'
     }
-    const validCells = this[directions['direction'] || 'getSurroundingCells']().asArray.filter(cell => cell !== null && cell.filled !== true);
+
+    // console.log(this.getSurroundingCells());
+    const validCells = this[directions[direction] || 'getSurroundingCells']().asArray.filter(cell => callback(cell));
+    // console.log(validCells);
     return validCells[Math.floor(Math.random() * validCells.length)];
   }
 }
