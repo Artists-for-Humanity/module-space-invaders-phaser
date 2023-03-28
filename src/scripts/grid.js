@@ -28,7 +28,7 @@ class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
-    this.load.image('greyscale', new URL('../assets/final/artopia-greyscale.png', import.meta.url).href);
+    this.load.video('greyscale', new URL('../assets/final/Foiling_Example.mp4', import.meta.url).href);
     // this.load.image('greyscale', new URL('../assets'))
     // this.load.image('artopia', new URL('../assets/final/Artopia_Example00.png', import.meta.url).href);
   }
@@ -37,8 +37,11 @@ class GameScene extends Phaser.Scene {
     // create grid of cells
     
     const items = this.add.container() //.setBlendMode('ERASE');
-    const greyscaledImage = this.add.image(0, 0, 'greyscale').setOrigin(0);
-    greyscaledImage.mask = new Display.Masks.BitmapMask(this, items);
+    const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
+    greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
+    document.addEventListener('click', () => {
+      greyscaledVideo.play(true);
+    }, { once: true });
     const rows = [];
     for (let i = 0; i < 40; i++) {
       const col = []
@@ -52,15 +55,13 @@ class GameScene extends Phaser.Scene {
         const y = i * (1080 / 40);
         // 1920 / 50 = 38.2
         // 1080 / 40 = 27
-        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27).setName(`(${j}, ${i})`);
+        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27).setName(`(${j}, ${i})`).setTint(0x000000);
 
 
         items.add(cellImage);
       }
       rows.push(col);
     }
-
-    console.log(items);
 
     this.rows = rows;
     // console.log("Rows: " + this.rows);
@@ -260,7 +261,8 @@ class GameScene extends Phaser.Scene {
           });
         });
 
-        console.log(blob)
+        const visualizedBlob = blob.map(cell => `${cell.data.x}, ${cell.data.y}`);
+        console.log(`${visualizedBlob.slice(0, 5).join(' | ')}\n${visualizedBlob.slice(5).join(' | ')}`)
 
         // const remaining = squares - total;
         // const nextCell = centerCell.getRandomCell('all', cell => cell !== null && (cell.countUnpaintedCells() >= remaining || cell.countUnpaintedCells() > 0));
