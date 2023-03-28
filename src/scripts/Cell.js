@@ -80,10 +80,11 @@ export default class Cell {
 
   // Surrounding cells compiled into one object for usage
   /**
-   * 
+   * @param {boolean|undefined} excludeNullCells
+   * @param {boolean|undefined} excludeFilledCells
    * @returns An object containing all of the surrounding cells. If a value is null, it exceeds the bounds of the grid.
    */
-  getSurroundingCells() {
+  getSurroundingCells(excludeNullCells, excludeFilledCells) {
     const surroundingCells = {
       topLeft: this.getTopLeftCell(),
       topCenter: this.getTopCenterCell(),
@@ -94,7 +95,15 @@ export default class Cell {
       bottomLeft: this.getBottomLeftCell(),
       centerLeft: this.getCenterLeftCell(),
     }
-    return Object.assign({ asArray: Object.values(surroundingCells) }, surroundingCells)
+    return Object.assign({ asArray: Object.values(surroundingCells).filter((cell) => {
+      if (excludeNullCells && cell === null) {
+        return false;
+      }
+      if (excludeFilledCells && cell.filled) {
+        return false;
+      }
+      return true;
+    }) }, surroundingCells);
   }
 
   /**
