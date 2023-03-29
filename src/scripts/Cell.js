@@ -176,4 +176,21 @@ export default class Cell {
   static NonFilledCellFinder(cell) {
     return cell !== null && !cell.filled;
   }
+
+  /**
+   * 
+   * @param {Cell[]} surroundingCells
+   * @returns a copy of surrounding cells with the order randomized
+   */
+  static shuffleSurroundingCells(surroundingCells) {
+    let cells = surroundingCells;
+    let currentIndex = cells.length,  randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [cells[currentIndex], cells[randomIndex]] = [cells[randomIndex], cells[currentIndex]];
+    }
+  
+    return cells;
+  }
 }
