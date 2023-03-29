@@ -11,7 +11,6 @@ during console.logs for tier 2:
 
 */
 
-
 class GameScene extends Phaser.Scene {
   constructor() {
     super({
@@ -19,11 +18,12 @@ class GameScene extends Phaser.Scene {
       visible: false,
       key: 'Game',
     });
-    // todo: to keep track of how blobs are being produced, make an array of cell arrays that group up blobs by a random oid
+    // todo: to keep track of how blobs are being produced, make an array of cell arrays that group up blobs by a random oid?
     this.blobs = [];
     this.rows = [];
     this.items;
     this.completed = false;
+    this.lastId = 0;
   }
 
   preload() {
@@ -34,15 +34,14 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // create grid of cells
-    
-    const items = this.add.container() //.setBlendMode('ERASE');
+    const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
       greyscaledVideo.play(true);
     }, { once: true });
     const rows = [];
+    // build grid by repeating a grid image that fits over the 
     for (let i = 0; i < 40; i++) {
       const col = []
       for (let j = 0; j < 50; j++) {
@@ -53,36 +52,17 @@ class GameScene extends Phaser.Scene {
         });
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        // 1920 / 50 = 38.2
-        // 1080 / 40 = 27
         const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27).setName(`(${j}, ${i})`).setTint(0x000000);
-
-
         items.add(cellImage);
       }
       rows.push(col);
     }
 
     this.rows = rows;
-    // console.log("Rows: " + this.rows);
     this.items = items.list;
-    // console.log("Items: " + items);
 
     this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT')
-
-    // this.fillSquares(50 * 10, rows, items);
-    // tiers: 50, 100, 250, 500, 1000, 2500, 5000
-
-    this.items //.setDepth(1);
-
-    // console.log(this.controls);
-
-    // setInterval(() => {
-    //   this.fillSquares(50, rows, items);
-    // }, 10)
-
-    console.log('Reachme 00')
-
+    console.log('SETUP COMPLETED')
   }
 
   update() {
@@ -113,10 +93,15 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  findSquare(callback) {
+  /**
+   * 
+   * @param {() => boolean} filter 
+   * @returns 
+   */
+  findSquare(filter) {
     const results = []
     this.rows.forEach((row) => {
-      results.push(...row.filter(col => callback(col)));
+      results.push(...row.filter(col => filter(col)));
     });
 
     return results[Math.floor(Math.random() * results.length)];
@@ -193,6 +178,7 @@ class GameScene extends Phaser.Scene {
 
     switch (squares) {
       case 2: {
+        let blob = [centerCell];
         if (centerCell.getSurroundingCells().asArray.every(child => child === null || child.filled)) {
           const second = this.fillSquares(50, rows, items, true)
           console.log(`~~~~~~~~~~~BLOB PAIR~~~~~~~~~~~~\nfirst: ${centerCell.data.x}, ${centerCell.data.y} second: ${second.data.x}, ${second.data.y}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`)
@@ -202,9 +188,13 @@ class GameScene extends Phaser.Scene {
         const nextCell = centerCell.getSurroundingCells(true).asArray.find(child => !child.filled);
         console.log(`~~~~~~~~~ADJACENT PAIR~~~~~~~~~~\nfirst: ${centerCell.data.x}, ${centerCell.data.y} second: ${nextCell.data.x}, ${nextCell.data.y}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`)
 
+        blob.push(nextCell);
         nextCell.filled = true;
         rows[nextCell.data.y][nextCell.data.x].revealed = true;
         items.find(i => i.name === `(${nextCell.data.x}, ${nextCell.data.y})`).setVisible(false);
+        this.blobs.push({
+          
+        })
         break;
       }
       case 3: {
