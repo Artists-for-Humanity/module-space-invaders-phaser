@@ -86,16 +86,17 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.input.keyboard.checkDown(this.controls['ONE'], 1000)) {
+    this.checkForCompletion(this.rows);
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 10)) {
       this.fillSquares(tiers[0], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['TWO'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['TWO'], 10)) {
       this.fillSquares(tiers[1], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['THREE'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['THREE'], 10)) {
       this.fillSquares(tiers[2], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['FOUR'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['FOUR'], 100)) {
       this.fillSquares(tiers[3], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['FIVE'], 1000)) {
@@ -112,22 +113,26 @@ class GameScene extends Phaser.Scene {
   findSquare(callback) {
     const results = []
     this.rows.forEach((row) => {
-      results.push(row.find(col => callback(col)));
+      results.push(...row.filter(col => callback(col)));
     });
 
     return results[Math.floor(Math.random() * results.length)];
   }
 
+  /**
+   * 
+   * @returns {Cell[]}
+   */
   sortSquares() {
     const results = [];
     this.rows.forEach(row => {
       const sample = row.filter(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed).filled !== true).map(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed));
-      sample.sort((a, b) => b.countUnpaintedCells() - a.countUnpaintedCells())
+      sample.sort((a, b) => a.countUnpaintedCells() - b.countUnpaintedCells())
 
       results.push(...sample)
     });
 
-    return results.sort((a, b) => b.countUnpaintedCells() - a.countUnpaintedCells());
+    return results.sort((a, b) => a.countUnpaintedCells() - b.countUnpaintedCells());
     // this.rows.forEach((row) => {
     //   results.push(row.filter(col => callback(col)))
     // });
@@ -138,6 +143,15 @@ class GameScene extends Phaser.Scene {
       return row.every(item => item.revealed)
     });
     return this.completed;
+  }
+
+  countRemaining() {
+    let remaining = 0;
+    this.rows.forEach(row => {
+      remaining += row.filter(col => !col.filled).length
+    });
+
+    return remaining;
   }
 
   generateCenterCell(rows) {
@@ -219,7 +233,7 @@ class GameScene extends Phaser.Scene {
             });
           } else {
             console.log('reset expansion because we have ' + (squares - total) + ' left')
-            while (total < squares) {
+            while (total < squares || !this.completed) {
               const remainder = this.fillSquares(50, rows, items, true);
               remainder.filled = true;
               rows[remainder.data.y][remainder.data.x].revealed = true;
@@ -236,140 +250,101 @@ class GameScene extends Phaser.Scene {
         let total = 1;
         let blob = [centerCell];
 
-        centerCell.getSurroundingCells(true, true).asArray.every(cell => {
+        const siblings = centerCell.getSurroundingCells(true, true).asArray;
+        siblings.forEach(cell => {
           rows[cell.data.y][cell.data.x].revealed = true;
           items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
           blob.push(cell);
           total++;
           cell.filled = true;
-          console.log(total);
-
-          return cell.getSurroundingCells(true, true).asArray.every(subcell => {
-            if (total >= squares) {
-              return false;
-            }
-            if (blob.includes(subcell)) {
-              return true;
-            }
-            console.log(total);
-            rows[subcell.data.y][subcell.data.x].revealed = true;
-            items.find(i => i.name === `(${subcell.data.x}, ${subcell.data.y})`).setVisible(false);
-            blob.push(subcell);
-            total++;
-            subcell.filled = true;
-            return true;
-          });
         });
+
+        if (total === 9) {
+          console.log('last one')
+          const last = blob.find(cell => cell.countUnpaintedCells() > 0).getRandomCell('all', Cell.NonFilledCellFinder);
+          console.log(last);
+          rows[last.data.y][last.data.x].revealed = true;
+          items.find(i => i.name === `(${last.data.x}, ${last.data.y})`).setVisible(false);
+          blob.push(last);
+          total++;
+          last.filled = true;
+        } else {
+          siblings.every(cell => {
+            cell.getSurroundingCells(true, true).asArray.forEach(subcell => {
+              if (total === squares || subcell.filled) {
+                return;
+              }
+              // console.log(total);
+              rows[subcell.data.y][subcell.data.x].revealed = true;
+              items.find(i => i.name === `(${subcell.data.x}, ${subcell.data.y})`).setVisible(false);
+              blob.push(subcell);
+              total++;
+              subcell.filled = true;
+              return true;
+            });
+          });
+
+          if (total < squares) {
+            const expander = blob.find(cell => cell.countUnpaintedCells() >= squares - total);
+            const islandCheck = blob.every(cell => cell.countUnpaintedCells() === 0);
+            if (!expander) {
+              switch (islandCheck) {
+                case true: {
+                  while (total < squares || !this.completed) {
+                    let nextBlobMember = this.findSquare(cell => !cell.revealed);
+                    while (!nextBlobMember) {
+                      nextBlobMember = this.findSquare(cell => !cell.revealed);
+                    }
+                    nextBlobMember = new Cell(nextBlobMember.x, nextBlobMember.y, this.rows, nextBlobMember.revealed)
+                    this.fill(nextBlobMember, blob);
+                    total++;
+  
+                    nextBlobMember.getSurroundingCells(true, true).asArray.forEach(cell => {
+                      if (total < squares) {
+                        this.fill(cell, blob);
+                        total++;
+                      }
+                    });
+                  }
+                  break
+                }
+                case false: {
+                  while (total < squares || !this.completed) {
+                    let nextBlobMember = this.findSquare(cell => !cell.revealed);
+                    console.log(nextBlobMember);
+                    nextBlobMember = new Cell(nextBlobMember.x, nextBlobMember.y, this.rows, nextBlobMember.revealed)
+                    this.fill(nextBlobMember, blob);
+                    total++;
+  
+                    nextBlobMember.getSurroundingCells(true, true).asArray.forEach(cell => {
+                      if (total < squares) {
+                        this.fill(cell, blob);
+                        total++;
+                      }
+                    });
+
+                    if (total >= squares) break;
+                  }
+                }
+              }
+            } else {
+              expander.getSurroundingCells(true, true).asArray.forEach(cell => {
+                if (total < squares) {
+                  this.fill(cell, blob);
+                  total++;
+                }
+              });
+            }
+          }
+        }
 
         const visualizedBlob = blob.map(cell => `${cell.data.x}, ${cell.data.y}`);
         console.log(`${visualizedBlob.slice(0, 5).join(' | ')}\n${visualizedBlob.slice(5).join(' | ')}`)
-
-        // const remaining = squares - total;
-        // const nextCell = centerCell.getRandomCell('all', cell => cell !== null && (cell.countUnpaintedCells() >= remaining || cell.countUnpaintedCells() > 0));
-        // if (nextCell) {
-        //   nextCell.getSurroundingCells(true, true).asArray.forEach(cell => {
-        //     if (total < squares) {
-        //       console.log(rows.length, cell.data.y)
-        //       rows[cell.data.y][cell.data.x].revealed = true;
-        //       items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setTint(0xffffff).setVisible(false);
-        //       cell.filled = true;
-        //       blob.push(cell);
-        //       total++;
-        //     }
-        //   });
-        // }
-
-        // if (total === squares) {
-        //   const visualizedBlob = blob.map(cell => `${cell.data.x}, ${cell.data.y}`);
-        //   console.log(`${visualizedBlob.slice(0, 5).join(' | ')}\n${visualizedBlob.slice(5).join(' | ')}`)
-        //   console.log()
-        //   return;
-        // } else {
-        //   const outerCells = centerCell.getSurroundingCells(true).asArray.filter(cell => cell.countUnpaintedCells() >= squares - total);
-        //   outerCells.forEach(cell => {
-        //     if (total < squares) {
-        //       cell.getSurroundingCells(true, true).asArray.forEach(c => {
-        //         rows[c.data.y][c.data.x].revealed = true;
-        //         c.filled = true;
-        //         items.find(i => i.name === `(${c.data.x}, ${c.data.y})`).setVisible(false);
-        //         blob.push(c);
-        //         total++;
-        //       });
-        //     }
-        //   });
-        //   // while (total < squares) {
-            
-        //     // console.log(expandables)
-        //     // const squareFinder = (square, difference) => {
-        //     //   const squareCell = new Cell(square.x, square.y, rows, square.revealed)
-        //     //   if (squareCell.filled) return false;
-        //     //   return squareCell.countUnpaintedCells() >= (difference || squares - total);
-        //     // }
-
-        //     // if (!sibling) {
-        //     //   // while (total < squares) {
-        //     //   //   if (this.findSquare(square => squareFinder(square, )))
-        //     //   // }
-        //     // }
-
-        //     // let siblingCell;
-        //     // let sibling;
-        //     // let criteria = 0;
-
-        //     // while (total < squares) {
-        //     //   const expandables = this.sortSquares();
-        //     //   while (!sibling) {
-        //     //     sibling = expandables.find(cell => cell.countUnpaintedCells() === (squares - total - criteria));
-        //     //     if (!sibling) {
-        //     //       criteria++;
-        //     //     }
-        //     //   }
-
-        //     //   siblingCell = new Cell(sibling.x, sibling.y, rows, sibling.revealed)
-
-        //     //   siblingCell.filled = true;
-        //     //   rows[siblingCell.data.y][siblingCell.data.x].revealed = true;
-        //     //   items.find(i => i.name === `(${siblingCell.data.x}, ${siblingCell.data.y})`).setVisible(false);
-        //     //   blob.push(siblingCell);
-        //     //   total++;
-
-        //     //   siblingCell.getSurroundingCells().asArray.filter(cell => cell !== null && !cell.filled).forEach(cell => {
-        //     //     if (total < squares) {
-        //     //       rows[cell.data.y][cell.data.x].revealed = true;
-        //     //       items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-        //     //       blob.push(cell);
-        //     //       total++;
-        //     //     }
-        //     //   });
-
-        //     //   if (total < squares && !siblingCell.getSurroundingCells().asArray.find(cell => blob.includes(cell) && cell.countUnpaintedCells() >= (squares - total))) {
-        //     //     sibling = null;
-        //     //   }
-        //     //   break;
-        //     // }
-        //     // this adds our sibling center cell to the blob
-        //     // blob.push(siblingCell);
-
-        //     // console.log(blob);
-
-
-        //   //   if (!sibling) {
-        //   //     const remainder = this.fillSquares(50, rows, items, true);
-        //   //     remainder.filled = true;
-        //   //     rows[remainder.data.y][remainder.data.x].revealed = true;
-        //   //     blob.push(remainder);
-        //   //     total++;              
-        //   //     return;
-        //   //   }
-        //   //   const siblingCell = new Cell(sibling.x, sibling.y, rows, sibling.revealed)
-        //   //   console.log()
-        //   //   //  =  this.fillSquares(50 * (squares - total), rows, items, true) // this.fillSquares(50, rows, items, true);
-
-        //   // }
-        // }
         break;
       }
       case 20: {
+        let total = 1;
+        const blob = [];
         // tier 1000
         console.log('tier 1000')
         break;
@@ -386,13 +361,29 @@ class GameScene extends Phaser.Scene {
       }
     }
   }
+
+  /**
+   * 
+   * @param {Cell} cell 
+   */
+  fill(cell, blob) {
+    this.rows[cell.data.y][cell.data.x].revealed = true;
+    this.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
+    blob.push(cell);
+    cell.filled = true;
+  }
 }
 
 // Set configuration for phaser game instance
 const config = {
   type: Phaser.AUTO,
-  width: 1920,
-  height: 1080,
+  scale: {
+    parent: 'body',
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1920,
+    height: 1080,
+  },
   // Add physics, arcade, scene, and audio
   physics: {
     default: 'arcade',

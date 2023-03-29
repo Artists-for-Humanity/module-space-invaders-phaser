@@ -142,10 +142,11 @@ export default class Cell {
   /**
    * 
    * @param {'all' | 'x' | 't'} direction 
+   * @param filterfn The filter criteria for the random cell
    * @returns {Cell} A random cell adjacent in the given direction.
    */
 
-  getRandomCell(direction, callback) {
+  getRandomCell(direction, filterfn) {
     const directions = {
       all: 'getSurroundingCells',
       x: 'getXCells',
@@ -153,8 +154,26 @@ export default class Cell {
     }
 
     // console.log(this.getSurroundingCells());
-    const validCells = this[directions[direction] || 'getSurroundingCells']().asArray.filter(cell => callback(cell));
+    const validCells = this[directions[direction] || 'getSurroundingCells']().asArray.filter(cell => filterfn(cell));
     // console.log(validCells);
     return validCells[Math.floor(Math.random() * validCells.length)];
+  }
+
+  /**
+   * 
+   * @param {Cell} cell 
+   * @returns 
+   */
+  static NonNullishCellFinder(cell) {
+    return cell !== null
+  }
+
+  /**
+   * 
+   * @param {Cell} cell 
+   * @returns whether or not the cell is fillable. used for callbacks
+   */
+  static NonFilledCellFinder(cell) {
+    return cell !== null && !cell.filled;
   }
 }
