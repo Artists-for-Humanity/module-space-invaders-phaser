@@ -1,6 +1,7 @@
 import Phaser, { Display } from 'phaser';
 import AnimationScene from './AnimationScene';
 import Cell from './Cell';
+import Blob from './Blob';
 
 const tiers = [50, 100, 250, 500, 1000, 2500, 5000, 150];
 /*
@@ -19,6 +20,9 @@ class GameScene extends Phaser.Scene {
       key: 'Game',
     });
     // todo: to keep track of how blobs are being produced, make an array of cell arrays that group up blobs by a random oid?
+    /**
+     * @type {Blob[]}
+     */
     this.blobs = [];
     this.rows = [];
     this.items;
@@ -27,14 +31,14 @@ class GameScene extends Phaser.Scene {
   }
 
   preload() {
+    // when we have multiple illustrations/videos, add them here
     this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example.mp4', import.meta.url).href);
-    // this.load.image('greyscale', new URL('../assets'))
-    // this.load.image('artopia', new URL('../assets/final/Artopia_Example00.png', import.meta.url).href);
   }
 
   create() {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
+    // the key of this greyscaled item
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
@@ -61,22 +65,22 @@ class GameScene extends Phaser.Scene {
     this.rows = rows;
     this.items = items.list;
 
-    this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT')
+    this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ZERO')
     console.log('SETUP COMPLETED')
   }
 
   update() {
     this.checkForCompletion(this.rows);
-    if (this.input.keyboard.checkDown(this.controls['ONE'], 10)) {
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 1000)) {
       this.fillSquares(tiers[0], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['TWO'], 10)) {
+    if (this.input.keyboard.checkDown(this.controls['TWO'], 1000)) {
       this.fillSquares(tiers[1], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['THREE'], 10)) {
+    if (this.input.keyboard.checkDown(this.controls['THREE'], 1000)) {
       this.fillSquares(tiers[2], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['FOUR'], 100)) {
+    if (this.input.keyboard.checkDown(this.controls['FOUR'], 1000)) {
       this.fillSquares(tiers[3], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['FIVE'], 1000)) {
@@ -90,6 +94,9 @@ class GameScene extends Phaser.Scene {
     }
     if (this.input.keyboard.checkDown(this.controls['EIGHT'], 1000)) {
       this.fillSquares(tiers[7], this.rows, this.items)
+    }
+    if (this.input.keyboard.checkDown(this.controls['ZERO'], 2500)) {
+      console.log(this.blobs);
     }
   }
 
@@ -149,7 +156,7 @@ class GameScene extends Phaser.Scene {
     while (src.revealed) {
       if (this.checkForCompletion(rows)) {
         console.log("All Cells Revealed!!!")
-        break;
+        return null;
       }
       // count++
       src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
@@ -157,316 +164,72 @@ class GameScene extends Phaser.Scene {
     return src;
   }
 
-  fillSquares(donation, rows, items, parented) {
+  fillSquares(donation, rows, items) {
     const squares = donation / 50;
+    const src = this.generateCenterCell(rows);
 
-    const src = this.generateCenterCell(rows)
+    if (!src) {
+      return;
+    }
 
     src.revealed = true;
     const centerCell = new Cell(src.x, src.y, rows, src.revealed);
     // console.log(centerCell.getSurroundingCells().asArray.filter(c => c !== null).every(c => c.filled))
     items.find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
 
-    if (parented) {
-      switch (squares) {
-        case 1:
-          return centerCell;
-        default:
-          console.log(centerCell)
+    const blob = new Blob([centerCell], this.lastId, this.rows);
+    let total = 1;
+    this.lastId++;
+
+    centerCell.getSurroundingCells(true, true).asArray.every(cell => {
+      if (total === squares) return;
+      if (!blob.list.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y)) {
+        blob.add(cell, rows);
+        total++;            
       }
+      Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
+        if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
+          blob.add(subcell, rows);
+          total++;              
+        }
+        return total < squares
+      });
+      // }
+    });
+
+    while (total < squares) {
+      const expanders = blob.list.filter(cell => cell.countUnpaintedCells() > 0);
+      if (expanders.length === 0) {
+        let next = this.findSquare(Cell.NonFilledCellFinder);
+        blob.add(new Cell(next.x, next.y, this.rows, next.revealed), rows);
+        total++;
+        continue;
+      }
+
+      expanders.every(cell => {
+        if (total === squares) return false;
+        Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
+          if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
+            blob.add(subcell, rows);
+            total++;
+          }
+          return total < squares;   
+        });
+      });
     }
+    this.blobs.push(blob);
+    blob.paint(items);
 
-    switch (squares) {
-      case 2: {
-        let blob = [centerCell];
-        if (centerCell.getSurroundingCells().asArray.every(child => child === null || child.filled)) {
-          const second = this.fillSquares(50, rows, items, true)
-          console.log(`~~~~~~~~~~~BLOB PAIR~~~~~~~~~~~~\nfirst: ${centerCell.data.x}, ${centerCell.data.y} second: ${second.data.x}, ${second.data.y}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`)
-          return;
-        }
-  
-        const nextCell = centerCell.getSurroundingCells(true).asArray.find(child => !child.filled);
-        console.log(`~~~~~~~~~ADJACENT PAIR~~~~~~~~~~\nfirst: ${centerCell.data.x}, ${centerCell.data.y} second: ${nextCell.data.x}, ${nextCell.data.y}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`)
-
-        blob.push(nextCell);
-        nextCell.filled = true;
-        rows[nextCell.data.y][nextCell.data.x].revealed = true;
-        items.find(i => i.name === `(${nextCell.data.x}, ${nextCell.data.y})`).setVisible(false);
-        this.blobs.push({
-          
-        })
-        break;
-      }
-      case 3: {
-        let total = 1;
-        let blob = [centerCell];
-        centerCell.getSurroundingCells(true).asArray.forEach(cell => {
-          if (total < squares) {
-            cell.filled = true;
-            rows[cell.data.y][cell.data.x].revealed = true;
-            items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-            blob.push(cell);
-            total++;
-          }
-        });
-
-        if (total === squares) { //if we already finished, great! no need to continue
-          return;
-        } else {
-          if (centerCell.getSurroundingCells(true, true).asArray.every(child => child.countUnpaintedCells() === 0)) {
-            while (total < squares) {
-              let next = this.findSquare(Cell.NonFilledCellFinder);
-              next = new Cell(next.x, next.y, this.rows, next.revealed);
-              this.fill(next, blob);
-              total++;
-  
-              if (next.countUnpaintedCells() > 0 && total < squares) {
-                next.getSurroundingCells(true, true).asArray.forEach(child => {
-                  if (total < squares) {
-                    this.fill(child, blob);
-                    total++;
-                  }
-                })
-              }
-            }
-          }
-        }
-        break;
-      }
-      case 5: {
-        let total = 1;
-        let blob = [centerCell];
-        centerCell.getSurroundingCells(true).asArray.forEach(cell => {
-          if (total < squares) {
-            cell.filled = true;
-            rows[cell.data.y][cell.data.x].revealed = true;
-            items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-            blob.push(cell);
-            total++;
-          }
-        });
-
-        if (total === squares) { //if we already finished, great! no need to continue
-          return;
-        } else {
-          if (centerCell.getSurroundingCells(true, true).asArray.every(child => child.countUnpaintedCells() === 0)) {
-            while (total < squares) {
-              let next = this.findSquare(Cell.NonFilledCellFinder);
-              next = new Cell(next.x, next.y, this.rows, next.revealed);
-              this.fill(next, blob);
-              total++;
-  
-              if (next.countUnpaintedCells() > 0 && total < squares) {
-                next.getSurroundingCells(true, true).asArray.forEach(child => {
-                  if (total < squares) {
-                    this.fill(child, blob);
-                    total++;
-                  }
-                })
-              }
-            }
-          }
-        }
-        break;
-      }
-      case 10: {
-        let total = 1;
-        let blob = [centerCell];
-
-        const siblings = centerCell.getSurroundingCells(true, true).asArray;
-        siblings.forEach(cell => {
-          rows[cell.data.y][cell.data.x].revealed = true;
-          items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-          blob.push(cell);
-          total++;
-          cell.filled = true;
-        });
-
-        if (total === 9) {
-          const last = blob.find(cell => cell.countUnpaintedCells() > 0).getRandomCell('all', Cell.NonFilledCellFinder);
-          console.log(last);
-          rows[last.data.y][last.data.x].revealed = true;
-          items.find(i => i.name === `(${last.data.x}, ${last.data.y})`).setVisible(false);
-          blob.push(last);
-          total++;
-          last.filled = true;
-        } else {
-          siblings.every(cell => {
-            cell.getSurroundingCells(true, true).asArray.forEach(subcell => {
-              if (total === squares) {
-                return false;
-              }
-              // console.log(total);
-              rows[subcell.data.y][subcell.data.x].revealed = true;
-              items.find(i => i.name === `(${subcell.data.x}, ${subcell.data.y})`).setVisible(false);
-              blob.push(subcell);
-              total++;
-              subcell.filled = true;
-              return true;
-            });
-          });
-        }
-
-        if (total < squares) {
-          while (total < squares) {
-            let next = this.findSquare(Cell.NonFilledCellFinder);
-            next = new Cell(next.x, next.y, this.rows, next.revealed);
-            this.fill(next, blob);
-            total++;
-
-            if (next.countUnpaintedCells() > 0 && total < squares) {
-              next.getSurroundingCells(true, true).asArray.forEach(child => {
-                if (total < squares) {
-                  this.fill(child, blob);
-                  total++;
-                }
-              })
-            }
-          }
-        }
-
-        const visualizedBlob = blob.map(cell => `${cell.data.x}, ${cell.data.y}`);
-        console.log(`${visualizedBlob.slice(0, 5).join(' | ')}\n${visualizedBlob.slice(5).join(' | ')}`)
-        break;
-      }
-      case 20: {
-        let total = 1;
-        const blob = [centerCell];
-        Cell.shuffleSurroundingCells(centerCell.getSurroundingCells(true, true).asArray).forEach(cell => {
-          if (!blob.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y) && total < squares) {
-            this.fill(cell, blob);
-            total++;            
-          }
-
-          Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).forEach(subcell => {
-            if (!blob.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
-              this.fill(subcell, blob);
-              total++;              
-            }
-          });
-          // }
-        });
-
-
-        while (total < squares) {
-          const expanders = blob.filter(cell => cell.countUnpaintedCells() > 0);
-          if (expanders.length === 0) {
-            let next = this.findSquare(Cell.NonFilledCellFinder);
-            next = new Cell(next.x, next.y, this.rows, next.revealed);
-            this.fill(next, blob);
-            total++;
-          }
-          expanders.every(cell => {
-            if (total === squares) return false;
-            Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
-              if (!blob.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
-                this.fill(subcell, blob);
-                total++;
-              }
-              return total < squares;   
-            });
-          });
-        }
-        // tier 1000
-        const blobrow = blob.map(b => `${b.data.x}, ${b.data.y}`);
-        console.log(`${blobrow.slice(0, 10).join(' | ')}\n${blobrow.slice(10).join(' | ')}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nLENGTH: ${blob.length}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`);
-        break;
-      }
-      case 50: {
-        // tier 2500
-        let total = 1;
-        const blob = [centerCell];
-        Cell.shuffleSurroundingCells(centerCell.getSurroundingCells(true, true).asArray).forEach(cell => {
-          if (!blob.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y) && total < squares) {
-            this.fill(cell, blob);
-            total++;            
-          }
-
-          Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).forEach(subcell => {
-            if (!blob.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
-              this.fill(subcell, blob);
-              total++;              
-            }
-          });
-          // }
-        });
-
-
-        while (total < squares) {
-          const expanders = blob.filter(cell => cell.countUnpaintedCells() > 0);
-          if (expanders.length === 0) {
-            let next = this.findSquare(Cell.NonFilledCellFinder);
-            next = new Cell(next.x, next.y, this.rows, next.revealed);
-            this.fill(next, blob);
-            total++;
-          }
-          expanders.every(cell => {
-            if (total === squares) return false;
-            Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
-              if (!blob.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
-                this.fill(subcell, blob);
-                total++;
-              }
-              return total < squares;   
-            });
-          });
-        }
-
-        const blobrow = blob.map(b => `${b.data.x}, ${b.data.y}`);
-        console.log(`${blobrow.slice(0, 10).join(' | ')}\n${blobrow.slice(10, 20).join(' | ')}\n${blobrow.slice(20, 30).join(' | ')}\n${blobrow.slice(30, 40).join(' | ')}\n${blobrow.slice(40).join(' | ')}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nLENGTH: ${blob.length}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`);
-        console.log('tier 2500')
-        break;
-      }
-      case 100: {
-        // tier 5000
-        let total = 1;
-        const blob = [centerCell];
-        Cell.shuffleSurroundingCells(centerCell.getSurroundingCells(true, true).asArray).forEach(cell => {
-          if (!blob.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y) && total < squares) {
-            this.fill(cell, blob);
-            total++;            
-          }
-
-          Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).forEach(subcell => {
-            if (!blob.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
-              this.fill(subcell, blob);
-              total++;              
-            }
-          });
-          // }
-        });
-
-
-        while (total < squares) {
-          const expanders = blob.filter(cell => cell.countUnpaintedCells() > 0);
-          if (expanders.length === 0) {
-            let next = this.findSquare(Cell.NonFilledCellFinder);
-            next = new Cell(next.x, next.y, this.rows, next.revealed);
-            this.fill(next, blob);
-            total++;
-          }
-          expanders.every(cell => {
-            if (total === squares) return false;
-            Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
-              if (!blob.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
-                this.fill(subcell, blob);
-                total++;
-              }
-              return total < squares;   
-            });
-          });
-        }
-
-        const blobrow = blob.map(b => `${b.data.x}, ${b.data.y}`);
-        console.log(`${blobrow.slice(0, 10).join(' | ')}\n${blobrow.slice(10, 20).join(' | ')}\n${blobrow.slice(20, 30).join(' | ')}\n${blobrow.slice(30, 40).join(' | ')}\n${blobrow.slice(40,50).join(' | ')}\n${blobrow.slice(50,60).join(' | ')}\n${blobrow.slice(60,70).join(' | ')}\n${blobrow.slice(70,80).join(' | ')}\n${blobrow.slice(80,90).join(' | ')}\n${blobrow.slice(90).join(' | ')}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nLENGTH: ${blob.length}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`);
-        console.log('tier 5000')
-        break;
-      }
+    if (this.checkForCompletion(rows)) {
+      console.log('trigger endgoal stuff');
     }
   }
 
-  checkFillProgress(total, squares) {
-    return total < squares;
+  resetGrid() {
+    this.scene.res
+    this.scene.restart({
+      illustrationKey: 'option2',
+    });
   }
 
   /**
@@ -476,7 +239,7 @@ class GameScene extends Phaser.Scene {
   fill(cell, blob) {
     this.rows[cell.data.y][cell.data.x].revealed = true;
     this.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-    blob.push(cell);
+    blob.add(cell);
     cell.filled = true;
   }
 }
