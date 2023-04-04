@@ -29,6 +29,8 @@ class GameScene extends Phaser.Scene {
     this.completed = false;
     this.lastId = 0;
     this.cellImageDimensions = [38.4, 27];
+    this.intervalId;
+    this.intervalCount;
   }
 
   preload() {
@@ -38,10 +40,10 @@ class GameScene extends Phaser.Scene {
      */
     const shape = 0;
     if (shape === 0) {
-      this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href); // rectangle
+      this.load.image('cell', new URL('../assets/final/grid-item-rect.png', import.meta.url).href); // rectangle
       this.cellImageDimensions = [38.4, 27];
     } else if (shape === 1) {
-      this.load.image('cell', new URL('../assets/final/grid-item.png', import.meta.url).href); // circle
+      this.load.image('cell', new URL('../assets/final/grid-item-circle.png', import.meta.url).href); // circle
       this.cellImageDimensions = [100, 100];
     }
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
@@ -77,44 +79,49 @@ class GameScene extends Phaser.Scene {
     this.rows = rows;
     this.items = items.list;
 
-    this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ZERO')
+    this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ZERO,SPACE')
     console.log('SETUP COMPLETED')
   }
 
   update() {
-    this.checkForCompletion(this.rows);
+    if (this.checkForCompletion() && this.intervalId && !this.intervalData.displayed) {
+      clearInterval(this.intervalId)
+      const percentError = ((this.intervalData.count - this.intervalData.expected) / this.intervalData.expected) * 100;
+      console.log(this.intervalData.count, this.intervalData.expected, `${percentError} percent error`);
+      console.log(this.blobs.every(blob => blob.length === 2000 / this.intervalData.expected))
+      this.intervalData.displayed = true;
+    }
     if (this.input.keyboard.checkDown(this.controls['ONE'], 10)) {
-      this.fillSquares(tiers[0], this.rows, this.items)
+      this.fillSquares(tiers[0])
     }
     if (this.input.keyboard.checkDown(this.controls['TWO'], 10)) {
-      this.fillSquares(tiers[1], this.rows, this.items)
+      this.fillSquares(tiers[1])
     }
     if (this.input.keyboard.checkDown(this.controls['THREE'], 10)) {
-      this.fillSquares(tiers[2], this.rows, this.items)
+      this.fillSquares(tiers[2])
     }
     if (this.input.keyboard.checkDown(this.controls['FOUR'], 1000)) {
-      this.fillSquares(tiers[3], this.rows, this.items)
+      this.fillSquares(tiers[3])
     }
     if (this.input.keyboard.checkDown(this.controls['FIVE'], 1000)) {
-      this.fillSquares(tiers[4], this.rows, this.items)
+      this.fillSquares(tiers[4])
     }
     if (this.input.keyboard.checkDown(this.controls['SIX'], 1000)) {
-      this.fillSquares(tiers[5], this.rows, this.items)
+      this.fillSquares(tiers[5])
     }
     if (this.input.keyboard.checkDown(this.controls['SEVEN'], 1000)) {
-      this.fillSquares(tiers[6], this.rows, this.items)
+      this.fillSquares(tiers[6])
     }
     if (this.input.keyboard.checkDown(this.controls['EIGHT'], 1000)) {
-      this.fillSquares(tiers[7], this.rows, this.items)
+      this.fillSquares(tiers[7])
     }
     if (this.input.keyboard.checkDown(this.controls['ZERO'], 2500)) {
-    console.log('ZERO')
-      // console.log(this.blobs);
+      console.log(this.blobs);
     }
-    // if(this.input.keyboard.checkDown['SPACEBAR', 1000]){
-    // console.log('SPACE')
-
-    // }
+    if (this.input.keyboard.checkDown(this.controls['SPACE'], 100000)) {
+      // this.revealAllSquares();
+      this.iterateReveal(100, 10);
+    }
   }
 
   /**
@@ -123,10 +130,9 @@ class GameScene extends Phaser.Scene {
    * @returns 
    */
   findSquare(filter) {
-    const results = []
-    this.rows.forEach((row) => {
-      results.push(...row.filter(col => filter(col)));
-    });
+    const results = this.rows.flat()
+      .map(square => new Cell(square.x, square.y, this.rows, square.filled))
+      .filter(item => filter(item));
 
     return results[Math.floor(Math.random() * results.length)];
   }
@@ -136,63 +142,55 @@ class GameScene extends Phaser.Scene {
    * @returns {Cell[]}
    */
   sortSquares() {
-    const results = [];
-    this.rows.forEach(row => {
-      const sample = row.filter(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed).filled !== true).map(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed));
-      sample.sort((a, b) => a.countUnpaintedCells() - b.countUnpaintedCells())
-
-      results.push(...sample)
-    });
+    const results = this.rows.flat()
+      .filter(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed).filled !== true)
+      .map(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed))
 
     return results.sort((a, b) => a.countUnpaintedCells() - b.countUnpaintedCells());
-    // this.rows.forEach((row) => {
-    //   results.push(row.filter(col => callback(col)))
-    // });
   }
 
-  checkForCompletion(rows) {
-    this.completed = rows.every((row) => {
-      return row.every(item => item.revealed)
-    });
+  checkForCompletion() {
+    this.completed = this.rows.flat().every(item => item.revealed);
     return this.completed;
   }
 
   countRemaining() {
     let remaining = 0;
-    this.rows.forEach(row => {
-      remaining += row.filter(col => !col.filled).length
+    this.rows.flat().forEach(item => {
+      if (item.revealed) return;
+      remaining++;
     });
 
     return remaining;
   }
 
-  generateCenterCell(rows) {
-    let src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
+  generateCenterCell() {
+    let src = this.rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
     // let count = 0;
 
     while (src.revealed) {
-      if (this.checkForCompletion(rows)) {
+      if (this.checkForCompletion(this.rows)) {
         console.log("All Cells Revealed!!!")
         return null;
       }
       // count++
-      src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
+      src = this.rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
     }
     return src;
   }
 
-  fillSquares(donation, rows, items) {
+  fillSquares(donation) {
     const squares = donation / 50;
-    const src = this.generateCenterCell(rows);
+    const src = this.generateCenterCell();
 
     if (!src) {
       return;
     }
 
     src.revealed = true;
-    const centerCell = new Cell(src.x, src.y, rows, src.revealed);
+    const centerCell = new Cell(src.x, src.y, this.rows, src.revealed);
     // console.log(centerCell.getSurroundingCells().asArray.filter(c => c !== null).every(c => c.filled))
-    items.find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
+    this.items.find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
 
     const blob = new Blob([centerCell], this.lastId, this.rows);
     let total = 1;
@@ -200,13 +198,14 @@ class GameScene extends Phaser.Scene {
 
     centerCell.getSurroundingCells(true, true).asArray.every(cell => {
       if (total === squares) return;
-      if (!blob.list.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y)) {
-        blob.add(cell, rows);
+      const cellImage = this.items.find(item => item.name === `(${cell.data.x}, ${cell.data.y})`)
+      if (!blob.list.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y) && cellImage.visible) {
+        blob.add(cell);
         total++;            
       }
       // Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
       //   if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
-      //     blob.add(subcell, rows);
+      //     blob.add(subcell);
       //     total++;              
       //   }
       //   return total < squares
@@ -217,34 +216,33 @@ class GameScene extends Phaser.Scene {
       const expanders = blob.list.filter(cell => cell.countUnpaintedCells() > 0);
       if (expanders.length === 0) {
         let next = this.findSquare(Cell.NonFilledCellFinder);
-        blob.add(new Cell(next.x, next.y, this.rows, next.revealed), rows);
+        blob.add(next);
         total++;
         continue;
       }
 
       expanders.every(cell => {
         if (total === squares) return false;
-        console.log('reachme00');
-        Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
-        console.log('reachme01');
+        return Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
           if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
-            blob.add(subcell, rows);
+            blob.add(subcell);
             total++;
           }
-          return total < squares;   
+          return total < squares;
         });
       });
     }
     this.blobs.push(blob);
-    blob.paint(items);
+    // console.log(blob.length);
+    console.log(`center cell: ${blob.centerCell.data.x} ${blob.centerCell.data.y}`);
+    blob.paint(this.items);
 
-    if (this.checkForCompletion(rows)) {
+    if (this.checkForCompletion(this.rows)) {
       console.log('trigger endgoal stuff');
     }
   }
 
   resetGrid() {
-    this.scene.res
     this.scene.restart({
       illustrationKey: 'option2',
     });
@@ -259,6 +257,33 @@ class GameScene extends Phaser.Scene {
     this.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
     blob.add(cell);
     cell.filled = true;
+  }
+
+  revealAllSquares() {
+    if (this.checkForCompletion(this.rows)) {
+      console.log('Squares already revealed')
+      return;
+    }
+    const remainderBlob = new Blob([], null, this.rows);
+    this.rows.flat().forEach(square => {
+      const cell = new Cell(square.x, square.y, this.rows, square.filled);
+      this.fill(cell, remainderBlob);
+    });
+  }
+
+  iterateReveal(donation, time) {
+    this.intervalData = {
+      count: 0,
+      expected: 2000 / (donation / 50),
+      displayed: false,
+    }
+    const intervalId = setInterval(() => {
+      this.fillSquares(donation)
+      console.log(this.countRemaining());
+      this.intervalData.count++;
+    }, time);
+
+    this.intervalId = intervalId;
   }
 }
 

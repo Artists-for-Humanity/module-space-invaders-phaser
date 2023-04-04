@@ -23,6 +23,8 @@ export default class Blob {
     this.painted = false;
     this.tier = this.list.length;
     this.length = this.list.length;
+
+    this.centerCell = this.list[0];
   }
 
   /**
@@ -33,22 +35,20 @@ export default class Blob {
   paint(items, scene) {
     this.painted = true;
     this.list.forEach(cell => {
-      // rows[cell.data.y][cell.data.x].revealed = true;
+      this.grid[cell.data.y][cell.data.x].revealed = true;
       items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
       cell.filled = true;
     });
 
-    // TODO: visual paint processing
+    // TODO: get corner blob elements
     // const paintOrder = () => {
     //   const list = this.list;
-
-    //   const top = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y < b.data.y ? -1 : 1)[0];
-    //   const left = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.x < b.data.x ? -1 : 1)[0];
-    //   const bottom = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y > b.data.y ? -1 : 1)[0];
-    //   const right = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.x > b.data.x ? -1 : 1)[0];
+      // const top = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y < b.data.y ? -1 : 1)[0];
+      // const left = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.x < b.data.x ? -1 : 1)[0];
+      // const bottom = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y > b.data.y ? -1 : 1)[0];
+      // const right = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.x > b.data.x ? -1 : 1)[0];
 
     //   const points = [left, top, right, bottom].map(cell => new Math.Vector2(cell.data.x, cell.data.y));
-
     // }
 
     // paintOrder();
@@ -59,11 +59,16 @@ export default class Blob {
    * @param {Cell} cell 
    */
   add(cell) {
-    if (cell) {
+    // if (Cell.NonFilledCellFinder(cell)) {
       this.list.push(cell);
       this.grid[cell.data.y][cell.data.x].revealed = true;
       cell.filled = true;
       this.length++;
-    }
+    // }
   }
 }
+
+/*
+return x and y of center cell of given blob
+
+*/
