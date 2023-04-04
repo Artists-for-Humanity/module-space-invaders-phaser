@@ -10,8 +10,11 @@ export default class AnimationScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image(this.KEY_CANVAS, new URL('../assets/final/artopia-colorful.png', import.meta.url).href);
-        this.load.spritesheet('alien', new URL('../assets/final/alien-sheet.png', import.meta.url).href, { frameWidth: 128, frameHeight: 128 })
+        // this.load.image(this.KEY_CANVAS, new URL('../assets/final/artopia-colorful.png', import.meta.url).href);
+        this.load.image(this.KEY_CANVAS, new URL('../assets/final/artopia wall stylized.png', import.meta.url).href);
+        // this.load.spritesheet('alien', new URL('../assets/final/alien-sheet.png', import.meta.url).href, { frameWidth: 128, frameHeight: 128 })
+    this.load.video('artopia', new URL('../assets/final/artopia wall final comp v3.mp4', import.meta.url).href);
+
     }
 
     create() {
@@ -27,6 +30,12 @@ export default class AnimationScene extends Phaser.Scene {
         // })
 
         // this.add.sprite(400, 300, 'alien').play('run')
+
+        const artopiaVideo = this.add.video(0, 0, 'artopia').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
+    // artopiaVideo.mask = new Display.Masks.BitmapMask(this, items);
+    document.addEventListener('click', () => {
+      artopiaVideo.play(true);
+    }, { once: true });
     }
 
 

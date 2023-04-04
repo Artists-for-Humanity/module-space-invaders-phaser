@@ -33,7 +33,7 @@ class GameScene extends Phaser.Scene {
   preload() {
     // when we have multiple illustrations/videos, add them here
     this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
-    this.load.video('greyscale', new URL('../assets/final/Foiling_Example.mp4', import.meta.url).href);
+    this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
   }
 
   create() {
@@ -71,13 +71,13 @@ class GameScene extends Phaser.Scene {
 
   update() {
     this.checkForCompletion(this.rows);
-    if (this.input.keyboard.checkDown(this.controls['ONE'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 10)) {
       this.fillSquares(tiers[0], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['TWO'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['TWO'], 10)) {
       this.fillSquares(tiers[1], this.rows, this.items)
     }
-    if (this.input.keyboard.checkDown(this.controls['THREE'], 1000)) {
+    if (this.input.keyboard.checkDown(this.controls['THREE'], 10)) {
       this.fillSquares(tiers[2], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['FOUR'], 1000)) {
@@ -187,14 +187,13 @@ class GameScene extends Phaser.Scene {
         blob.add(cell, rows);
         total++;            
       }
-      Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
-        if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
-          blob.add(subcell, rows);
-          total++;              
-        }
-        return total < squares
-      });
-      // }
+      // Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
+      //   if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
+      //     blob.add(subcell, rows);
+      //     total++;              
+      //   }
+      //   return total < squares
+      // });
     });
 
     while (total < squares) {
@@ -208,7 +207,9 @@ class GameScene extends Phaser.Scene {
 
       expanders.every(cell => {
         if (total === squares) return false;
+        console.log('reachme00');
         Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
+        console.log('reachme01');
           if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
             blob.add(subcell, rows);
             total++;
