@@ -28,11 +28,22 @@ class GameScene extends Phaser.Scene {
     this.items;
     this.completed = false;
     this.lastId = 0;
+    this.cellImageDimensions = [38.4, 27];
   }
 
   preload() {
     // when we have multiple illustrations/videos, add them here
-    this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
+    /**
+     * The shape of the cell images. Assign this value to either 0 for a rectangle or 1 for a circle.
+     */
+    const shape = 0;
+    if (shape === 0) {
+      this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href); // rectangle
+      this.cellImageDimensions = [38.4, 27];
+    } else if (shape === 1) {
+      this.load.image('cell', new URL('../assets/final/grid-item.png', import.meta.url).href); // circle
+      this.cellImageDimensions = [100, 100];
+    }
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
   }
 
@@ -57,7 +68,7 @@ class GameScene extends Phaser.Scene {
         });
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27).setName(`(${j}, ${i})`).setTint(0x000000);
+        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
         items.add(cellImage);
       }
       rows.push(col);
