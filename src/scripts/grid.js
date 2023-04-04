@@ -39,6 +39,7 @@ class GameScene extends Phaser.Scene {
   create() {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     // the key of this greyscaled item
+    // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0).setVisible(false);
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
@@ -96,8 +97,13 @@ class GameScene extends Phaser.Scene {
       this.fillSquares(tiers[7], this.rows, this.items)
     }
     if (this.input.keyboard.checkDown(this.controls['ZERO'], 2500)) {
-      console.log(this.blobs);
+    console.log('ZERO')
+      // console.log(this.blobs);
     }
+    // if(this.input.keyboard.checkDown['SPACEBAR', 1000]){
+    // console.log('SPACE')
+
+    // }
   }
 
   /**
