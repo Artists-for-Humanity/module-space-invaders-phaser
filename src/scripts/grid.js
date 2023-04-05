@@ -47,6 +47,8 @@ class GameScene extends Phaser.Scene {
       this.load.image('cell', new URL('../assets/final/grid-item-circle.png', import.meta.url).href); // circle
       this.cellImageDimensions = [100, 100];
     }
+
+
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
     this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
   }
@@ -54,9 +56,8 @@ class GameScene extends Phaser.Scene {
   create() {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     // the key of this greyscaled item
-    // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0).setVisible(false);
-    this.brush = this.add.sprite(500, 500, 'brush').setOrigin(1).setDepth(3).setScale(0.5);
-    const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
+    // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
+    const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
       greyscaledVideo.play(true);
@@ -78,6 +79,10 @@ class GameScene extends Phaser.Scene {
       }
       rows.push(col);
     }
+    this.brush = this.add.sprite(500, 250, 'brush').setOrigin(1).setDepth(3).setScale(0.05);
+    // this.brush = this.add.sprite(500, 500, 'brush').setDepth(10);
+    console.log('reachmee 00: ' + this.brush.x);
+
 
     this.rows = rows;
     this.items = items.list;
@@ -297,10 +302,10 @@ const config = {
   type: Phaser.AUTO,
   scale: {
     parent: 'body',
-    mode: Phaser.Scale.FIT,
+    // mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 1920,
-    height: 1080,
+    width: 2120,
+    height: 1180,
   },
   // Add physics, arcade, scene, and audio
   physics: {
