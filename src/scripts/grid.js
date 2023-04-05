@@ -1,95 +1,16 @@
-import Phaser from 'phaser';
-import AnimationScene from './AnimationScene'
+import Phaser, { Display } from 'phaser';
+import AnimationScene from './AnimationScene';
+import Cell from './Cell';
+import Blob from './Blob';
 
-class Cell {
-  constructor(x, y, grid, filled) {
-    this.data = { x: x, y: y };
-    this.grid = grid;
-    this.filled = filled || false;
-  }
+const tiers = [50, 100, 250, 500, 1000, 2500, 5000, 150];
+/*
+NOTES
+during console.logs for tier 2:
+  Adjacent Pair: two squares within a one block radius of each other
+  Blob Pair: two squares that are not adjacent to each other because the parent cell is an island
 
-  // TOP THREE CELLS
-  getTopLeftCell() {
-    if (this.data.x - 1 < 0 || this.data.y - 1 < 0) {
-      return null;
-    } else {
-      return new Cell(this.data.x - 1, this.data.y - 1, this.grid);
-    }
-  }
-
-  getTopCenterCell() {
-    if (this.data.y - 1 < 0) {
-      return null;
-    } else {
-      return new Cell(this.data.x, this.data.y - 1, this.grid);
-    }
-  }
-
-  getTopRightCell() {
-    if (this.data.y + 1 >= this.grid.length || this.data.y - 1 < 0) {
-      return null;
-    } else {
-      return new Cell(this.data.x + 1, this.data.y - 1, this.grid);
-    }
-  }
-
-  // SIDE CENTER CELLS
-  getCenterRightCell() {
-    if (this.data.x + 1 >= this.grid[0].length) {
-      return null;
-    } else {
-      return new Cell(this.data.x + 1, this.data.y, this.grid);
-    }
-  }
-
-  getCenterLeftCell() {
-    if (this.data.x - 1 < 0) {
-      return null;
-    } else {
-      return new Cell(this.data.x - 1, this.data.y, this.grid);
-    }
-  }
-
-  // BOTTOM THREE CELLS
-  getBottomCenterCell() {
-    if (this.data.y + 1 >= this.grid.length) {
-      return null;
-    } else {
-      return new Cell(this.data.x, this.data.y + 1, this.grid);
-    }
-  }
-
-  getBottomRightCell() {
-    if (this.data.y + 1 >= this.grid.length || this.data.x + 1 >= this.grid[0].length) {
-      return null;
-    } else {
-      return new Cell(this.data.x + 1, this.data.y + 1, this.grid);
-    }
-  }
-
-  getBottomLeftCell() {
-    if (this.data.y + 1 >= this.grid.length || this.data.x - 1 < 0) {
-      return null;
-    } else {
-      return new Cell(this.data.x - 1, this.data.y + 1, this.grid);
-    }
-  }
-
-  // Surrounding cells compiled into one object for usage
-  getSurroundingCells() {
-    const surroundingCells = {
-      topLeft: this.getTopLeftCell(),
-      topCenter: this.getTopCenterCell(),
-      topRight: this.getTopRightCell(),
-      centerRight: this.getCenterRightCell(),
-      bottomRight: this.getBottomRightCell(),
-      bottomCenter: this.getBottomCenterCell(),
-      bottomLeft: this.getBottomLeftCell(),
-      centerLeft: this.getCenterLeftCell(),
-    }
-    return Object.assign({ asArray: Object.values(surroundingCells) }, surroundingCells)
-  }
-}
+*/
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -98,19 +19,50 @@ class GameScene extends Phaser.Scene {
       visible: false,
       key: 'Game',
     });
+    // todo: to keep track of how blobs are being produced, make an array of cell arrays that group up blobs by a random oid?
+    /**
+     * @type {Blob[]}
+     */
+    this.blobs = [];
+    this.rows = [];
+    this.items;
+    this.completed = false;
+    this.lastId = 0;
+    this.cellImageDimensions = [38.4, 27];
+    this.intervalId;
+    this.intervalCount;
+    this.brush;
   }
 
   preload() {
-    this.load.image('cell', new URL('../assets/final/grid-item.jpg', import.meta.url).href);
-    this.load.image('artopia', new URL('../assets/final/artopia-bg.png', import.meta.url).href);
+    // when we have multiple illustrations/videos, add them here
+    /**
+     * The shape of the cell images. Assign this value to either 0 for a rectangle or 1 for a circle.
+     */
+    const shape = 0;
+    if (shape === 0) {
+      this.load.image('cell', new URL('../assets/final/grid-item-rect.png', import.meta.url).href); // rectangle
+      this.cellImageDimensions = [38.4, 27];
+    } else if (shape === 1) {
+      this.load.image('cell', new URL('../assets/final/grid-item-circle.png', import.meta.url).href); // circle
+      this.cellImageDimensions = [100, 100];
+    }
+    this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
+    this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
   }
 
   create() {
-
-    // create grid of cells
-    const items = this.add.group();
-
+    const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
+    // the key of this greyscaled item
+    // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0).setVisible(false);
+    this.brush = this.add.sprite(500, 500, 'brush').setOrigin(1).setDepth(3).setScale(0.5);
+    const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
+    greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
+    document.addEventListener('click', () => {
+      greyscaledVideo.play(true);
+    }, { once: true });
     const rows = [];
+    // build grid by repeating a grid image that fits over the 
     for (let i = 0; i < 40; i++) {
       const col = []
       for (let j = 0; j < 50; j++) {
@@ -121,80 +73,235 @@ class GameScene extends Phaser.Scene {
         });
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        // 1920 / 50 = 38.2
-        // 1080 / 40 = 27
-        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(38.4, 27).setName(`(${j}, ${i})`);
-
-
-        items.add(cellImage).setOrigin(0);
-
+        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
+        items.add(cellImage);
       }
       rows.push(col);
     }
 
-    this.fillSquares(50 * 9, rows, items);
+    this.rows = rows;
+    this.items = items.list;
 
-    const baseCell = new Cell(1, 1, rows);
-    console.log(`(${baseCell.data.x}, ${baseCell.data.y})`, `top left: ${baseCell.getTopLeftCell().data.x}, ${baseCell.getTopLeftCell().data.y}`)
-    console.log(baseCell.getSurroundingCells());
-    // tiers: 50, 100, 250, 500, 1000, 2500, 5000
-    //const items = this.add.group();
-
-    // add image to each cell on the grid
-    // for (const row in rows) {
-    //   for (const col in rows[row]) {
-    //     const cell = rows[row][col];
-    //     const x = col * (1920 / 50);
-    //     const y = row * (1080 / 40);
-    //     const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive();
-    //     // if (col % 2 === 0) {
-    //     //   cellImage.setAlpha(0.5);
-    //     // }
-    //     cellImage.height = 1080 / 40;
-    //     cellImage.width = 1920 / 50;
-    //     cellImage.on('pointerover', () => {
-    //       cellImage.setVisible(false);
-    //       cell.revealed = true;
-
-    //     });
-    //     items.add(cellImage).setOrigin(0);
-    //   }
-    // }
-
-    items.setDepth(1);
+    this.controls = this.input.keyboard.addKeys('ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ZERO,SPACE')
+    console.log('SETUP COMPLETED')
   }
 
   update() {
-    
-  }
-  
-  fillSquares(donation, rows, items) {
-    const squares = donation / 50;
-    if (squares < 10) {
-      // console.log(rows);
-      const src = rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
-      const centerCell = new Cell(src.x, src.y, rows, src.revealed);
-      items.getChildren().find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
-      let total = 1;
-      centerCell.getSurroundingCells().asArray.forEach(surroundingCell => {
-        if (total < squares && surroundingCell !== null) {
-          surroundingCell.filled = true;
-          const item = items.getChildren().find(i => i.name === `(${surroundingCell.data.x}, ${surroundingCell.data.y})`).setVisible(false);
-          console.log(surroundingCell.data.x, surroundingCell.data.y, item.visible, surroundingCell.filled);
-          total++;
-        }
-        // console.log(total, squares, surroundingCell === null);
-      });
-      console.log(centerCell);
+    if (this.checkForCompletion() && this.intervalId && !this.intervalData.displayed) {
+      clearInterval(this.intervalId)
+      const percentError = ((this.intervalData.count - this.intervalData.expected) / this.intervalData.expected) * 100;
+      console.log(this.intervalData.count, this.intervalData.expected, `${percentError} percent error`);
+      console.log(this.blobs.every(blob => blob.length === 2000 / this.intervalData.expected))
+      this.intervalData.displayed = true;
     }
+    if (this.input.keyboard.checkDown(this.controls['ONE'], 10)) {
+      this.fillSquares(tiers[0])
+    }
+    if (this.input.keyboard.checkDown(this.controls['TWO'], 10)) {
+      this.fillSquares(tiers[1])
+    }
+    if (this.input.keyboard.checkDown(this.controls['THREE'], 10)) {
+      this.fillSquares(tiers[2])
+    }
+    if (this.input.keyboard.checkDown(this.controls['FOUR'], 1000)) {
+      this.fillSquares(tiers[3])
+    }
+    if (this.input.keyboard.checkDown(this.controls['FIVE'], 1000)) {
+      this.fillSquares(tiers[4])
+    }
+    if (this.input.keyboard.checkDown(this.controls['SIX'], 1000)) {
+      this.fillSquares(tiers[5])
+    }
+    if (this.input.keyboard.checkDown(this.controls['SEVEN'], 1000)) {
+      this.fillSquares(tiers[6])
+    }
+    if (this.input.keyboard.checkDown(this.controls['EIGHT'], 1000)) {
+      this.fillSquares(tiers[7])
+    }
+    if (this.input.keyboard.checkDown(this.controls['ZERO'], 2500)) {
+      console.log(this.blobs);
+    }
+    if (this.input.keyboard.checkDown(this.controls['SPACE'], 100000)) {
+      // this.revealAllSquares();
+      this.iterateReveal(100, 10);
+    }
+  }
+
+  /**
+   * 
+   * @param {() => boolean} filter 
+   * @returns 
+   */
+  findSquare(filter) {
+    const results = this.rows.flat()
+      .map(square => new Cell(square.x, square.y, this.rows, square.filled))
+      .filter(item => filter(item));
+
+    return results[Math.floor(Math.random() * results.length)];
+  }
+
+  /**
+   * 
+   * @returns {Cell[]}
+   */
+  sortSquares() {
+    const results = this.rows.flat()
+      .filter(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed).filled !== true)
+      .map(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed))
+
+    return results.sort((a, b) => a.countUnpaintedCells() - b.countUnpaintedCells());
+  }
+
+  checkForCompletion() {
+    this.completed = this.rows.flat().every(item => item.revealed);
+    return this.completed;
+  }
+
+  countRemaining() {
+    let remaining = 0;
+    this.rows.flat().forEach(item => {
+      if (item.revealed) return;
+      remaining++;
+    });
+
+    return remaining;
+  }
+
+  generateCenterCell() {
+    let src = this.rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
+    // let count = 0;
+
+    while (src.revealed) {
+      if (this.checkForCompletion(this.rows)) {
+        console.log("All Cells Revealed!!!")
+        return null;
+      }
+      // count++
+      src = this.rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
+    }
+    return src;
+  }
+
+  fillSquares(donation) {
+    const squares = donation / 50;
+    const src = this.generateCenterCell();
+
+    if (!src) {
+      return;
+    }
+
+    src.revealed = true;
+    const centerCell = new Cell(src.x, src.y, this.rows, src.revealed);
+    // console.log(centerCell.getSurroundingCells().asArray.filter(c => c !== null).every(c => c.filled))
+    this.items.find(item => item.name === `(${centerCell.data.x}, ${centerCell.data.y})`).setVisible(false);
+
+    const blob = new Blob([centerCell], this.lastId, this.rows);
+    let total = 1;
+    this.lastId++;
+
+    centerCell.getSurroundingCells(true, true).asArray.every(cell => {
+      if (total === squares) return;
+      const cellImage = this.items.find(item => item.name === `(${cell.data.x}, ${cell.data.y})`)
+      if (!blob.list.find(b => b.data.x === cell.data.x && b.data.y === cell.data.y) && cellImage.visible) {
+        blob.add(cell);
+        total++;            
+      }
+      // Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
+      //   if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y) && total < squares) {
+      //     blob.add(subcell);
+      //     total++;              
+      //   }
+      //   return total < squares
+      // });
+    });
+
+    while (total < squares) {
+      const expanders = blob.list.filter(cell => cell.countUnpaintedCells() > 0);
+      if (expanders.length === 0) {
+        let next = this.findSquare(Cell.NonFilledCellFinder);
+        blob.add(next);
+        total++;
+        continue;
+      }
+
+      expanders.every(cell => {
+        if (total === squares) return false;
+        return Cell.shuffleSurroundingCells(cell.getSurroundingCells(true, true).asArray).every(subcell => {
+          if (!blob.list.find(b => b.data.x === subcell.data.x && b.data.y === subcell.data.y)) {
+            blob.add(subcell);
+            total++;
+          }
+          return total < squares;
+        });
+      });
+    }
+
+    console.log(blob.length) 
+    this.blobs.push(blob);
+    // console.log(blob.length);
+    // console.log(`center cell: ${blob.centerCell.data.x} ${blob.centerCell.data.y}`);
+    blob.paint(this.items);
+
+    if (this.checkForCompletion(this.rows)) {
+      console.log('trigger endgoal stuff');
+    }
+  }
+
+  resetGrid() {
+    this.scene.restart({
+      illustrationKey: 'option2',
+    });
+  }
+
+  /**
+   * 
+   * @param {Cell} cell 
+   */
+  fill(cell, blob) {
+    this.rows[cell.data.y][cell.data.x].revealed = true;
+    this.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
+    blob.add(cell);
+    cell.filled = true;
+  }
+
+  revealAllSquares() {
+    if (this.checkForCompletion(this.rows)) {
+      console.log('Squares already revealed')
+      return;
+    }
+    const remainderBlob = new Blob([], null, this.rows);
+    this.rows.flat().forEach(square => {
+      const cell = new Cell(square.x, square.y, this.rows, square.filled);
+      this.fill(cell, remainderBlob);
+    });
+  }
+
+  iterateReveal(donation, time) {
+    this.intervalData = {
+      count: 0,
+      expected: 2000 / (donation / 50),
+      displayed: false,
+    }
+    const intervalId = setInterval(() => {
+      this.fillSquares(donation)
+      console.log(this.countRemaining());
+      this.intervalData.count++;
+    }, time);
+
+    this.intervalId = intervalId;
   }
 }
 
 // Set configuration for phaser game instance
 const config = {
   type: Phaser.AUTO,
-  width: 1920,
-  height: 1080,
+  scale: {
+    parent: 'body',
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1920,
+    height: 1080,
+  },
   // Add physics, arcade, scene, and audio
   physics: {
     default: 'arcade',
