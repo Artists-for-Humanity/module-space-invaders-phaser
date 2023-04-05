@@ -31,6 +31,7 @@ class GameScene extends Phaser.Scene {
     this.cellImageDimensions = [38.4, 27];
     this.intervalId;
     this.intervalCount;
+    this.brush;
   }
 
   preload() {
@@ -47,12 +48,14 @@ class GameScene extends Phaser.Scene {
       this.cellImageDimensions = [100, 100];
     }
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
+    this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
   }
 
   create() {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     // the key of this greyscaled item
     // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0).setVisible(false);
+    this.brush = this.add.sprite(500, 500, 'brush').setOrigin(1).setDepth(3).setScale(0.5);
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
@@ -232,9 +235,11 @@ class GameScene extends Phaser.Scene {
         });
       });
     }
+
+    console.log(blob.length) 
     this.blobs.push(blob);
     // console.log(blob.length);
-    console.log(`center cell: ${blob.centerCell.data.x} ${blob.centerCell.data.y}`);
+    // console.log(`center cell: ${blob.centerCell.data.x} ${blob.centerCell.data.y}`);
     blob.paint(this.items);
 
     if (this.checkForCompletion(this.rows)) {

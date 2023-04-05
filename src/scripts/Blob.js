@@ -40,7 +40,29 @@ export default class Blob {
       cell.filled = true;
     });
 
+    // /**
+    //  * @type {GameObjects.Sprite}
+    //  */
+    // const brush = scene.brush;
+
+    // brush.setPosition(100, 100);
+
     // TODO: get corner blob elements
+    // const bottomLeft = this.list
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.y > b.data.y ? -1 : 1)
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x < b.data.x ? -1 : 1)[0]
+    // const topLeft = this.list
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.y < b.data.y ? -1 : 1)
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x < b.data.x ? -1 : 1)[0]
+    // const bottomRight = this.list
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.y > b.data.y ? -1 : 1)
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x > b.data.x ? -1 : 1)[0]
+    // const topRight = this.list
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.y < b.data.y ? -1 : 1)
+    //   .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x > b.data.x ? -1 : 1)[0]
+
+    // console.log(`${topLeft.data.x}, ${topLeft.data.y} | ${topRight.data.x}, ${topRight.data.y}`)
+    // console.log(`${bottomLeft.data.x}, ${bottomLeft.data.y} | ${bottomRight.data.x} ${bottomRight.data.y}`);
     // const paintOrder = () => {
     //   const list = this.list;
       // const top = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y < b.data.y ? -1 : 1)[0];
@@ -52,6 +74,12 @@ export default class Blob {
     // }
 
     // paintOrder();
+  }
+
+  startBrush() {
+    // scene.add.tween({
+
+    // });
   }
 
   /**
