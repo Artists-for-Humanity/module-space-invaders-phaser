@@ -32,6 +32,7 @@ class GameScene extends Phaser.Scene {
     this.intervalId;
     this.intervalCount;
     this.brush;
+    // this.tweenSystem = new Phaser.Tweens.TweenManager(this);
   }
 
   preload() {
@@ -55,7 +56,8 @@ class GameScene extends Phaser.Scene {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     // the key of this greyscaled item
     // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0).setVisible(false);
-    this.brush = this.add.sprite(500, 500, 'brush').setOrigin(1).setDepth(3).setScale(0.5);
+    this.brush = this.add.sprite(400, 250, 'brush').setOrigin(0).setDepth(3).setDisplaySize(379, 213).setAngle(-15);
+    this.brushTip = this.add.circle(this.brush.getTopLeft().x + 140, this.brush.getTopLeft().y, 5, 0xff0000).setDepth(50);
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
@@ -87,6 +89,7 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
+    this.brushTip.setPosition(this.brush.getTopLeft().x + 140, this.brush.getTopLeft().y);
     if (this.checkForCompletion() && this.intervalId && !this.intervalData.displayed) {
       clearInterval(this.intervalId)
       const percentError = ((this.intervalData.count - this.intervalData.expected) / this.intervalData.expected) * 100;
@@ -240,7 +243,7 @@ class GameScene extends Phaser.Scene {
     this.blobs.push(blob);
     // console.log(blob.length);
     // console.log(`center cell: ${blob.centerCell.data.x} ${blob.centerCell.data.y}`);
-    blob.paint(this.items);
+    blob.paint(this.items, this);
 
     if (this.checkForCompletion(this.rows)) {
       console.log('trigger endgoal stuff');
