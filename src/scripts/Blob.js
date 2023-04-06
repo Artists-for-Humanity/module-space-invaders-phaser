@@ -1,6 +1,6 @@
 import Cell from './Cell';
-import { GameObjects, Scene, Math, Curves } from 'phaser';
-
+import { GameObjects, Scene, Math, Curves, Tweens } from 'phaser';
+import GameScene from './GridScene';
 // purpose of this class is to later be put in an array under "this.blobs" in the grid scene
 /**
  * A group of cells (scheduled) to be painted together.
@@ -29,26 +29,11 @@ export default class Blob {
 
   /**
    * 
-   * @param {*} items 
-   * @param {Scene} scene the scene that the painting is occurring in
+   * @param {*} items the grid of gameobjects
+   * @param {GameScene} scene the scene that the painting is occurring in
    */
   paint(items, scene) {
     this.painted = true;
-    this.list.forEach(cell => {
-      this.grid[cell.data.y][cell.data.x].revealed = true;
-      items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-      cell.filled = true;
-    });
-
-    /**
-     * @type {GameObjects.Sprite}
-     */
-    const brush = scene.brush;
-
-    /**
-     * @type {Phaser.Tweens.TweenManager}
-     */
-    const tweenSystem = scene.tweenSystem;
 
     // brush.setPosition(, 500);
 
@@ -69,7 +54,37 @@ export default class Blob {
     const points = [topLeft, bottomLeft, topRight, bottomRight].map(cell => new Math.Vector2(cell.data.x * 38.4, cell.data.y * 27));
     console.log(points);
 
-    this.startBrush(scene, brush, tweenSystem, ...points)
+    console.log(scene.activeTween);
+    const movement = this.startBrush(scene, ...points);
+
+    const paintCurve = new Curves.Line(new Phaser.Math.Vector2(scene.brush.getCenter().x, scene.brush.getCenter().y), new Phaser.Math.Vector2(300, 300));
+
+    const path = { t: 0, vec: new Phaser.Math.Vector2() };
+
+    const animation = scene.add.tween(movement);
+    if (scene.activeTween === null || !scene.tweeningBrush) {
+      scene.add.tween({
+        targets: path,
+        t: 1,
+        ease: 'Sine.easeInOut',
+        duration: 1000,
+        // yoyo: true,
+        repeat: 0,
+        onActive: () => {
+          scene.tweeningBrush = true;
+        },
+        onUpdate: () => {
+          paintCurve.getPoint(path.t, path.vec);
+          scene.brush.setPosition(path.vec.x - 170, path.vec.y - 300);
+        },
+        onComplete: () => {
+          scene.brush.anims.play('load-paint').once('animationcomplete', () => {
+            animation.play();
+          });
+        },
+      })
+      
+    }
     // console.log(`${topLeft.data.x}, ${topLeft.data.y} | ${topRight.data.x}, ${topRight.data.y}`)
     // console.log(`${bottomLeft.data.x}, ${bottomLeft.data.y} | ${bottomRight.data.x} ${bottomRight.data.y}`);
     // const paintOrder = () => {
@@ -87,16 +102,15 @@ export default class Blob {
 
   /**
    * 
-   * @param {Scene} scene 
-   * @param {GameObjects.Sprite} brush 
-   * @param {Phaser.Tweens.TweenManager} tweenSystem 
+   * @param {GameScene} scene
    * @param  {...Phaser.Math.Vector2} points 
    */
-  startBrush(scene, brush, tweenSystem, ...points) {
+  startBrush(scene, ...points) {
+    const brush = scene.brush;
     if (!scene.graphics) {
       scene.graphics = scene.add.graphics();
     }
-    const curve = new Curves.Spline([new Phaser.Math.Vector2(brush.x, brush.y), ...points]);
+    let curve = new Curves.Spline([new Phaser.Math.Vector2(brush.getCenter().x, brush.getCenter().y), ...points]);
 
     const path = { t: 0, vec: new Phaser.Math.Vector2() };
 
@@ -109,19 +123,40 @@ export default class Blob {
     //   repeat: -1
     // });
 
-    const movement = scene.add.tween({
+    const config = {
       targets: path,
       t: 1,
       ease: 'Sine.easeInOut',
       duration: 2000,
+      paused: true,
       // yoyo: true,
       repeat: 0,
-      onUpdate: () => {
-        console.log('updating');
-        curve.getPoint(path.t, path.vec);
-        brush.setPosition(path.vec.x - 140, path.vec.y);
+      onStart: () => {
+        curve.points[0] = new Phaser.Math.Vector2(brush.getCenter().x, brush.getCenter().y);
+        if (scene.activeTween !== null) {
+          scene.activeTween++;
+        } else {
+          scene.activeTween = 1;
+        }
+        scene.tweeningBrush = true;
       },
-    });
+      onUpdate: () => {
+        curve.getPoint(path.t, path.vec);
+        brush.setPosition(path.vec.x - 170, path.vec.y - 300);
+        brush.anims.play('float-brush', true);
+      },
+      onComplete: () => {
+        this.list.forEach(cell => {
+          this.grid[cell.data.y][cell.data.x].revealed = true;
+          scene.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
+          cell.filled = true;
+        });
+        scene.brush.emit('paintcomplete', scene.activeTween);
+      },
+    };
+
+    scene.tweenSystem.push(config);
+    return config;
   }
 
   /**
