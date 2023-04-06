@@ -50,6 +50,7 @@ class GameScene extends Phaser.Scene {
 
 
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
+    this.load.video('pipe', new URL('../assets/final/artopia pipe animation v3.mp4', import.meta.url).href);
     this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
   }
 
@@ -57,12 +58,12 @@ class GameScene extends Phaser.Scene {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     // the key of this greyscaled item
     // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
-    const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0);
+    const greyscaledVideo = this.add.video(0, 100, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0);
+    const pipeAnimation = this.add.video(0, 0, 'pipe').setDisplaySize(1920, 1080).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
       greyscaledVideo.play(true);
     }, { once: true });
-    const rows = [];
     // build grid by repeating a grid image that fits over the 
     for (let i = 0; i < 40; i++) {
       const col = []
@@ -74,7 +75,7 @@ class GameScene extends Phaser.Scene {
         });
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        const cellImage = this.add.image(x, y, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
+        const cellImage = this.add.image(x, y+100, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
         items.add(cellImage);
       }
       rows.push(col);
