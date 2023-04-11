@@ -52,9 +52,9 @@ export default class Blob {
       .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x > b.data.x ? -1 : 1)[0]
 
     const points = [topLeft, bottomLeft, topRight, bottomRight].map(cell => new Math.Vector2(cell.data.x * 38.4, cell.data.y * 27));
-    console.log(points);
+    // console.log(points);
 
-    console.log(scene.activeTween);
+    // console.log(scene.activeTween);
     const movement = this.startBrush(scene, ...points);
 
     const paintCurve = new Curves.Line(new Phaser.Math.Vector2(scene.brush.getCenter().x, scene.brush.getCenter().y), new Phaser.Math.Vector2(300, 300));
@@ -62,8 +62,8 @@ export default class Blob {
     const path = { t: 0, vec: new Phaser.Math.Vector2() };
 
     const animation = scene.add.tween(movement);
-    console.log(scene.activeTween === null || !scene.tweeningBrush)
-    if ((scene.activeTween === null || scene.activeTween <= scene.tweenSystem.length - 1) && !scene.tweeningBrush) {
+    // console.log(scene.activeTween === null || !scene.tweeningBrush, scene.activeTween, scene.tweenSystem.length)
+    if ((scene.activeTween === null || scene.activeTween === scene.tweenSystem.length - 1) && !scene.tweeningBrush) {
       scene.add.tween({
         targets: path,
         t: 1,
@@ -76,6 +76,7 @@ export default class Blob {
         },
         onUpdate: () => {
           paintCurve.getPoint(path.t, path.vec);
+          scene.tweeningBrush = true;
           scene.brush.setPosition(path.vec.x - 170, path.vec.y - 300);
         },
         onComplete: () => {
@@ -147,7 +148,9 @@ export default class Blob {
         brush.anims.play('float-brush', true);
       },
       onComplete: () => {
+        console.log('completed painting')
         this.list.forEach(cell => {
+          // CHANGE THIS ANIMATION TO ANYTHING ELSE ex. fade, glow, etc
           this.grid[cell.data.y][cell.data.x].revealed = true;
           scene.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
           cell.filled = true;
@@ -165,12 +168,10 @@ export default class Blob {
    * @param {Cell} cell 
    */
   add(cell) {
-    // if (Cell.NonFilledCellFinder(cell)) {
-      this.list.push(cell);
-      this.grid[cell.data.y][cell.data.x].revealed = true;
-      cell.filled = true;
-      this.length++;
-    // }
+    this.list.push(cell);
+    this.grid[cell.data.y][cell.data.x].revealed = true;
+    cell.filled = true;
+    this.length++;
   }
 }
 
