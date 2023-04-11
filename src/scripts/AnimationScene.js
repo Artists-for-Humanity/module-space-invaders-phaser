@@ -32,7 +32,7 @@ export default class AnimationScene extends Phaser.Scene {
         // this.add.sprite(400, 300, 'alien').play('run')
 
         // const artopiaVideo = this.add.video(0, 0, 'artopia').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
-        const artopiaVideo = this.add.video(0, 100, 'artopia').setDisplaySize(1920, 1080).setOrigin(0);
+        const artopiaVideo = this.add.video(0, 150, 'artopia').setDisplaySize(1920, 1080).setOrigin(0);
     document.addEventListener('click', () => {
       artopiaVideo.play(true);
     }, { once: true });

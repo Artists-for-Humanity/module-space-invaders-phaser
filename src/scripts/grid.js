@@ -50,20 +50,57 @@ class GameScene extends Phaser.Scene {
 
 
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
-    this.load.video('pipe', new URL('../assets/final/artopia pipe animation v3.mp4', import.meta.url).href);
+    // this.load.video('pipe', new URL('../assets/final/artopia pipe animation v3.mp4', import.meta.url).href);
     this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
+
+    // this.load.path = new URL('../assets/final/CoinPipeV1/', import.meta.url).href;
+    this.load.image('pipe00', new URL('../assets/final/CoinPipeV1/coin_pipe0000.png', import.meta.url).href);
+    this.load.image('pipe10', new URL('../assets/final/CoinPipeV1/coin_pipe0010.png', import.meta.url).href);
+    this.load.image('pipe20', new URL('../assets/final/CoinPipeV1/coin_pipe0020.png', import.meta.url).href);
+    this.load.image('pipe30', new URL('../assets/final/CoinPipeV1/coin_pipe0030.png', import.meta.url).href);
+    this.load.image('pipe40', new URL('../assets/final/CoinPipeV1/coin_pipe0040.png', import.meta.url).href);
+    this.load.image('pipe50', new URL('../assets/final/CoinPipeV1/coin_pipe0050.png', import.meta.url).href);
+    this.load.image('pipe60', new URL('../assets/final/CoinPipeV1/coin_pipe0060.png', import.meta.url).href);
+    this.load.image('pipe70', new URL('../assets/final/CoinPipeV1/coin_pipe0070.png', import.meta.url).href);
+
+    // this.load.image('pipe00', 'coin_pipe0000.png');
   }
 
   create() {
     const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
     // the key of this greyscaled item
     // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
-    const greyscaledVideo = this.add.video(0, 100, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0);
-    const pipeAnimation = this.add.video(0, 0, 'pipe').setDisplaySize(1920, 1080).setOrigin(0);
+
+    this.anims.create({
+      key: 'dispense',
+      frames: [
+          { key: 'pipe00' },
+          { key: 'pipe10' },
+          { key: 'pipe20' },
+          { key: 'pipe30' },
+          { key: 'pipe40' },
+          { key: 'pipe50' },
+          { key: 'pipe60' },
+          { key: 'pipe70', duration: 50 }
+      ],
+      frameRate: 8,
+      repeat: -1
+  });
+
+  this.add.sprite(-70, -35, 'pipe00').setDisplaySize(2320, 1325).setOrigin(0).setDepth(1).play('dispense');
+
+
+
+    // this.add.sprite(300, -35, 'pipe00').setOrigin(0).setDepth(0);
+
+
+    const greyscaledVideo = this.add.video(0, 125, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0).setDepth(0);
+    // const pipeAnimation = this.add.video(0, 0, 'pipe').setDisplaySize(1920, 1080).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
       greyscaledVideo.play(true);
     }, { once: true });
+    const rows = [];
     // build grid by repeating a grid image that fits over the 
     for (let i = 0; i < 40; i++) {
       const col = []
@@ -75,14 +112,14 @@ class GameScene extends Phaser.Scene {
         });
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        const cellImage = this.add.image(x, y+100, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
+        const cellImage = this.add.image(x, y+150, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
         items.add(cellImage);
       }
       rows.push(col);
     }
-    this.brush = this.add.sprite(500, 250, 'brush').setOrigin(1).setDepth(3).setScale(0.05);
+    // this.brush = this.add.sprite(500, 500, 'brush').setOrigin(1).setDepth(3).setScale(0.05);
     // this.brush = this.add.sprite(500, 500, 'brush').setDepth(10);
-    console.log('reachmee 00: ' + this.brush.x);
+    // console.log('reachmee 00: ' + this.brush.x);
 
 
     this.rows = rows;
@@ -306,7 +343,7 @@ const config = {
     // mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 2120,
-    height: 1180,
+    height: 1200,
   },
   // Add physics, arcade, scene, and audio
   physics: {
