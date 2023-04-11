@@ -115,6 +115,13 @@ export default class GameScene extends Phaser.Scene {
   update() {
     // this.brushTip.setPosition(this.brush.getTopLeft().x + 170, this.brush.getTopLeft().y + 300).setDepth(10);
     // if (this.activeTween !== )
+    // console.log(this.tweeningBrush)
+    if (!this.tweeningBrush && this.activeTween !== null && this.activeTween < this.tweenSystem.length - 1) {
+      console.log('hi');
+      const next = this.activeTween - 1;
+      this.add.tween(this.tweenSystem[next]).play();
+      this.tweeningBrush = true;
+    }
     if (this.checkForCompletion() && this.intervalId && !this.intervalData.displayed) {
       clearInterval(this.intervalId)
       const percentError = ((this.intervalData.count - this.intervalData.expected) / this.intervalData.expected) * 100;
@@ -213,6 +220,7 @@ export default class GameScene extends Phaser.Scene {
   fillSquares(donation) {
     const squares = donation / 50;
     const src = this.generateCenterCell();
+    // console.log(this.activeTween);
 
     if (!src) {
       return;

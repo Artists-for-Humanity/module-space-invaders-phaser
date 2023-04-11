@@ -62,7 +62,8 @@ export default class Blob {
     const path = { t: 0, vec: new Phaser.Math.Vector2() };
 
     const animation = scene.add.tween(movement);
-    if (scene.activeTween === null || !scene.tweeningBrush) {
+    console.log(scene.activeTween === null || !scene.tweeningBrush)
+    if ((scene.activeTween === null || scene.activeTween <= scene.tweenSystem.length - 1) && !scene.tweeningBrush) {
       scene.add.tween({
         targets: path,
         t: 1,
