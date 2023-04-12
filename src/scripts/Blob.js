@@ -61,10 +61,6 @@ export default class Blob {
     const points = [topLeft, bottomLeft, topRight, bottomRight].map(cell => new Math.Vector2(cell.data.x * 38.4, cell.data.y * 27));
     const movement = this.startBrush(scene, ...points);
 
-    const paintCurve = new Curves.Line(new Phaser.Math.Vector2(scene.brush.getCenter().x, scene.brush.getCenter().y), new Phaser.Math.Vector2(300, 300));
-
-    const path = { t: 0, vec: new Phaser.Math.Vector2() };
-
     const animation = scene.add.tween(movement);
     if ((scene.activeTween === null || scene.activeTween === scene.tweenSystem.length - 1) && !scene.tweeningBrush) {
       scene.add.tween({
@@ -78,6 +74,7 @@ export default class Blob {
         onStart: () => {
           scene.brush.anims.stop();
           scene.brush.setFrame(0);
+          scene.brush.setVisible(true).setAlpha(1);
         },
         onActive: () => {
           scene.tweeningBrush = true;
@@ -137,6 +134,7 @@ export default class Blob {
           scene.activeTween = 1;
         }
         scene.tweeningBrush = true;
+        scene.brush.setVisible(true).setAlpha(1);
       },
       onUpdate: () => {
         curve.getPoint(path.t, path.vec);
@@ -157,7 +155,7 @@ export default class Blob {
               because of the overall structure of the layers, we might have to settle for just the fade though
             */
             const tierTint = tiers.find(tier => tier[0] === this.list.length * 50)[1];
-            cellObjects.forEach(cell => cell.setTint(tierTint));
+            cellObjects.forEach(cell => cell.setTint(tierTint).setBlendMode(Phaser.BlendModes.SCREEN));
           },
           onComplete: () => {
             cellObjects.forEach(cell => cell.setVisible(false));

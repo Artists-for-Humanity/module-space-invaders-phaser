@@ -3,7 +3,7 @@ import AnimationScene from './AnimationScene';
 import GameScene from './GridScene';
 // Set configuration for phaser game instance
 const config = {
-  type: Phaser.AUTO,
+  type: Phaser.WEBGL,
   scale: {
     parent: 'body',
     mode: Phaser.Scale.FIT,

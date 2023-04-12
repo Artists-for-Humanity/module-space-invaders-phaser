@@ -56,6 +56,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.scene.run('Animation');
+    this.scene.bringToTop();
     const items = this.add.container(); // the container for the grid that will mask the greyscaled video
     this.brush = this.add.sprite(400, 250, 'brush').setOrigin(0).setDepth(3).setDisplaySize(300, 432.58).setAngle(-15);
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
@@ -197,6 +199,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   fillSquares(donation) {
+    if (this.completed) return;
     const squares = donation / 50;
     const src = this.generateCenterCell();
     if (!src) {
@@ -218,15 +221,17 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    while (total < squares) {
+    while (total < squares && !this.checkForCompletion()) {
       const expanders = blob.list.filter(cell => cell.countUnpaintedCells() > 0);
       const allPaintedCells = () => [...new Set(this.blobs.map(blob => blob.list.map(c => `(${c.data.x} ${c.data.y})`)).flat())];
       if (expanders.length === 0) {
         let nextSq = this.rows.flat().find(sq => !sq.revealed && new Cell(sq.x, sq.y, this.rows, sq.revealed).countUnpaintedCells() > 0);
-        while (!nextSq) {
+        while (!nextSq & this.checkForCompletion()) {
           nextSq = this.rows.flat().find(sq => !sq.revealed);
         }
-        blob.add(new Cell(nextSq.x, nextSq.y, this.rows, nextSq.revealed));
+        if (nextSq) {
+          blob.add(new Cell(nextSq.x, nextSq.y, this.rows, nextSq.revealed));
+        }
         total = blob.list.length;
         continue;
       }
