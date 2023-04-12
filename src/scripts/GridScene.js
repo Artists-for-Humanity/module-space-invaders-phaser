@@ -4,13 +4,6 @@ import Cell from './Cell';
 import Blob from './Blob';
 
 const tiers = [50, 100, 250, 500, 1000, 2500, 5000, 150];
-/*
-NOTES
-during console.logs for tier 2:
-  Adjacent Pair: two squares within a one block radius of each other
-  Blob Pair: two squares that are not adjacent to each other because the parent cell is an island
-
-*/
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -19,7 +12,6 @@ export default class GameScene extends Phaser.Scene {
       visible: false,
       key: 'Game',
     });
-    // todo: to keep track of how blobs are being produced, make an array of cell arrays that group up blobs by a random oid?
     /**
      * @type {Blob[]}
      */
@@ -46,7 +38,7 @@ export default class GameScene extends Phaser.Scene {
   preload() {
     // when we have multiple illustrations/videos, add them here
     /**
-     * The shape of the cell images. Assign this value to either 0 for a rectangle or 1 for a circle.
+     * The shape of the cell images. Assign this value to either 0 for a rectangle or 1 for a circle. default 0.
      */
     const shape = 0;
     if (shape === 0) {
@@ -57,7 +49,6 @@ export default class GameScene extends Phaser.Scene {
       this.cellImageDimensions = [100, 100];
     }
     this.load.video('greyscale', new URL('../assets/final/Foiling_Example_2.mp4', import.meta.url).href);
-    // this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
     this.load.spritesheet('brush', new URL('../assets/final/paintbrushsheet.png', import.meta.url).href, {
       frameWidth: 749,
       frameHeight: 1080,
@@ -65,12 +56,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    const items = this.add.container(); // the container for the grid that will mask the greyscaledvideo below
-    // the key of this greyscaled item
-    // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0).setVisible(false);
+    const items = this.add.container(); // the container for the grid that will mask the greyscaled video
     this.brush = this.add.sprite(400, 250, 'brush').setOrigin(0).setDepth(3).setDisplaySize(300, 432.58).setAngle(-15);
-    console.log(this.tweenSystem);
-    // this.brushTip = this.add.circle(this.brush.getTopLeft().x + 170, this.brush.getTopLeft().y + 300, 5, 0xff0000).setDepth(50);
     const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
@@ -103,7 +90,13 @@ export default class GameScene extends Phaser.Scene {
         this.add.tween(this.tweenSystem[next]).play();
         this.tweeningBrush = true;
       } else {
-        this.tweeningBrush = false;
+        this.add.tween({
+          targets: this.brush,
+          alpha: { value: 0, duration: 500, ease: 'Power1' },
+          onComplete: () => {
+            this.tweeningBrush = false;
+          }
+        });
       }
     });
     
@@ -114,14 +107,21 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    // this.brushTip.setPosition(this.brush.getTopLeft().x + 170, this.brush.getTopLeft().y + 300).setDepth(10);
-    // if (this.activeTween !== )
-    // console.log(this.tweeningBrush)
+
+    /*
+      this checks if any painting sections have not been painted yete but are in the queue
+      if they are, paint them
+    */
     if (!this.tweeningBrush && this.activeTween !== null && this.activeTween < this.tweenSystem.length - 1) {
       const next = this.activeTween - 1;
       this.add.tween(this.tweenSystem[next]).play();
       this.tweeningBrush = true;
     }
+
+    /*
+      this is a development interval management conditional
+      its more of to check the accuracy of selecting and filling the correct amount of squares (no longer needed)
+    */
     if (this.checkForCompletion() && this.intervalId && !this.intervalData.displayed) {
       clearInterval(this.intervalId)
       const percentError = ((this.intervalData.count - this.intervalData.expected) / this.intervalData.expected) * 100;
@@ -129,6 +129,8 @@ export default class GameScene extends Phaser.Scene {
       console.log(this.blobs.every(blob => blob.length === 2000 / this.intervalData.expected))
       this.intervalData.displayed = true;
     }
+
+    // SQUARE REVEAL CONDITIONALS (based on tier ascending, tier 8 is $150)
     if (this.input.keyboard.checkDown(this.controls['ONE'], 1000)) {
       this.fillSquares(tiers[0])
     }
@@ -153,38 +155,17 @@ export default class GameScene extends Phaser.Scene {
     if (this.input.keyboard.checkDown(this.controls['EIGHT'], 1000)) {
       this.fillSquares(tiers[7])
     }
+
+    // blob management key, not really needed now but just in case
     if (this.input.keyboard.checkDown(this.controls['ZERO'], 2500)) {
       console.log(this.blobs);
     }
+
+    // this is for development purposes, when using the final version during the event, comment out this conditional.
     if (this.input.keyboard.checkDown(this.controls['SPACE'], 100000)) {
-      // this.revealAllSquares();
-      this.iterateReveal(100, 10);
+      this.revealAllSquares();
+      // this.iterateReveal(100, 10);
     }
-  }
-
-  /**
-   * 
-   * @param {() => boolean} filter 
-   * @returns 
-   */
-  findSquare(filter) {
-    const results = this.rows.flat()
-      .map(square => new Cell(square.x, square.y, this.rows, square.filled))
-      .filter(item => filter(item));
-
-    return results[Math.floor(Math.random() * results.length)];
-  }
-
-  /**
-   * 
-   * @returns {Cell[]}
-   */
-  sortSquares() {
-    const results = this.rows.flat()
-      .filter(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed).filled !== true)
-      .map(cell => new Cell(cell.x, cell.y, this.rows, cell.revealed))
-
-    return results.sort((a, b) => a.countUnpaintedCells() - b.countUnpaintedCells());
   }
 
   checkForCompletion() {
@@ -204,14 +185,12 @@ export default class GameScene extends Phaser.Scene {
 
   generateCenterCell() {
     let src = this.rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
-    // let count = 0;
 
     while (src.revealed) {
       if (this.checkForCompletion(this.rows)) {
         console.log("All Cells Revealed!!!")
         return null;
       }
-      // count++
       src = this.rows[Math.floor(Math.random() * 40)][Math.floor(Math.random() * 50)];
     }
     return src;
@@ -220,8 +199,6 @@ export default class GameScene extends Phaser.Scene {
   fillSquares(donation) {
     const squares = donation / 50;
     const src = this.generateCenterCell();
-    // console.log(this.activeTween);
-    console.log(src);
     if (!src) {
       return;
     }
@@ -237,7 +214,6 @@ export default class GameScene extends Phaser.Scene {
       if (Cell.NonFilledCellFinder(cell) && cellImage.visible) {
         blob.add(cell);
         total = blob.list.length;
-        console.log('test');
         return true;
       }
     });
@@ -245,17 +221,12 @@ export default class GameScene extends Phaser.Scene {
     while (total < squares) {
       const expanders = blob.list.filter(cell => cell.countUnpaintedCells() > 0);
       const allPaintedCells = () => [...new Set(this.blobs.map(blob => blob.list.map(c => `(${c.data.x} ${c.data.y})`)).flat())];
-      console.log(allPaintedCells().length, this.blobs.flatMap(blob => blob.list).length);
-      // console.log(expanders.length);
       if (expanders.length === 0) {
-        console.log('no expanders');
-        const nextSq = this.rows.flat().find(sq => !sq.revealed && new Cell(sq.x, sq.y, this.rows, sq.revealed).countUnpaintedCells() > 0);
-        let next = new Cell(nextSq.x, nextSq.y, this.rows, nextSq.revealed);
-        while (!allPaintedCells().includes(`(${next.data.x} ${next.data.y})`)) {
-          next = this.findSquare(Cell.NonFilledCellFinder);
+        let nextSq = this.rows.flat().find(sq => !sq.revealed && new Cell(sq.x, sq.y, this.rows, sq.revealed).countUnpaintedCells() > 0);
+        while (!nextSq) {
+          nextSq = this.rows.flat().find(sq => !sq.revealed);
         }
-        blob.add(next);
-        // console.log(blob.list.filter(cell => cell.countUnpaintedCells() > 0).length)
+        blob.add(new Cell(nextSq.x, nextSq.y, this.rows, nextSq.revealed));
         total = blob.list.length;
         continue;
       }
@@ -269,46 +240,24 @@ export default class GameScene extends Phaser.Scene {
           return total < squares;
         });
       });
-
-      // const allPaintedCells = this.blobs.map(blob => blob.list).flat();
-      // // console.log();
-
-      // const doubleCheck = blob.list.filter(b => {
-      //   const cellImage = this.items.find(item => item.name === `(${b.data.x}, ${b.data.y})`);
-      //   return cellImage.visible
-      // });
-
-      // console.log(doubleCheck.length);
     }
-    // const flattenedBlob = blob.list.map(b => `(${b.data.x} ${b.data.y})`);
-    // const filteredBlob = blob.list.map(b => b.filled);
-    // console.log(filteredBlob === flattenedBlob.length);
-    // console.log(blob.list.every(cell => !this.blobs.flatMap(blob => blob.list).find(c => JSON.stringify(cell) == JSON.stringify(c)))); 
+    
     this.blobs.push(blob);
-    // console.log(blob.length);
-    // console.log(`center cell: ${blob.centerCell.data.x} ${blob.centerCell.data.y}`);
     blob.paint(this.items, this);
 
     if (this.checkForCompletion(this.rows)) {
+      // this can be an animation, scene switch, whatever (probably should decide on it soon though)
       console.log('trigger endgoal stuff');
     }
   }
 
+  /*
+    in the (unlikely) situation we overflow the goal, theres a new grid that can be produced by resetting the scene (this should be finalized soon)
+  */
   resetGrid() {
     this.scene.restart({
       illustrationKey: 'option2',
     });
-  }
-
-  /**
-   * 
-   * @param {Cell} cell 
-   */
-  fill(cell, blob) {
-    this.rows[cell.data.y][cell.data.x].revealed = true;
-    this.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-    blob.add(cell);
-    cell.filled = true;
   }
 
   revealAllSquares() {
@@ -319,10 +268,16 @@ export default class GameScene extends Phaser.Scene {
     const remainderBlob = new Blob([], null, this.rows);
     this.rows.flat().forEach(square => {
       const cell = new Cell(square.x, square.y, this.rows, square.filled);
-      this.fill(cell, remainderBlob);
+      this.rows[cell.data.y][cell.data.x].revealed = true;
+      this.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
+      remainderBlob.add(cell);
+      cell.filled = true;
     });
   }
-
+  
+  /**
+   * development-only function, iterates a donation tier (donation) over an interval of milliseconds (time)
+   */
   iterateReveal(donation, time) {
     this.intervalData = {
       count: 0,
@@ -330,8 +285,7 @@ export default class GameScene extends Phaser.Scene {
       displayed: false,
     }
     const intervalId = setInterval(() => {
-      this.fillSquares(donation)
-      console.log(this.countRemaining());
+      this.fillSquares(donation);
       this.intervalData.count++;
     }, time);
 
@@ -343,7 +297,7 @@ export default class GameScene extends Phaser.Scene {
       key: 'load-paint',
       // frameRate: 24,
       frames: this.anims.generateFrameNames('brush', { start: 0, end: 23 }),
-      duration: 750,
+      duration: 900,
       repeat: 0,
     });
 

@@ -1,13 +1,22 @@
 import Cell from './Cell';
 import { GameObjects, Scene, Math, Curves, Tweens } from 'phaser';
 import GameScene from './GridScene';
-// purpose of this class is to later be put in an array under "this.blobs" in the grid scene
+const tiers =  [
+  [50, 0xff0000],
+  [100, 0xff7f00],
+  [250, 0xffff00],
+  [500, 0x00ff00],
+  [1000, 0x1555e3],
+  [2500, 0x2e2b5f],
+  [5000, 0x8b00ff],
+  [150, 0xefbb1f],
+];
+
 /**
  * A group of cells (scheduled) to be painted together.
  */
 export default class Blob {
   /**
-   * 
    * @param {Cell[]} list 
    */
   constructor(list, id, rows) {
@@ -28,16 +37,14 @@ export default class Blob {
   }
 
   /**
-   * 
-   * @param {*} items the grid of gameobjects
+   * @param {*} items the grid of gameobjects, this value didnt end up being read in the final version but
+   * to prevent breaking errors just leave it
    * @param {GameScene} scene the scene that the painting is occurring in
    */
   paint(items, scene) {
     this.painted = true;
 
-    // brush.setPosition(, 500);
-
-    // TODO: get corner blob elements
+    // definition of corner blob elements (this determines wher)
     const bottomLeft = this.list
       .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.y > b.data.y ? -1 : 1)
       .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x < b.data.x ? -1 : 1)[0]
@@ -52,9 +59,6 @@ export default class Blob {
       .sort(/**@param {Cell} a @param {Cell} b*/(a,b) => a.data.x > b.data.x ? -1 : 1)[0]
 
     const points = [topLeft, bottomLeft, topRight, bottomRight].map(cell => new Math.Vector2(cell.data.x * 38.4, cell.data.y * 27));
-    // console.log(points);
-
-    // console.log(scene.activeTween);
     const movement = this.startBrush(scene, ...points);
 
     const paintCurve = new Curves.Line(new Phaser.Math.Vector2(scene.brush.getCenter().x, scene.brush.getCenter().y), new Phaser.Math.Vector2(300, 300));
@@ -62,44 +66,42 @@ export default class Blob {
     const path = { t: 0, vec: new Phaser.Math.Vector2() };
 
     const animation = scene.add.tween(movement);
-    // console.log(scene.activeTween === null || !scene.tweeningBrush, scene.activeTween, scene.tweenSystem.length)
     if ((scene.activeTween === null || scene.activeTween === scene.tweenSystem.length - 1) && !scene.tweeningBrush) {
       scene.add.tween({
-        targets: path,
-        t: 1,
-        ease: 'Sine.easeInOut',
+        targets: scene.brush,
+        alpha: 1,
         duration: 1000,
-        // yoyo: true,
-        repeat: 0,
+        ease: 'Power1',
+        // set the x and y coordinates to be below the location of the paint chute
+        x: 300,
+        y: 300,
+        onStart: () => {
+          scene.brush.anims.stop();
+          scene.brush.setFrame(0);
+        },
         onActive: () => {
           scene.tweeningBrush = true;
         },
         onUpdate: () => {
-          paintCurve.getPoint(path.t, path.vec);
           scene.tweeningBrush = true;
-          scene.brush.setPosition(path.vec.x - 170, path.vec.y - 300);
         },
         onComplete: () => {
+          /*
+            BEFORE THIS STATEMENT, run the paint chute animation and add a once event for when the animation completes to load to the paint
+            for example:
+
+            paintChute.anims.play('send-paint').once('animationcomplete', () => 
+              and then chain the other animations
+            });
+
+            but you can refactor this idea to look better and more efficient!
+          */
           scene.brush.anims.play('load-paint').once('animationcomplete', () => {
             animation.play();
           });
-        },
-      })
-      
+        }
+      });
     }
-    // console.log(`${topLeft.data.x}, ${topLeft.data.y} | ${topRight.data.x}, ${topRight.data.y}`)
-    // console.log(`${bottomLeft.data.x}, ${bottomLeft.data.y} | ${bottomRight.data.x} ${bottomRight.data.y}`);
-    // const paintOrder = () => {
-    //   const list = this.list;
-      // const top = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y < b.data.y ? -1 : 1)[0];
-      // const left = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.x < b.data.x ? -1 : 1)[0];
-      // const bottom = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.y > b.data.y ? -1 : 1)[0];
-      // const right = list.sort(/** @param {Cell} a @param {Cell} b*/(a, b) => a.data.x > b.data.x ? -1 : 1)[0];
-
-    //   const points = [left, top, right, bottom].map(cell => new Math.Vector2(cell.data.x, cell.data.y));
-    // }
-
-    // paintOrder();
   }
 
   /**
@@ -115,23 +117,17 @@ export default class Blob {
     let curve = new Curves.Spline([new Phaser.Math.Vector2(brush.getCenter().x, brush.getCenter().y), ...points]);
 
     const path = { t: 0, vec: new Phaser.Math.Vector2() };
-
-    // this.tweens.add({
-    //   targets: path,
-    //   t: 1,
-    //   ease: 'Sine.easeInOut',
-    //   duration: 2000,
-    //   yoyo: true,
-    //   repeat: -1
-    // });
-
     const config = {
       targets: path,
       t: 1,
+      /*
+        feel free to tweak the ease to something different, see https://phaser.io/examples/v3/view/tweens/ease-equations
+        for the other ease equations and what they look like
+        they dont affect the overall duration of the tween though as seen below
+      */
       ease: 'Sine.easeInOut',
       duration: 2000,
       paused: true,
-      // yoyo: true,
       repeat: 0,
       onStart: () => {
         curve.points[0] = new Phaser.Math.Vector2(brush.getCenter().x, brush.getCenter().y);
@@ -148,14 +144,26 @@ export default class Blob {
         brush.anims.play('float-brush', true);
       },
       onComplete: () => {
-        console.log('completed painting')
-        this.list.forEach(cell => {
-          // CHANGE THIS ANIMATION TO ANYTHING ELSE ex. fade, glow, etc
-          this.grid[cell.data.y][cell.data.x].revealed = true;
-          scene.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`).setVisible(false);
-          cell.filled = true;
+        /**
+         * @type {GameObjects.Image[]}
+         */
+        const cellObjects = this.list.map(cell => scene.items.find(i => i.name === `(${cell.data.x}, ${cell.data.y})`));
+        scene.add.tween({
+          targets: cellObjects,
+          alpha: { value: 0, duration: 1000, ease: 'Power1' },
+          onActive: () => {
+            /*
+              this is for tinting and visual purposes, see line 4 for the tint colors i used
+              because of the overall structure of the layers, we might have to settle for just the fade though
+            */
+            const tierTint = tiers.find(tier => tier[0] === this.list.length * 50)[1];
+            cellObjects.forEach(cell => cell.setTint(tierTint));
+          },
+          onComplete: () => {
+            cellObjects.forEach(cell => cell.setVisible(false));
+            scene.brush.emit('paintcomplete', scene.activeTween);
+          },
         });
-        scene.brush.emit('paintcomplete', scene.activeTween);
       },
     };
 
@@ -164,7 +172,6 @@ export default class Blob {
   }
 
   /**
-   * 
    * @param {Cell} cell 
    */
   add(cell) {
@@ -174,8 +181,3 @@ export default class Blob {
     this.length++;
   }
 }
-
-/*
-return x and y of center cell of given blob
-
-*/
