@@ -87,14 +87,12 @@ class GameScene extends Phaser.Scene {
       repeat: -1
   });
 
-  this.add.sprite(-70, -35, 'pipe00').setDisplaySize(2320, 1325).setOrigin(0).setDepth(1).play('dispense');
-
-
+  // this.add.sprite(-70, -35, 'pipe00').setDisplaySize(2400, 1350).setOrigin(0).setDepth(1).play('dispense');
+  this.add.sprite(0, 0, 'pipe00').setDisplaySize(2400, 1350).setOrigin(0).setDepth(0).play('dispense');
 
     // this.add.sprite(300, -35, 'pipe00').setOrigin(0).setDepth(0);
 
-
-    const greyscaledVideo = this.add.video(0, 125, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0).setDepth(0);
+    const greyscaledVideo = this.add.video(0, 270, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0).setDepth(1);
     // const pipeAnimation = this.add.video(0, 0, 'pipe').setDisplaySize(1920, 1080).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
@@ -112,7 +110,7 @@ class GameScene extends Phaser.Scene {
         });
         const x = j * (1920 / 50);
         const y = i * (1080 / 40);
-        const cellImage = this.add.image(x, y+150, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
+        const cellImage = this.add.image(x, y+270, 'cell').setOrigin(0).setInteractive().setDisplaySize(this.cellImageDimensions[0], this.cellImageDimensions[1]).setName(`(${j}, ${i})`).setTint(0x000000);
         items.add(cellImage);
       }
       rows.push(col);
@@ -342,8 +340,8 @@ const config = {
     parent: 'body',
     // mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 2120,
-    height: 1200,
+    width: 2400,
+    height: 1350,
   },
   // Add physics, arcade, scene, and audio
   physics: {
