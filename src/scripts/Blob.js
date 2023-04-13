@@ -12,6 +12,7 @@ const tiers =  [
   [150, 0xefbb1f],
 ];
 
+
 /**
  * A group of cells (scheduled) to be painted together.
  */

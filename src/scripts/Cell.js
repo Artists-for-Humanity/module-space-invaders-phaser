@@ -106,6 +106,7 @@ export default class Cell {
     }) }, surroundingCells);
   }
 
+
   countUnpaintedCells() {
     return this.getSurroundingCells().asArray.filter(cell => cell !== null && !cell.filled).length;
   }
