@@ -1,9 +1,21 @@
-import Phaser, { Display } from 'phaser';
+import Phaser from 'phaser';
 import AnimationScene from './AnimationScene';
-import Cell from './Cell';
-import Blob from './Blob';
+import GameScene from './GridScene';
+// Set configuration for phaser game instance
+const config = {
+  type: Phaser.WEBGL,
+  scale: {
+    parent: 'body',
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1920,
+    height: 1080,
+//import Phaser, { Display } from 'phaser';
+//import AnimationScene from './AnimationScene';
+//import Cell from './Cell';
+//import Blob from './Blob';
 
-const tiers = [50, 100, 250, 500, 1000, 2500, 5000, 150];
+//const tiers = [50, 100, 250, 500, 1000, 2500, 5000, 150];
 /*
 NOTES
 during console.logs for tier 2:
@@ -12,7 +24,9 @@ during console.logs for tier 2:
 
 */
 
-class GameScene extends Phaser.Scene {
+/*
+
+//class GameScene extends Phaser.Scene {
   constructor() {
     super({
       active: true,
@@ -343,6 +357,8 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 2400,
     height: 1350,
+    
+    */
   },
   // Add physics, arcade, scene, and audio
   physics: {

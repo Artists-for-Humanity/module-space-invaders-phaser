@@ -7,6 +7,7 @@ export default class AnimationScene extends Phaser.Scene {
             key: 'Animation',
         })
         this.KEY_CANVAS = 'canvas'
+<<<
 
         this.pipe;
     }
@@ -25,7 +26,6 @@ export default class AnimationScene extends Phaser.Scene {
     this.load.image('pipe50', new URL('../assets/final/CoinPipeV1/coin_pipe0050.png', import.meta.url).href);
     this.load.image('pipe60', new URL('../assets/final/CoinPipeV1/coin_pipe0060.png', import.meta.url).href);
     this.load.image('pipe70', new URL('../assets/final/CoinPipeV1/coin_pipe0070.png', import.meta.url).href);
-
     }
 
     create() {
@@ -71,4 +71,3 @@ export default class AnimationScene extends Phaser.Scene {
     }
 
 }
-

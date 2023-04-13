@@ -106,57 +106,9 @@ export default class Cell {
     }) }, surroundingCells);
   }
 
-  /**
-   * 
-   * @returns An object containing all of the vertically and horizontally adjacent cells in a "t" shape.
-   */
-  getTCells() {
-    const tCells = {
-      topCenter: this.getTopCenterCell(),
-      centerRight: this.getCenterRightCell(),
-      bottomCenter: this.getBottomCenterCell(),
-      centerLeft: this.getCenterLeftCell(),
-    }
-
-    return Object.assign({ asArray: Object.values(tCells) }, tCells);
-  }
-
-  /**
-   * 
-   * @returns An object containing all of the diagonally adjacent cells in an "x" shape.
-   */
-  getXCells() {
-    const xCells = {
-      topLeft: this.getTopLeftCell(),
-      topRight: this.getTopRightCell(),
-      bottomRight: this.getBottomRightCell(),
-      bottomLeft: this.getBottomLeftCell(),
-    }
-    return Object.assign({ asArray: Object.values(xCells) }, xCells)
-  }
 
   countUnpaintedCells() {
     return this.getSurroundingCells().asArray.filter(cell => cell !== null && !cell.filled).length;
-  }
-
-  /**
-   * 
-   * @param {'all' | 'x' | 't'} direction 
-   * @param filterfn The filter criteria for the random cell
-   * @returns {Cell} A random cell adjacent in the given direction.
-   */
-
-  getRandomCell(direction, filterfn) {
-    const directions = {
-      all: 'getSurroundingCells',
-      x: 'getXCells',
-      t: 'getTCells'
-    }
-
-    // console.log(this.getSurroundingCells());
-    const validCells = this[directions[direction] || 'getSurroundingCells']().asArray.filter(cell => filterfn(cell));
-    // console.log(validCells);
-    return validCells[Math.floor(Math.random() * validCells.length)];
   }
 
   /**
