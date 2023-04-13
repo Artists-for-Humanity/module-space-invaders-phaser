@@ -54,14 +54,14 @@ class GameScene extends Phaser.Scene {
     this.load.image('brush', new URL('../assets/final/brush.png', import.meta.url).href);
 
     // this.load.path = new URL('../assets/final/CoinPipeV1/', import.meta.url).href;
-    this.load.image('pipe00', new URL('../assets/final/CoinPipeV1/coin_pipe0000.png', import.meta.url).href);
-    this.load.image('pipe10', new URL('../assets/final/CoinPipeV1/coin_pipe0010.png', import.meta.url).href);
-    this.load.image('pipe20', new URL('../assets/final/CoinPipeV1/coin_pipe0020.png', import.meta.url).href);
-    this.load.image('pipe30', new URL('../assets/final/CoinPipeV1/coin_pipe0030.png', import.meta.url).href);
-    this.load.image('pipe40', new URL('../assets/final/CoinPipeV1/coin_pipe0040.png', import.meta.url).href);
-    this.load.image('pipe50', new URL('../assets/final/CoinPipeV1/coin_pipe0050.png', import.meta.url).href);
-    this.load.image('pipe60', new URL('../assets/final/CoinPipeV1/coin_pipe0060.png', import.meta.url).href);
-    this.load.image('pipe70', new URL('../assets/final/CoinPipeV1/coin_pipe0070.png', import.meta.url).href);
+    // this.load.image('pipe00', new URL('../assets/final/CoinPipeV1/coin_pipe0000.png', import.meta.url).href);
+    // this.load.image('pipe10', new URL('../assets/final/CoinPipeV1/coin_pipe0010.png', import.meta.url).href);
+    // this.load.image('pipe20', new URL('../assets/final/CoinPipeV1/coin_pipe0020.png', import.meta.url).href);
+    // this.load.image('pipe30', new URL('../assets/final/CoinPipeV1/coin_pipe0030.png', import.meta.url).href);
+    // this.load.image('pipe40', new URL('../assets/final/CoinPipeV1/coin_pipe0040.png', import.meta.url).href);
+    // this.load.image('pipe50', new URL('../assets/final/CoinPipeV1/coin_pipe0050.png', import.meta.url).href);
+    // this.load.image('pipe60', new URL('../assets/final/CoinPipeV1/coin_pipe0060.png', import.meta.url).href);
+    // this.load.image('pipe70', new URL('../assets/final/CoinPipeV1/coin_pipe0070.png', import.meta.url).href);
 
     // this.load.image('pipe00', 'coin_pipe0000.png');
   }
@@ -71,28 +71,29 @@ class GameScene extends Phaser.Scene {
     // the key of this greyscaled item
     // const greyscaledVideo = this.add.video(0, 0, 'greyscale').setDisplaySize(this.game.canvas.width, this.game.canvas.height).setOrigin(0);
 
-    this.anims.create({
-      key: 'dispense',
-      frames: [
-          { key: 'pipe00' },
-          { key: 'pipe10' },
-          { key: 'pipe20' },
-          { key: 'pipe30' },
-          { key: 'pipe40' },
-          { key: 'pipe50' },
-          { key: 'pipe60' },
-          { key: 'pipe70', duration: 50 }
-      ],
-      frameRate: 8,
-      repeat: -1
-  });
+  //   this.anims.create({
+  //     key: 'dispense',
+  //     frames: [
+  //         { key: 'pipe00' },
+  //         { key: 'pipe10' },
+  //         { key: 'pipe20' },
+  //         { key: 'pipe30' },
+  //         { key: 'pipe40' },
+  //         { key: 'pipe50' },
+  //         { key: 'pipe60' },
+  //         { key: 'pipe70', duration: 50 }
+  //     ],
+  //     frameRate: 8,
+  //     repeat: -1
+  // });
 
   // this.add.sprite(-70, -35, 'pipe00').setDisplaySize(2400, 1350).setOrigin(0).setDepth(1).play('dispense');
-  this.add.sprite(0, 0, 'pipe00').setDisplaySize(2400, 1350).setOrigin(0).setDepth(0).play('dispense');
+  // this.add.sprite(0, 0, 'pipe00').setDisplaySize(2400, 1350).setOrigin(0).setDepth(0).play('dispense');
 
     // this.add.sprite(300, -35, 'pipe00').setOrigin(0).setDepth(0);
 
-    const greyscaledVideo = this.add.video(0, 270, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0).setDepth(1);
+    // const greyscaledVideo = this.add.video(0, 270, 'greyscale').setDisplaySize(1920, 1080).setOrigin(0).setDepth(1);
+    const greyscaledVideo = this.add.video(0, 265, 'greyscale').setOrigin(0).setDepth(1);
     // const pipeAnimation = this.add.video(0, 0, 'pipe').setDisplaySize(1920, 1080).setOrigin(0);
     greyscaledVideo.mask = new Display.Masks.BitmapMask(this, items);
     document.addEventListener('click', () => {
