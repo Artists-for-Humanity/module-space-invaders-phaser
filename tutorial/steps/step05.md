@@ -31,7 +31,7 @@ Now that we've saved our first game image, selecting and setting up our remainin
 ### The Player
 Let's choose an image for our player character next. This image will represent the character that the user will be controlling as they play our game. Make sure the selected player is related to the background in some way to make the game immersive and keep the theme consistent.
 
-You can use google images for this step as well but I would recommend using the [flaticon website](https://www.flaticon.com/) for free high-resolution images. Find an image using the search bar to navigate through the different pages of the site until you find something you like, there are many useful filters.  
+You can use google images for this step as well but I would recommend using the [flaticon website]() for free high-resolution images. Find an image using the search bar to navigate through the different pages of the site until you find something you like, there are many useful filters.  
 
 Another useful feature of the flaticon site is when downloading the image you can also preselect the pixel size which saves some time. We want our player image to be `64 x 64` so when downloading make sure to preselect that as our `png` image size like so:
 
