@@ -45,6 +45,7 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        console.log('hello');
         // Add images to Scene
         this.add.image(config.width / 2, config.height / 2, 'background');
         this.player = this.physics.add.sprite(config.width / 2, 600, 'spraycan');
