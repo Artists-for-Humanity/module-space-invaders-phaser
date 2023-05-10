@@ -10,7 +10,7 @@ class GameScene extends Phaser.Scene {
         this.projectileState = 'ready';
         this.enemies;
         this.enemySpeed = 500;
-        this.numEnemies = 6;
+        this.numEnemies = 1000;
         this.scoreText;
         this.score = 0;
         this.gameOverText;
@@ -44,11 +44,11 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this);
         this.scoreText = this.add.text(16, 16, 'score: 0', {
             fontSize: '32px',
-            fill: '#000',
+            fill: '#7E1294',
         });
         this.gameOverText = this.add.text(config.width / 2, 400, 'Game Over', {
             fontSize: '64px',
-            fill: '#000',
+            fill: '#7E1294',
         });
         this.gameOverText.visible = false;
         }
@@ -70,7 +70,7 @@ class GameScene extends Phaser.Scene {
         }
         this.enemies.children.iterate((child) => {
             const body = child.body;
-            console.log('reach me');
+            
             if (body.x < 0) {
                 body.setVelocityX(this.enemySpeed);
                 body.y += 64;
@@ -99,8 +99,6 @@ class GameScene extends Phaser.Scene {
         this.projectileState = 'ready';
         this.projectileImg.setVelocityY(0);
         this.projectileImg.visible = false;
-        this.score +=1;
-        this.scoreText.setText(`Score: ${this.score}`);
     }
     setEnemies() {
         for (let i = 0; i < this.numEnemies; i++) {
@@ -112,21 +110,25 @@ class GameScene extends Phaser.Scene {
         enemy.disableBody(true, true);
         projectileImg.body.enable = false;
         this.resetProjectile();
+        console.log('reachme 00');
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
+        console.log('reachme 01');
+
     }
     onPlayerHitEnemy(player) {
         this.physics.pause();
         player.setTint(0xff0000);
         this.gameOver = true;
-        this.showGameOverText();
+        this.showGameOverText(); 
+            
     }
     showGameOverText() {
         this.gameOverText.setOrigin(0.5);
-            this.gameOverText.visible = true;
-            this.enemies.children.iterate((child) => {
-                child.y = config.height * 2;
-            });
+        this.gameOverText.visible = true;
+        this.enemies.children.iterate((child) => {
+            child.y = config.height * 2;
+        });
     }
 
     
