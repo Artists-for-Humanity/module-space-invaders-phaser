@@ -9,10 +9,10 @@ class GameScene extends Phaser.Scene {
         this.projectileImg;
         this.projectileState = 'ready';
         this.enemies;
-        this.enemySpeed = 500;
-        this.numEnemies = 1000;
+        this.enemySpeed = 1;
+        this.numEnemies = 10000;
         this.scoreText;
-        this.score = 0;
+        this.score = 0; 
         this.gameOverText;
         this.gameOver = false;
     }
@@ -51,6 +51,7 @@ class GameScene extends Phaser.Scene {
             fill: '#7E1294',
         });
         this.gameOverText.visible = false;
+       
         }
     update() {
         console.log("update");
@@ -79,7 +80,6 @@ class GameScene extends Phaser.Scene {
                 body.y += 64;
             }
         });
-
         }
 
 
@@ -89,7 +89,7 @@ class GameScene extends Phaser.Scene {
     this.projectileImg.body.enable = true;
     this.projectileImg.x = this.player.x;
     this.projectileImg.y = this.player.y;
-    this.projectileImg.setVelocityY(-250);
+    this.projectileImg.setVelocityY(-5000);
 
     }
     resetProjectile() {
@@ -102,9 +102,13 @@ class GameScene extends Phaser.Scene {
     }
     setEnemies() {
         for (let i = 0; i < this.numEnemies; i++) {
-            this.enemies.create(Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
+            this.enemies.create(
+                Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
         }
+
+               
         this.enemies.setVelocityX(this.enemySpeed * -1);
+        
     }
     onProjectileHitEnemy(projectileImg, enemy) {
         enemy.disableBody(true, true);
