@@ -9,12 +9,15 @@ class GameScene extends Phaser.Scene {
         this.projectileImg;
         this.projectileState = 'ready';
         this.enemies;
-        this.enemySpeed = 1;
-        this.numEnemies = 10000;
+        this.enemySpeed = 100;
+        this.numEnemies = 3;
+        this.enemiesLeft = this.numEnemies;
         this.scoreText;
         this.score = 0; 
         this.gameOverText;
         this.gameOver = false;
+        this.deadenemies = 0;
+        this.deadplayer
     }
 
     preload() {
@@ -46,7 +49,7 @@ class GameScene extends Phaser.Scene {
             fontSize: '32px',
             fill: '#7E1294',
         });
-        this.gameOverText = this.add.text(config.width / 2, 400, 'Game Over', {
+        this.gameOverText = this.add.text(config.width / 2, 400, 'thought you were good', {
             fontSize: '64px',
             fill: '#7E1294',
         });
@@ -54,6 +57,9 @@ class GameScene extends Phaser.Scene {
        
         }
     update() {
+        if (this.gameOver) {
+            return;
+        }
         console.log("update");
         if (this.cursors.left.isDown) {
             this.player.x -= 10;
@@ -80,6 +86,12 @@ class GameScene extends Phaser.Scene {
                 body.y += 64;
             }
         });
+        if (this.deadenemies === this.numEnemies) {
+            this.deadenemies = 0;
+            this.numEnemies += 1;
+            this.setEnemies();
+        };
+        
         }
 
 
@@ -89,7 +101,7 @@ class GameScene extends Phaser.Scene {
     this.projectileImg.body.enable = true;
     this.projectileImg.x = this.player.x;
     this.projectileImg.y = this.player.y;
-    this.projectileImg.setVelocityY(-5000);
+    this.projectileImg.setVelocityY(-500);
 
     }
     resetProjectile() {
@@ -105,7 +117,6 @@ class GameScene extends Phaser.Scene {
             this.enemies.create(
                 Phaser.Math.Between(64, 896), Phaser.Math.Between(64, 296), 'enemy');
         }
-
                
         this.enemies.setVelocityX(this.enemySpeed * -1);
         
@@ -118,6 +129,8 @@ class GameScene extends Phaser.Scene {
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
         console.log('reachme 01');
+        this.deadenemies += 1
+        console.log(this.deadenemies);
 
     }
     onPlayerHitEnemy(player) {
@@ -134,8 +147,9 @@ class GameScene extends Phaser.Scene {
             child.y = config.height * 2;
         });
     }
-
     
+
+
 }
     
 
