@@ -92,3 +92,6 @@ Again, inside `create()` we use `this.add.text()` to display 'Game Over' in the 
 Then, we created the `showGameOverText()` method to handle displaying the `gameOverText` game object. We use `setOrigin()` to set the origin of the text object for more accurate positioning. We set the visibility back to `true` so that it appears in the center of the game scene, then iterate through every instance of an enemy game object to update their position somewhere outside the visible scene window.
 
 Lastly, inside `onPlayerHitEnemy()` we set the `gameOver` condition to `true` and we call the `showGameOverText()` method.
+
+# Voila! ✨
+You've just made your first game using Phaser.js! Now is where you can go back and add your own custom features, like extra difficulties or a start menu. Get creative!

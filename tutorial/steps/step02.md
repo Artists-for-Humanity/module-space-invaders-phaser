@@ -2,29 +2,38 @@
 
 Inside the `scripts` folder create a new file named `main.js`. This is going to be where we write all of our code.
 
-INSERT A VIDEO ON HOW TO CREATE A NEW FILE
+You can do this with these steps:
+1. Right-click on the scripts folder to view the menu:
+![Creating a new file](../images/new-file-menu.png)
 
-Then inside our [index.html](../src/index.html) find the line that says:
+2. Type in `main.js` after clicking "New File..." and being given the option to create a filename:
+
+![Naming main.js file](../images/file-naming.png)
+
+3. press the <kbd>Return</kbd> or <kbd>Enter</kbd> key. And voila! You've created a new JavaScript file.
+<!-- INSERT A VIDEO ON HOW TO CREATE A NEW FILE -->
+
+After making the file, enter our [index.html](../../src/index.html) file by clicking on it in the directory, and find the line that says:
 
 ```html
-<script type="module" src="scripts/final.js"></script>
+<script type="module" src="./scripts/final.js"></script>
 ```
 
 and change it to:
 
 ```html
-<script type="module" src="scripts/main.js"></script>
+<script type="module" src="./scripts/main.js"></script>
 ```
 
-Now we are loading our new blank file instead of our final file.
+Now we are loading our new blank file instead of our final file. You'll be making your own custom game in `main.js`, while leaving `final.js` as-is. That is an example as to how you can structure and code your project.
 
-Inside `main.js` file put:
+Inside your `main.js` file, put:
 
 ```javascript
 console.log("Does this work");
 ```
 
-Make sure to save the file, then in your web browser [open the web inspector](https://developer.chrome.com/docs/devtools/open/) and click the "Console" tab. Then reload the web page. You should see the message "Does this work" without quotes in the console. The webpage should be completely black. You can read more about the console tab below.
+Make sure to save the file, then in your web browser [open the web inspector](https://developer.chrome.com/docs/devtools/open/) and click the "Console" tab. You can also open the inspector tool by right-clicking anywhere on your page and clicking "Inspect". Then reload the web page. You should see the message "Does this work" without quotes in the console. The webpage should be completely black. You can read more about the console tab below.
 
 ## Review
 
@@ -41,23 +50,23 @@ The reason we added `console.log("Does this work");` inside of our `main.js` fil
 Go ahead and change:
 
 ```html
-<script type="module" src="scripts/main.js"></script>
+<script type="module" src="./scripts/main.js"></script>
 ```
 
 to be:
 
 ```html
-<script type="module" src="scripts/yolo.js"></script>
+<script type="module" src="./scripts/yolo.js"></script>
 ```
 
 Now reload the browser and look in the console. Do you see `Does this work`? The reason you don't see this anymore is that we are telling our HTML to load a file that does not exist.
 
-Undo what we did and make sure your [index.html](../src/index.html) file says:
+Undo what we did and make sure your [index.html](../../src/index.html) file says:
 
 ```html
-<script type="module" src="scripts/main.js"></script>
+<script type="module" src="./scripts/main.js"></script>
 ```
 
 # Next Step
 
-Now that we know our `main.js` file is hooked up we can move on to the [next step](step03.md)!
+Now that we know our `main.js` file is hooked up and ready to edit we can move on to the [next step](step03.md)!
