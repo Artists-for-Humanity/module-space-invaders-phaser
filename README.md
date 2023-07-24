@@ -4,7 +4,10 @@ This project is meant to introduce you to Javascript. In this project we will us
 
 ## Getting Started
 
-First download this project on to your computer. The easiest way to do this is to click the green Code button on the top right of this page and then click "Open with GitHub Desktop". **TODO: any more steps?**
+First download this project on to your computer. The easiest way to do this is to click the green Code button on the top right of this page and then click "Open with GitHub Desktop".
+
+To start the tutorial, open the `tutorial` folder and `steps` folders. Click on `step01.md`, and then right click on the tab in the tab viewer and select "Open Preview." Drag this preview tab to the right side until you see a rectangle shape appear on the side of your screen, and then drop the tab onto the rectangle. This will create a split screen with the tutorial and your code, making it easier to work through the steps.
+<!-- **TODO: any more steps?** -->
 
 Before we get started we should understand how our project is organized and what all the existing files do.
 
@@ -44,4 +47,4 @@ This project is set up to use a library called [Parcel](https://parceljs.org/). 
 
 ## Coding Our Own Game
 
-Move on to the [first step of our tutorial here](tutorial/step1.md)!
+Move on to the [first step of our tutorial here](tutorial/steps/step01.md)!

@@ -10,7 +10,24 @@ Before we start adding things into the scene we need to pick a theme for our inv
 
 Let's make this a bit easier by starting with a background for our game to take place. Visualize the world or environment the players and enemies will be moving within, then use google images to find a nice visual representation that captures that feeling. Use the [freepik website](https://www.freepik.com/) to browse through different background options if you can't think of any.
 
-Let's create a folder that will hold all our assets for the game like this background image. In vscode navigate to the `src` folder then inside the `assets` folder create a new folder and name it `myAssets`. Now download your selected background image and save it inside this folder as `myBackground.png`. 
+Let's create a folder that will hold all our assets for the game like this background image. In vscode navigate to the `src` folder then inside the `assets` folder create a new folder and name it `myAssets`:
+
+*You can do this by right-clicking `assets` (not `final`):*
+![myAssets folder creation](../images/create-myassets.png)
+
+*And naming it myAssets, similar to how we create files:*
+![naming myAssets folder](../images/successful-myAssets-creation.png)
+
+Now download your selected background image and save it inside this folder as `myBackground.png`. 
+
+The file tree under `assets` should look like this:
+
+```
+assets/
+├─ final/
+├─ myAssets/
+│  ├─ myBackground.png
+```
 
 Before we move on to the next image for our game we have to make sure the background is the proper size so that when we display it in the scene we don't have any issues. On a mac, you can check the attributes of the image in the finder window by navigating to that file selecting it but don't open it. Take a look at the dimensions attribute and make sure it is set to `960 x 720` like so: 
 
@@ -23,6 +40,8 @@ If the dimensions of the image are different they can be changed using this [web
 Then skip to step 4 where you will uncheck the `keep aspect ratio` box and set the pixel size to `960 x 720 px` like so:
 
 ![game assets sizing](../images/game-assets-sizing-background3.png)
+
+Next thing we need to do is create assets specifically for the gameplay, like our player avatar and enemy sprite by creating a `gameAssets` folder under `myAssets`. Having these subfolders helps us organize our assets in a way that makes it easy for us to differenciate where we need to use them.
 
 Finally, in step 6 set the output image format to `png` and hit the resize image button. Once complete download the newly resized image, check the attributes for the correct dimensions, then save it in the `gameAssets` folder again as `myBackground.png`. This version should replace any previous version within the `gameAssets` folder.
 
@@ -46,5 +65,17 @@ We're going to need an enemy for the player to interact with so let's choose one
 The final image we will need for our game is an image that represents the projectile that our player is using firing at the enemy. Don't get too tied up on making the projectile fit the theme, if you can that would be ideal but if you want to use lasers that is also fine. Use the flaticon site for this image as well, this time, however, set the pixel size to `32 x 32` save the image as `myProjectile.png` in `gameAssets`.
 
 # Next Step
+
+This is what your `assets` directory should look like after adding your images:
+```
+assets/
+├─ final/
+├─ myAssets/
+│  ├─ gameAssets/
+│  │  ├─ myPlayer.png
+│  │  ├─ myEnemy.png
+│  │  ├─ myProjectile.png
+│  ├─ myBackground.png
+```
 
 Now that we have all our image files where we want them we can start loading them into our scene in the [next step](step06.md)!

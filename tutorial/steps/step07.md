@@ -43,7 +43,7 @@ Save the file then load [localhost:1234](http://localhost:1234), we should see o
 
 # Review
 
-> The coordinate `(480, 360)` refers to the location where we are placing the center pixel of our image. This means that `(480, 360)` will be the center of the game. We are placing the image here so that it covers the whole screen as a background should.
+> The coordinate `(480, 360)` refers to the location where we are placing the center pixel, or our *origin,* of our image. This means that `(480, 360)` will be the center of the game. We are placing the image here so that it covers the whole screen as a background should.
 
 For reference, coordinate `(0,0)` is located in the top left corner, and `(960, 720)` is located in the bottom right corner of our scene. This is why when we place our background image with the same dimension it fits perfectly into the scene.
 

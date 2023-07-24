@@ -99,6 +99,21 @@ this.physics.add.collider(this.player, this.enemies, this.onPlayerHitEnemy, null
 this.physics.add.overlap(this.projectileImg, this.enemies, this.onProjectileHitEnemy, null, this); 
 ```
 
+The method structure of our Scene class should now look something like this:
+```js
+class GameScene extends Scene {
+  constructor() {}
+
+  /* insert all of our methods from step 9... */
+
+  setEnemies() {}
+
+  onProjectileHitEnemy() {}
+  
+  onPlayerHitEnemy() {}
+}
+```
+
 # Review
 
 First, in our `constructor()` we defined fields for the `enemies` object, `enemySpeed`, and `numEnemies`. We initialized the speed with a value of `150` and the number of enemies with a value of `1` to start.

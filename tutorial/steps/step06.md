@@ -9,13 +9,13 @@ preload() {
 }
 ```
 
-add the following code inside the curly brackets underneath the `console.log()` command:
+and add the following code inside the curly brackets underneath the `console.log()` command:
 
 ```js
 this.load.image('background', new URL('../assets/myAssets/myBackground.png', import.meta.url).href);
-this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
-this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
-this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
+this.load.image('projectile', new URL('../assets/myAssets/gameAssets/myProjectile.png', import.meta.url).href);
+this.load.image('enemy', new URL('../assets/myAssets/gameAssets/myEnemy.png', import.meta.url).href);
+this.load.image('player', new URL('../assets/myAssets/gameAssets/myPlayer.png', import.meta.url).href);
 ```
 
 ## Review

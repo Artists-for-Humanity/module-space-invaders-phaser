@@ -37,8 +37,7 @@ this.projectileImg.setVelocityY(-250);
 
 ## Space Bar
 
-
-Lastly, let's program space bar to fire our projectile. Inside `update()` below the conditional that checks for the right arrow key add the following:
+Lastly, let's program the space bar to fire our projectile. Inside `update()` below the conditional that checks for the right arrow key add the following:
 
 ```js
 if (this.cursors.space.isDown) {
@@ -78,7 +77,25 @@ if (this.projectileImg.y <= -16) {
 }
 ```
 
-Save the file then load [localhost:1234](http://localhost:1234), we should be able to fire the projectile repeatedly each time it gets reset.
+Inside of our Scene, our class should be shaped like this, ignoring the content of each method:
+```js
+class GameScene extends Scene {
+  constructor() {}
+
+  preload() {}
+
+  create() {}
+
+  update() {}
+
+  fireProjectile() {}
+
+  resetProjectile() {}
+}
+```
+All of our custom methods are on the same level as our constructor and default methods, `preload`, `create`, and `update`.
+
+Now we can save the file and load [localhost:1234](http://localhost:1234), we should be able to fire the projectile repeatedly each time it gets reset.
 
 # Review
 
@@ -88,7 +105,7 @@ Next, in `create()` we added the image to the scene. It's added at coordinate `(
 
 Then, we added the `fireProjectile()` method which is where we update the projectile to the `fire` state. We also change the projectiles visibility back to `true` and update its `x` and `y` position to, `this.player.x` and `this.player.y`. We set the position of the projectile to the player's coordinates so that it appears to come from the player when fired. 
 
-The line, `this.projectileImg.setVelocityY(-250)`, tells the projectile to travel on the y-axis with the specified intensity. The sign of the value in parenthesis indicates the direction; '`-`' indicates up and '`+`' indicates down.
+The line, `this.projectileImg.setVelocityY(-250)`, tells the projectile to travel on the y-axis with the specified intensity. The sign of the value in parenthesis indicates the direction; '`-`' indicates up and '`+`' indicates down. This is because in Phaser, the y-coordinate of 0 is located at the top edge of the game.
 
 Finally, we programed our cursors object to check for when the space bar is pressed. If this condition is `true`,  we check if the projectile's state is `ready`. If the state is `ready` we then call and execute the `fireProjectile()` method.
 
