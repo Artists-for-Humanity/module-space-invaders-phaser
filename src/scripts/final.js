@@ -174,11 +174,11 @@ class GameScene extends Phaser.Scene {
 
     // Player & Canvas collision
     onPlayerHitEnemy(player) {
-        this.physics.pause();
+        this.physics.pause(); 
         player.setTint(0xff0000);
         this.gameOver = true;
         this.showGameOverText();
-    }
+    } 
 
     onBallHitEnemy(paintballImg, enemy) {
         enemy.disableBody(true, true);
