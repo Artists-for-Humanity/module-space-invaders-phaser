@@ -4,11 +4,14 @@ class GameScene extends Phaser.Scene {
     constructor() {
         super();
         console.log('constructor');
+        // Misc game object declarations
+        this.player;
+        this.cursors;
     }
 
     preload() {
         console.log('preload');
-        this.load.image('background', new URL('../assets/myAssets/myBackground.png', import.meta.url).href);
+        this.load.image('background', new URL('../assets/myAssets/myBackground.jpg', import.meta.url).href);
         this.load.image('projectile', new URL('../assets/myAssets/myProjectile.png', import.meta.url).href);
         this.load.image('enemy', new URL('../assets/myAssets/myEnemy.png', import.meta.url).href);
         this.load.image('player', new URL('../assets/myAssets/myPlayer.png', import.meta.url).href);
@@ -16,10 +19,23 @@ class GameScene extends Phaser.Scene {
 
     create() {
         console.log('create');
+        // Add images to Scene
+        this.add.image(480, 360, 'background');
+        this.player = this.physics.add.sprite(480, 600, 'player');
+        this.cursors = this.input.keyboard.createCursorKeys();
+        // Set world bounds for player
+        this.player.setCollideWorldBounds(true);
     }
 
     update(){
         console.log('update');
+        // Assign arrow keys for movement mechanics
+        if (this.cursors.left.isDown) {
+            this.player.x -= 10;
+        }
+        if (this.cursors.right.isDown) {
+            this.player.x += 10;
+        } 
     }
 }
 
