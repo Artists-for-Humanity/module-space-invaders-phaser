@@ -7,6 +7,9 @@ class GameScene extends Phaser.Scene {
         // Misc game object declarations
         this.player;
         this.cursors;
+        // Projectile object declaration
+        this.projectileImg;
+        this.projectileState = 'ready';
     }
 
     preload() {
@@ -25,6 +28,9 @@ class GameScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         // Set world bounds for player
         this.player.setCollideWorldBounds(true);
+        // Projectile
+        this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
+        this.projectileImg.visible = false;
     }
 
     update(){
@@ -36,6 +42,35 @@ class GameScene extends Phaser.Scene {
         if (this.cursors.right.isDown) {
             this.player.x += 10;
         } 
+        if (this.cursors.space.isDown) {
+            if (this.projectileState == 'ready') {
+                this.fireProjectile();
+            }
+        }
+        // Projectile out of bounds
+        if (this.projectileImg.y <= -16) {
+            this.resetProjectile();
+        }
+    }
+
+    // Fire the projectile
+    fireProjectile() {
+        this.projectileState = 'fire';
+        this.projectileImg.visible = true;
+        this.projectileImg.body.enable = true;
+        this.projectileImg.x = this.player.x;
+        this.projectileImg.y = this.player.y;
+        this.projectileImg.setVelocityY(-250);
+    }
+
+    // Reset the projectile
+    resetProjectile() {
+        if (this.projectileState === 'ready') {
+            return;
+        }
+        this.projectileState = 'ready';
+        this.projectileImg.setVelocityY(0);
+        this.projectileImg.visible = false;
     }
 }
 
