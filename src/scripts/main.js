@@ -18,9 +18,12 @@ class GameScene extends Phaser.Scene {
         this.enemySpeed = 150;
         this.numEnemies = 6;
 
+
         //Projectile object declaration
         this.projectileImg;
         this.projectileState = 'ready';
+        this.temp = 0;
+
 
         //Game Text declaration
         this.scoreText;
@@ -57,10 +60,17 @@ class GameScene extends Phaser.Scene {
         this.setEnemies();
 
         //Projectile
-        this.spawnProjectile();
+            this.projectileImg = this.physics.add.group();
+        // console.log('test04');
+
+            this.setProjectile();
+        // console.log('test05');
+
+
+        // this.spawnProjectile();
         // if (this.projectileState === 'ready') {
-        //     this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
-        //     this.projectileImg.visible = false;
+            // this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
+            // this.projectileImg.visible = false;
         //     this.projectileImg.body.enable = false;
         //     this.projectileImg.x = this.player.x;
         //     this.projectileImg.y = this.player.y;
@@ -88,7 +98,7 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
-        console.log("update");
+        // console.log("update");
 
         //Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
@@ -98,15 +108,13 @@ class GameScene extends Phaser.Scene {
             this.player.x += 10;
         }
 
-        if (this.cursors.space.isDown) {
-            this.spawnProjectile();
+        // if (this.cursors.space.justPressed) {
+        if (this.game.input.keyboard.justPressed(this.cursors.space)) {
+            // this.spawnProjectile();
             this.fireProjectile();
         }
 
-        //Projectile out of bounds
-        if (this.projectileImg.y <= -16) {
-            this.resetProjectile();
-        }
+       
 
         //On border collision change enemy direction and move down by 64px
         this.enemies.children.iterate((child) => {
@@ -122,26 +130,28 @@ class GameScene extends Phaser.Scene {
     }
 
     //Spawn the Projectile
-    spawnProjectile() {
-         if (this.projectileState === 'ready') {
-             this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
-             this.projectileImg.visible = false;
-             this.projectileImg.body.enable = false;
-             this.projectileImg.x = this.player.x;
-             this.projectileImg.y = this.player.y;
-         }
-     }    
+    // spawnProjectile() {
+    //      if (this.projectileState === 'ready') {
+    //          this.projectileImg = this.physics.add.sprite(-1440, -1920, 'projectile');
+    //          this.projectileImg.visible = false;
+    //          this.projectileImg.body.enable = false;
+            
+    //      }
+    //  }    
 
     //Fire the Projectile
     fireProjectile() {
-        this.projectileState = 'fire';
-        this.projectileImg.visible = true;
-        this.projectileImg.body.enable = true;
-        this.projectileImg.setVelocityY(-250);
-        let distance = this.projectileImg.y - this.player.y;
-        if (distance <= -32) {
-            this.projectileState = 'ready';
-        }
+        this.projectileImg.children.iterate((child) => {
+            const body = child.body;
+            this.projectileState = 'fire';
+                console.log('temp = ' + this.temp++);
+                body.visible = true;
+                body.enable = true;
+                body.setVelocityY(-250);
+                body.x = this.player.x;
+                body.y = this.player.y;
+        });
+  
     }
 
     //Reset the projectile
@@ -150,9 +160,13 @@ class GameScene extends Phaser.Scene {
             return;
         }
         this.projectileState = 'ready';
-        this.projectileImg.setVelocityY(0); 
-        this.projectileImg.visible = false;
-        }
+        this.projectileImg.children.iterate((child) => {
+            const body = child.body;
+            body.setVelocityY(0); 
+            body.visible = false;
+        });
+        this.temp = 0;
+    }
 
 
     setEnemies() {
@@ -163,11 +177,20 @@ class GameScene extends Phaser.Scene {
         this.enemies.setVelocityX(this.enemySpeed * -1);
     }
 
+    setProjectile() {
+        for (let i = 0; i < 3; i++) {
+            this.projectileImg.create(-1440, -1920, 'projectile');
+        }
+    }
+
 
     onProjectileHitEnemy(projectileImg, enemy) {
+        console.log('enemy' + enemy);
         enemy.disableBody(true, true);
-        projectileImg.body.enable = false;
+        projectileImg.disableBody(true, true);
+        // projectileImg.body.enable = false;
         this.resetProjectile();
+        console.log('test00');
         //Increment and update the score
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
