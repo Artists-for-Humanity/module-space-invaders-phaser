@@ -12,6 +12,8 @@ class GameScene extends Phaser.Scene {
         //Misc game object declarations
         this.player;
         this.cursors;
+        this.keySPACE;
+
 
         //Enemy object declaration
         this.enemies;
@@ -54,6 +56,8 @@ class GameScene extends Phaser.Scene {
 
         // Initialize keyboard manager
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
 
         //Some enemies for the player to attack
         this.enemies = this.physics.add.group();
@@ -108,8 +112,10 @@ class GameScene extends Phaser.Scene {
             this.player.x += 10;
         }
 
-        // if (this.cursors.space.justPressed) {
-        if (this.game.input.keyboard.justPressed(this.cursors.space)) {
+        // if (this.cursors.space.isDown) {
+            if (Phaser.Input.Keyboard.JustDown(this.keySPACE)) {
+
+        // if (this.game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
             // this.spawnProjectile();
             this.fireProjectile();
         }
@@ -144,12 +150,15 @@ class GameScene extends Phaser.Scene {
         this.projectileImg.children.iterate((child) => {
             const body = child.body;
             this.projectileState = 'fire';
+            // if (Phaser.Input.Keyboard.JustDown(this.keySPACE)) {
+            
                 console.log('temp = ' + this.temp++);
                 body.visible = true;
                 body.enable = true;
                 body.setVelocityY(-250);
                 body.x = this.player.x;
                 body.y = this.player.y;
+            // }
         });
   
     }
