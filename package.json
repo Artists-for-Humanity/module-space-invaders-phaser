@@ -14,7 +14,7 @@
     "eslint": "^8.5.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
-    "parcel": "^2.0.1"
+    "parcel": "^2.10.3"
   },
   "dependencies": {
     "phaser": "^3.55.2"
