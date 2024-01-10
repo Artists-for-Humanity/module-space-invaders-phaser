@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import Settings from './EDIT_ME';
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -25,8 +26,21 @@ class GameScene extends Phaser.Scene {
 
         // Enemy object declaration
         this.enemies;
-        this.enemySpeed = 150;
-        this.numEnemies = 6;
+        this.enemySpeed = Settings.enemy.speed;
+
+        if (Settings.enemy.quantity <= 0 && Number.isInteger(Settings.enemy.quantity)) {
+            throw new Error ('Enemy quantity must be a positive integer greater than 0.')
+        }
+        if (Settings.player.speed <= 0) {
+            throw new Error ('Player speed must be greater than 0.')
+        }
+        if (Settings.enemy.speed <= 0) {
+            throw new Error ('Enemy speed must be greater than 0.')
+        }
+        if (Settings.enemy.quantity <= 0) {
+            throw new Error ('Enemy quantity must be greater than 0.')
+        }
+        this.numEnemies = Settings.enemy.quantity;
 
         // Paintball object declaration
         this.paintballImg;
@@ -34,10 +48,10 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', new URL('../assets/final/background.png', import.meta.url).href);
-        this.load.image('ball', new URL('../assets/final/ball.png', import.meta.url).href);
-        this.load.image('canvas', new URL('../assets/final/canvas.png', import.meta.url).href);
-        this.load.image('spraycan', new URL('../assets/final/spraycan.png', import.meta.url).href);
+        this.load.image('background', new URL(Settings.background.image, import.meta.url).href);
+        this.load.image('ball', new URL(Settings.projectile.image, import.meta.url).href);
+        this.load.image('canvas', new URL(Settings.enemy.image, import.meta.url).href);
+        this.load.image('spraycan', new URL(Settings.player.image, import.meta.url).href);
 
         this.load.audio('background', new URL('../assets/final/background.wav', import.meta.url).href);
         this.load.audio('spraycan', new URL('../assets/final/spraycan.wav', import.meta.url).href);
@@ -115,10 +129,10 @@ class GameScene extends Phaser.Scene {
     
         // Assign arrow keys for movement mechanics
         if (this.cursors.left.isDown) {
-            this.player.x -= 10;
+            this.player.x -= Settings.player.speed;
         }
         if (this.cursors.right.isDown) {
-            this.player.x += 10;
+            this.player.x += Settings.player.speed;
         } 
         // else if (cursors.up.isDown) {
         //     player.y -= 10;
@@ -168,7 +182,7 @@ class GameScene extends Phaser.Scene {
         this.paintballImg.body.enable = true;
         this.paintballImg.x = this.player.x - 8;
         this.paintballImg.y = this.player.y - Math.abs((this.player.height / 2) - (this.paintballImg.height / 2));
-        this.paintballImg.setVelocityY(-250);
+        this.paintballImg.setVelocityY(-Settings.projectile.speed);
         this.shootSound.play();
     }
 
