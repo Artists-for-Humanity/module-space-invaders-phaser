@@ -48,10 +48,10 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', new URL(Settings.background.image, import.meta.url).href);
-        this.load.image('ball', new URL(Settings.projectile.image, import.meta.url).href);
-        this.load.image('canvas', new URL(Settings.enemy.image, import.meta.url).href);
-        this.load.image('spraycan', new URL(Settings.player.image, import.meta.url).href);
+        this.load.image('background', new URL('../static/final/background.png', import.meta.url).href);
+        this.load.image('ball', new URL('../static/final/ball.png', import.meta.url).href);
+        this.load.image('canvas', new URL('../static/final/canvas.png', import.meta.url).href);
+        this.load.image('spraycan', new URL('../static/final/spraycan.png', import.meta.url).href);
 
         this.load.audio('background', new URL('../static/final/background.wav', import.meta.url).href);
         this.load.audio('spraycan', new URL('../static/final/spraycan.wav', import.meta.url).href);

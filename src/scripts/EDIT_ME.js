@@ -13,7 +13,7 @@ const Settings = {
 
     // this is where we store information about our projectile in the game:
     projectile: {
-        speed: 250,
+        speed: 2500,
         image: '../static/final/ball.png',
         sound: '../static/final/wet_impact.wav',
     },
